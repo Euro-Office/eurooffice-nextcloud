@@ -159,6 +159,7 @@
 							config.events.onRequestReferenceSource = OCA.Onlyoffice.onRequestReferenceSource
 							config.events.onMetaChange = OCA.Onlyoffice.onMetaChange
 							config.events.onRequestRefreshFile = OCA.Onlyoffice.onRequestRefreshFile
+							config.events.onRequestSmartPicker = OCA.Onlyoffice.onRequestSmartPicker
 
 							if (OCA.Onlyoffice.currentUser.uid) {
 								config.events.onRequestUsers = OCA.Onlyoffice.onRequestUsers
@@ -376,6 +377,12 @@
 		})
 	}
 
+	OCA.Onlyoffice.editorInsertLink = function(link) {
+		console.log("Got it! Inserting link" + link)
+		OCA.Onlyoffice.docEditor.insertLink(link)
+	
+	}
+
 	OCA.Onlyoffice.onRequestMailMergeRecipients = function() {
 		const recipientMimes = [
 			'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
@@ -440,6 +447,14 @@
 
 		window.parent.postMessage({
 			method: 'editorRequestClose',
+		},
+		'*')
+	}
+
+	OCA.Onlyoffice.onRequestSmartPicker = function() {
+		console.log("SmartPicker message received")
+		window.parent.postMessage({
+			method: 'editorRequestSmartPicker',
 		},
 		'*')
 	}

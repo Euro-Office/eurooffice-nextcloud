@@ -28,6 +28,8 @@
 
 /* global _, $ */
 
+import { getLinkWithPicker } from '@nextcloud/vue/dist/Components/NcRichText.js'
+
 /**
  * @param {object} OCA Nextcloud OCA object
  */
@@ -65,6 +67,32 @@
 			true,
 			OC.dialogs.FILEPICKER_TYPE_CHOOSE,
 			saveData.dir)
+	}
+
+	OCA.Onlyoffice.onSmartPickerRequest = async function() {
+			try {
+				if (this.showLinkPicker) {
+					return
+				}
+				this.showLinkPicker = true
+				const link = await getLinkWithPicker(null, true)
+				try {
+					const url = new URL(link)
+					if (url.protocol === 'http:' || url.protocol === 'https:') {
+						console.log(link)//TODO send
+						$(OCA.Onlyoffice.frameSelector)[0].contentWindow.OCA.Onlyoffice.editorInsertLink(link)
+						return
+					}
+				} catch (e) {
+					console.debug('error when parsing the link picker result')
+				}
+				console.log(link)//TODO send
+				$(OCA.Onlyoffice.frameSelector)[0].contentWindow.OCA.Onlyoffice.editorInsertLink(link)
+			} catch (e) {
+				console.error('Link picker promise rejected :', e)
+			} finally {
+				this.showLinkPicker = false
+			}
 	}
 
 	OCA.Onlyoffice.onRequestInsertImage = function(imageMimes) {
@@ -179,6 +207,9 @@
 			break
 		case 'onShowMessage':
 			OCA.Onlyoffice.onShowMessage(event.data.param)
+			break
+		case 'editorRequestSmartPicker':
+			OCA.Onlyoffice.onSmartPickerRequest()
 			break
 		}
 	}, false)
