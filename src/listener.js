@@ -79,15 +79,13 @@ import { getLinkWithPicker } from '@nextcloud/vue/dist/Components/NcRichText.js'
 				try {
 					const url = new URL(link)
 					if (url.protocol === 'http:' || url.protocol === 'https:') {
-						console.log(link)//TODO send
 						$(OCA.Onlyoffice.frameSelector)[0].contentWindow.OCA.Onlyoffice.editorInsertLink(link)
 						return
 					}
 				} catch (e) {
 					console.debug('error when parsing the link picker result')
 				}
-				console.log(link)//TODO send
-				$(OCA.Onlyoffice.frameSelector)[0].contentWindow.OCA.Onlyoffice.editorInsertLink(link)
+				$(OCA.Onlyoffice.frameSelector)[0].contentWindow.OCA.Onlyoffice.editorInsertPlainText(link)
 			} catch (e) {
 				console.error('Link picker promise rejected :', e)
 			} finally {

@@ -378,8 +378,12 @@
 	}
 
 	OCA.Onlyoffice.editorInsertLink = function(link) {
-		console.log("Got it! Inserting link" + link)
 		OCA.Onlyoffice.docEditor.insertLink(link)
+	
+	}
+
+	OCA.Onlyoffice.editorInsertPlainText = function(text) {
+		OCA.Onlyoffice.docEditor.insertPlainText(text)
 	
 	}
 
