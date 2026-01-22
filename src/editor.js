@@ -456,7 +456,6 @@
 	}
 
 	OCA.Onlyoffice.onRequestSmartPicker = function() {
-		console.log("SmartPicker message received")
 		window.parent.postMessage({
 			method: 'editorRequestSmartPicker',
 		},
