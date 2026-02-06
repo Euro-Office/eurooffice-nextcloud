@@ -30,6 +30,7 @@
 namespace OCA\Onlyoffice;
 
 use OC\Files\View;
+use OCP\Preview\IProviderV2;
 use OCA\Files_Sharing\External\Storage as SharingExternalStorage;
 use OCA\Files_Versions\Versions\IVersionManager;
 use OCP\AppFramework\QueryException;
@@ -42,7 +43,6 @@ use OCP\Image;
 use OCP\ISession;
 use OCP\IURLGenerator;
 use OCP\IUser;
-use OCP\Preview\IProviderV2;
 use OCP\Share\IManager;
 use Psr\Log\LoggerInterface;
 
