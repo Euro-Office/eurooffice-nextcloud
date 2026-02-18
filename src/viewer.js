@@ -26,8 +26,6 @@
  *
  */
 
-/* global $ */
-
 /**
  * @param {object} OCA Nextcloud OCA object
  */
@@ -86,12 +84,10 @@
 	if (OCA.Viewer) {
 		OCA.Onlyoffice.frameSelector = '#onlyofficeViewerFrame'
 
-		const mimes = $.map(OCA.Onlyoffice.setting.formats, function(format) {
-			if (format.def) {
-				return format.mime
-			}
-		})
-		mimes.flat()
+		const mimes = OCA.Onlyoffice.setting.formats
+			.filter(format => format.def)
+			.map(format => format.mime)
+			.flat()
 		OCA.Viewer.registerHandler({
 			id: OCA.Onlyoffice.AppName,
 			group: null,

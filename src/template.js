@@ -26,13 +26,14 @@
  *
  */
 
-/* global _, jQuery */
+/* global _ */
+
+import axios from '@nextcloud/axios'
 
 /**
- * @param {object} $ JQueryStatic object
  * @param {object} OC Nextcloud OCA object
  */
-(function($, OC) {
+(function(OC) {
 
 	OCA.Onlyoffice = _.extend({
 		AppName: 'onlyoffice',
@@ -41,28 +42,32 @@
 
 	OCA.Onlyoffice.OpenTemplatePicker = function(name, extension, type) {
 
-		$('#onlyoffice-template-picker').remove()
+		const existingPicker = document.getElementById('onlyoffice-template-picker')
+		if (existingPicker) {
+			existingPicker.remove()
+		}
 
-		$.get(OC.filePath(OCA.Onlyoffice.AppName, 'templates', 'templatePicker.html'),
-			function(tmpl) {
-				const $tmpl = $(tmpl)
-				const dialog = $tmpl.octemplate({
+		axios.get(OC.filePath(OCA.Onlyoffice.AppName, 'templates', 'templatePicker.html'))
+			.then((response) => {
+				const tempDiv = document.createElement('div')
+				tempDiv.innerHTML = response.data
+				const dialog = window.$(tempDiv.firstElementChild).octemplate({
 					dialog_name: 'onlyoffice-template-picker',
 					dialog_title: t(OCA.Onlyoffice.AppName, 'Select template'),
 				})
 
 				OCA.Onlyoffice.AttachTemplates(dialog, type)
 
-				$('body').append(dialog)
+				document.body.appendChild(dialog[0])
 
-				$('#onlyoffice-template-picker').ocdialog({
+				window.$('#onlyoffice-template-picker').ocdialog({
 					closeOnEscape: true,
 					modal: true,
 					buttons: [{
 						text: t('core', 'Cancel'),
 						classes: 'cancel',
 						click() {
-							$(this).ocdialog('close')
+							window.$(this).ocdialog('close')
 						},
 					}, {
 						text: t(OCA.Onlyoffice.AppName, 'Create'),
@@ -71,7 +76,7 @@
 							const templateId = this.dataset.templateId
 							const fileList = OCA.Files.App.fileList
 							OCA.Onlyoffice.CreateFile(name + extension, fileList, templateId)
-							$(this).ocdialog('close')
+							window.$(this).ocdialog('close')
 						},
 					}],
 				})
@@ -83,18 +88,18 @@
 			return
 		}
 
-		$.get(OC.generateUrl('apps/' + OCA.Onlyoffice.AppName + '/ajax/template'),
-			function onSuccess(response) {
-				if (response.error) {
-					OC.Notification.show(response.error, {
+		axios.get(OC.generateUrl('apps/' + OCA.Onlyoffice.AppName + '/ajax/template'))
+			.then((response) => {
+				const data = response.data
+				if (data.error) {
+					OC.Notification.show(data.error, {
 						type: 'error',
 						timeout: 3,
 					})
 					return
 				}
 
-				OCA.Onlyoffice.templates = response
-
+				OCA.Onlyoffice.templates = data
 			})
 	}
 
@@ -102,36 +107,31 @@
 		const data = new FormData()
 		data.append('file', file)
 
-		$.ajax({
-			method: 'POST',
-			url: OC.generateUrl('apps/' + OCA.Onlyoffice.AppName + '/ajax/template'),
-			data,
-			processData: false,
-			contentType: false,
-			success: function onSuccess(response) {
-				if (response.error) {
-					callback(null, response.error)
+		axios.post(OC.generateUrl('apps/' + OCA.Onlyoffice.AppName + '/ajax/template'), data)
+			.then((response) => {
+				const data = response.data
+				if (data.error) {
+					callback(null, data.error)
 					return
 				}
 
-				callback(response, null)
-			},
-		})
+				callback(data, null)
+			})
+			.catch((error) => {
+				callback(null, error.message || 'Failed to add template')
+			})
 	}
 
 	OCA.Onlyoffice.DeleteTemplate = function(templateId, callback) {
-		$.ajax({
-			method: 'DELETE',
-			url: OC.generateUrl('apps/' + OCA.Onlyoffice.AppName + '/ajax/template?templateId={templateId}',
-				{
-					templateId,
-				}),
-			success: function onSuccess(response) {
-				if (response) {
-					callback(response)
+		axios.delete(OC.generateUrl('apps/' + OCA.Onlyoffice.AppName + '/ajax/template?templateId={templateId}',
+			{
+				templateId,
+			}))
+			.then((response) => {
+				if (response.data) {
+					callback(response.data)
 				}
-			},
-		})
+			})
 	}
 
 	OCA.Onlyoffice.AttachTemplates = function(dialog, type) {
@@ -143,36 +143,71 @@
 			}
 			const item = emptyItem.cloneNode(true)
 
-			$(item.querySelector('label')).attr('for', 'template_picker-' + template.id)
-			item.querySelector('input').id = 'template_picker-' + template.id
-			item.querySelector('img').src = template.icon
-			item.querySelector('p').textContent = template.name
+			const label = item.querySelector('label')
+			if (label) {
+				label.setAttribute('for', 'template_picker-' + template.id)
+			}
+			const input = item.querySelector('input')
+			if (input) {
+				input.id = 'template_picker-' + template.id
+			}
+			const img = item.querySelector('img')
+			if (img) {
+				img.src = template.icon
+			}
+			const p = item.querySelector('p')
+			if (p) {
+				p.textContent = template.name
+			}
 			item.onclick = function() {
 				dialog[0].dataset.templateId = template.id
 			}
 			dialog[0].querySelector('.onlyoffice-template-container').appendChild(item)
 		})
 
-		$(emptyItem.querySelector('label')).attr('for', 'template_picker-0')
-		emptyItem.querySelector('input').id = 'template_picker-0'
-		emptyItem.querySelector('input').checked = true
-		emptyItem.querySelector('img').src = OC.generateUrl('/core/img/filetypes/x-office-' + type + '.svg')
-		emptyItem.querySelector('p').textContent = t(OCA.Onlyoffice.AppName, 'Empty')
+		const emptyLabel = emptyItem.querySelector('label')
+		if (emptyLabel) {
+			emptyLabel.setAttribute('for', 'template_picker-0')
+		}
+		const emptyInput = emptyItem.querySelector('input')
+		if (emptyInput) {
+			emptyInput.id = 'template_picker-0'
+			emptyInput.checked = true
+		}
+		const emptyImg = emptyItem.querySelector('img')
+		if (emptyImg) {
+			emptyImg.src = OC.generateUrl('/core/img/filetypes/x-office-' + type + '.svg')
+		}
+		const emptyP = emptyItem.querySelector('p')
+		if (emptyP) {
+			emptyP.textContent = t(OCA.Onlyoffice.AppName, 'Empty')
+		}
 		emptyItem.onclick = function() {
 			dialog[0].dataset.templateId = '0'
 		}
 	}
 
 	OCA.Onlyoffice.AttachItemTemplate = function(template) {
-		$.get(OC.filePath(OCA.Onlyoffice.AppName, 'templates', 'templateItem.html'),
-			function(item) {
-				item = $(item)
+		axios.get(OC.filePath(OCA.Onlyoffice.AppName, 'templates', 'templateItem.html'))
+			.then((response) => {
+				const tempDiv = document.createElement('div')
+				tempDiv.innerHTML = response.data
+				const item = tempDiv.firstElementChild
 
-				item.attr('data-id', template.id)
-				item.children('img').attr('src', template.icon)
-				item.children('p').text(template.name)
+				item.setAttribute('data-id', template.id)
+				const img = item.querySelector('img')
+				if (img) {
+					img.setAttribute('src', template.icon)
+				}
+				const p = item.querySelector('p')
+				if (p) {
+					p.textContent = template.name
+				}
 
-				$('.onlyoffice-template-container').append(item)
+				const container = document.querySelector('.onlyoffice-template-container')
+				if (container) {
+					container.appendChild(item)
+				}
 			})
 	}
 
@@ -184,4 +219,4 @@
 		return isExist
 	}
 
-})(jQuery, OC)
+})(OC)

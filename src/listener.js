@@ -26,23 +26,31 @@
  *
  */
 
-/* global _, $ */
+/* global _ */
 
 /**
  * @param {object} OCA Nextcloud OCA object
  */
 (function(OCA) {
 
+	const getFavIconHref = () => {
+		const link = document.querySelector('link[rel="icon"]')
+		return link ? link.getAttribute('href') : null
+	}
+
 	OCA.Onlyoffice = _.extend({
 		AppName: 'onlyoffice',
 		frameSelector: null,
 		titleBase: window.document.title,
-		favIconBase: $('link[rel="icon"]').attr('href'),
+		favIconBase: getFavIconHref(),
 	}, OCA.Onlyoffice)
 
 	OCA.Onlyoffice.onRequestClose = function() {
 
-		$(OCA.Onlyoffice.frameSelector).remove()
+		const frame = document.querySelector(OCA.Onlyoffice.frameSelector)
+		if (frame) {
+			frame.remove()
+		}
 
 		if (OCA.Viewer && OCA.Viewer.close) {
 			OCA.Viewer.close()
@@ -58,7 +66,10 @@
 		OC.dialogs.filepicker(t(OCA.Onlyoffice.AppName, 'Save as'),
 			function(fileDir) {
 				saveData.dir = fileDir
-				$(OCA.Onlyoffice.frameSelector)[0].contentWindow.OCA.Onlyoffice.editorSaveAs(saveData)
+				const frame = document.querySelector(OCA.Onlyoffice.frameSelector)
+				if (frame && frame.contentWindow) {
+					frame.contentWindow.OCA.Onlyoffice.editorSaveAs(saveData)
+				}
 			},
 			false,
 			'httpd/unix-directory',
@@ -68,19 +79,25 @@
 	}
 
 	OCA.Onlyoffice.onRequestInsertImage = function(imageMimes) {
-		OC.dialogs.filepicker(t(OCA.Onlyoffice.AppName, 'Insert image'),
-			$(OCA.Onlyoffice.frameSelector)[0].contentWindow.OCA.Onlyoffice.editorInsertImage,
-			false,
-			imageMimes,
-			true)
+		const frame = document.querySelector(OCA.Onlyoffice.frameSelector)
+		if (frame && frame.contentWindow) {
+			OC.dialogs.filepicker(t(OCA.Onlyoffice.AppName, 'Insert image'),
+				frame.contentWindow.OCA.Onlyoffice.editorInsertImage,
+				false,
+				imageMimes,
+				true)
+		}
 	}
 
 	OCA.Onlyoffice.onRequestMailMergeRecipients = function(recipientMimes) {
-		OC.dialogs.filepicker(t(OCA.Onlyoffice.AppName, 'Select recipients'),
-			$(OCA.Onlyoffice.frameSelector)[0].contentWindow.OCA.Onlyoffice.editorSetRecipient,
-			false,
-			recipientMimes,
-			true)
+		const frame = document.querySelector(OCA.Onlyoffice.frameSelector)
+		if (frame && frame.contentWindow) {
+			OC.dialogs.filepicker(t(OCA.Onlyoffice.AppName, 'Select recipients'),
+				frame.contentWindow.OCA.Onlyoffice.editorSetRecipient,
+				false,
+				recipientMimes,
+				true)
+		}
 	}
 
 	OCA.Onlyoffice.onRequestSelectDocument = function(revisedMimes, documentSelectionType) {
@@ -98,19 +115,25 @@
 		default:
 			title = t(OCA.Onlyoffice.AppName, 'Select file')
 		}
-		OC.dialogs.filepicker(title,
-			$(OCA.Onlyoffice.frameSelector)[0].contentWindow.OCA.Onlyoffice.editorSetRequested.bind({ documentSelectionType }),
-			false,
-			revisedMimes,
-			true)
+		const frame = document.querySelector(OCA.Onlyoffice.frameSelector)
+		if (frame && frame.contentWindow) {
+			OC.dialogs.filepicker(title,
+				frame.contentWindow.OCA.Onlyoffice.editorSetRequested.bind({ documentSelectionType }),
+				false,
+				revisedMimes,
+				true)
+		}
 	}
 
 	OCA.Onlyoffice.onRequestReferenceSource = function(referenceSourceMimes) {
-		OC.dialogs.filepicker(t(OCA.Onlyoffice.AppName, 'Select data source'),
-			$(OCA.Onlyoffice.frameSelector)[0].contentWindow.OCA.Onlyoffice.editorReferenceSource,
-			false,
-			referenceSourceMimes,
-			true)
+		const frame = document.querySelector(OCA.Onlyoffice.frameSelector)
+		if (frame && frame.contentWindow) {
+			OC.dialogs.filepicker(t(OCA.Onlyoffice.AppName, 'Select data source'),
+				frame.contentWindow.OCA.Onlyoffice.editorReferenceSource,
+				false,
+				referenceSourceMimes,
+				true)
+		}
 	}
 
 	OCA.Onlyoffice.onDocumentReady = function() {
@@ -118,7 +141,10 @@
 	}
 
 	OCA.Onlyoffice.changeFavicon = function(favicon) {
-		$('link[rel="icon"]').attr('href', favicon)
+		const link = document.querySelector('link[rel="icon"]')
+		if (link) {
+			link.setAttribute('href', favicon)
+		}
 	}
 
 	OCA.Onlyoffice.setViewport = function() {
@@ -137,8 +163,9 @@
 	}
 
 	window.addEventListener('message', function(event) {
-		if (!$(OCA.Onlyoffice.frameSelector).length
-			|| $(OCA.Onlyoffice.frameSelector)[0].contentWindow !== event.source
+		const frame = document.querySelector(OCA.Onlyoffice.frameSelector)
+		if (!frame
+			|| frame.contentWindow !== event.source
 			|| !event.data.method) {
 			return
 		}
@@ -184,7 +211,8 @@
 	}, false)
 
 	window.addEventListener('popstate', function(event) {
-		if ($(OCA.Onlyoffice.frameSelector).length) {
+		const frame = document.querySelector(OCA.Onlyoffice.frameSelector)
+		if (frame) {
 			OCA.Onlyoffice.onRequestClose()
 		}
 	})

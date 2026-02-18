@@ -26,7 +26,7 @@
  *
  */
 
-/* global $, _, _oc_appswebroots, oc_current_user  */
+/* global _, _oc_appswebroots, oc_current_user  */
 
 /**
  * @param {object} OCA Nextcloud OCA object
@@ -46,7 +46,7 @@
 		return
 	}
 
-	$('html').addClass('AscDesktopEditor')
+	document.documentElement.classList.add('AscDesktopEditor')
 
 	let domain = /^http(s)?:\/\/[^\\/]+/.exec(location)[0]
 	domain += OC.getRootPath()

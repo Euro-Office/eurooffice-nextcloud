@@ -29,7 +29,7 @@
 /* eslint-disable import/no-webpack-loader-syntax */
 /* eslint-disable import/no-unresolved */
 
-/* global _, $, _oc_appswebroots */
+/* global _, _oc_appswebroots */
 
 import {
 	File,
@@ -47,6 +47,7 @@ import {
 import { emit } from '@nextcloud/event-bus'
 import { generateUrl } from '@nextcloud/router'
 import { getCurrentUser } from '@nextcloud/auth'
+import axios from '@nextcloud/axios'
 import AppDarkSvg from '!!raw-loader!../img/app-dark.svg'
 import NewDocxSvg from '!!raw-loader!../img/new-docx.svg'
 import NewXlsxSvg from '!!raw-loader!../img/new-xlsx.svg'
@@ -131,32 +132,37 @@ import { loadState } from '@nextcloud/initial-state'
 			createData.shareToken = encodeURIComponent(getSharingToken())
 		}
 
-		$.post(generateUrl('apps/' + OCA.Onlyoffice.AppName + '/ajax/new'),
-			createData,
-			function onSuccess(response) {
-				if (response.error) {
+		axios.post(generateUrl('apps/' + OCA.Onlyoffice.AppName + '/ajax/new'), createData)
+			.then((response) => {
+				const data = response.data
+				if (data.error) {
 					if (winEditor) {
 						winEditor.close()
 					}
-					OCP.Toast.error(response.error)
+					OCP.Toast.error(data.error)
 					return
 				}
 
-				callback(response)
+				callback(data)
 
 				if (open) {
-					const fileName = response.name
-					OCA.Onlyoffice.OpenEditor(response.id, dir, fileName, winEditor)
+					const fileName = data.name
+					OCA.Onlyoffice.OpenEditor(data.id, dir, fileName, winEditor)
 
 					OCA.Onlyoffice.context = {
-						fileName: response.name,
+						fileName: data.name,
 						dir,
 					}
 				}
 
 				OCP.Toast.success(t(OCA.Onlyoffice.AppName, 'File created'))
-			},
-		)
+			})
+			.catch((error) => {
+				if (winEditor) {
+					winEditor.close()
+				}
+				OCP.Toast.error(error.message || t(OCA.Onlyoffice.AppName, 'Failed to create file'))
+			})
 	}
 
 	OCA.Onlyoffice.OpenEditor = function(fileId, fileDir, fileName, winEditor, isDefault = true) {
@@ -206,21 +212,34 @@ import { loadState } from '@nextcloud/initial-state'
 				return
 			}
 			OCA.Onlyoffice.frameSelector = '#onlyofficeFrame'
-			const $iframe = $('<div class="onlyoffice-iframe-container"><iframe id="onlyofficeFrame" nonce="' + btoa(OC.requestToken) + '" scrolling="no" allowfullscreen src="' + url + '&inframe=true" /></div>')
+		const iframeContainer = document.createElement('div')
+		iframeContainer.className = 'onlyoffice-iframe-container'
+		const iframe = document.createElement('iframe')
+		iframe.id = 'onlyofficeFrame'
+		iframe.setAttribute('nonce', btoa(OC.requestToken))
+		iframe.setAttribute('scrolling', 'no')
+		iframe.setAttribute('allowfullscreen', '')
+		iframe.src = url + '&inframe=true'
+		iframeContainer.appendChild(iframe)
 
-			const frameContainer = $('#app-content').length > 0 ? $('#app-content') : $('#app-content-vue')
-			frameContainer.append($iframe)
+		const frameContainer = document.getElementById('app-content') || document.getElementById('app-content-vue')
+		if (frameContainer) {
+			frameContainer.appendChild(iframeContainer)
+		}
 
-			$('body').addClass('onlyoffice-inline')
-
+		document.body.classList.add('onlyoffice-inline')
 			if (OCA.Files.Sidebar) {
 				OCA.Files.Sidebar.close()
 			}
 
-			const scrollTop = $('#app-content').scrollTop()
-			$(OCA.Onlyoffice.frameSelector).css('top', scrollTop)
+		const appContentElement = document.getElementById('app-content')
+		const scrollTop = appContentElement ? appContentElement.scrollTop : 0
+		const frameElement = document.querySelector(OCA.Onlyoffice.frameSelector)
+		if (frameElement) {
+			frameElement.style.top = scrollTop + 'px'
+		}
 
-			window.OCP?.Files?.Router?.goToRoute(
+		window.OCP?.Files?.Router?.goToRoute(
 				null, // use default route
 				{ view: 'files', fileid: fileId },
 				{ ...OCP.Files.Router.query, openfile: 'true' },
@@ -229,7 +248,7 @@ import { loadState } from '@nextcloud/initial-state'
 	}
 
 	OCA.Onlyoffice.CloseEditor = function() {
-		$('body').removeClass('onlyoffice-inline')
+		document.body.classList.remove('onlyoffice-inline')
 
 		const iframeContainer = document.querySelector('.onlyoffice-iframe-container')
 		if (iframeContainer !== null) {
@@ -251,7 +270,8 @@ import { loadState } from '@nextcloud/initial-state'
 
 	OCA.Onlyoffice.OpenShareDialog = function() {
 		if (OCA.Onlyoffice.context) {
-			if (!$('#app-sidebar-vue').is(':visible')) {
+			const sidebarElement = document.getElementById('app-sidebar-vue')
+			if (!sidebarElement || sidebarElement.offsetParent === null) {
 				OCA.Files.Sidebar.open(OCA.Onlyoffice.context.dir + '/' + OCA.Onlyoffice.context.fileName)
 				OCA.Files.Sidebar.setActiveTab('sharing')
 			} else {
@@ -262,7 +282,8 @@ import { loadState } from '@nextcloud/initial-state'
 
 	OCA.Onlyoffice.RefreshVersionsDialog = function() {
 		if (OCA.Onlyoffice.context) {
-			if ($('#app-sidebar-vue').is(':visible')) {
+			const sidebarElement = document.getElementById('app-sidebar-vue')
+			if (sidebarElement && sidebarElement.offsetParent !== null) {
 				OCA.Files.Sidebar.close()
 				OCA.Files.Sidebar.open(OCA.Onlyoffice.context.dir + '/' + OCA.Onlyoffice.context.fileName)
 				OCA.Files.Sidebar.setActiveTab('versionsTabView')
@@ -330,17 +351,20 @@ import { loadState } from '@nextcloud/initial-state'
 			convertData.shareToken = encodeURIComponent(getSharingToken())
 		}
 
-		$.post(generateUrl('apps/' + OCA.Onlyoffice.AppName + '/ajax/convert'),
-			convertData,
-			function onSuccess(response) {
-				if (response.error) {
-					OCP.Toast.error(response.error)
+		axios.post(generateUrl('apps/' + OCA.Onlyoffice.AppName + '/ajax/convert'), convertData)
+			.then((response) => {
+				const data = response.data
+				if (data.error) {
+					OCP.Toast.error(data.error)
 					return
 				}
 
-				callback(response)
+				callback(data)
 
 				OCP.Toast.success(t(OCA.Onlyoffice.AppName, 'File has been converted. Its content might look different.'))
+			})
+			.catch((error) => {
+				OCP.Toast.error(error.message || t(OCA.Onlyoffice.AppName, 'Failed to convert file'))
 			})
 	}
 
@@ -357,46 +381,52 @@ import { loadState } from '@nextcloud/initial-state'
 	}
 
 	OCA.Onlyoffice.Download = function(fileName, fileId) {
-		$.get(OC.filePath(OCA.Onlyoffice.AppName, 'templates', 'downloadPicker.html'),
-			function(tmpl) {
-				const dialog = $(tmpl).octemplate({
+		axios.get(OC.filePath(OCA.Onlyoffice.AppName, 'templates', 'downloadPicker.html'))
+			.then((response) => {
+				const tmpl = response.data
+				const tempDiv = document.createElement('div')
+				tempDiv.innerHTML = tmpl
+				const dialog = window.$(tempDiv.firstElementChild).octemplate({
 					dialog_name: 'download-picker',
 					dialog_title: t('onlyoffice', 'Download as'),
 				})
 
-				$(dialog[0].querySelectorAll('p')).text(t(OCA.Onlyoffice.AppName, 'Choose a format to convert {fileName}', { fileName }))
+				const dialogElement = dialog[0]
+				const pElement = dialogElement.querySelector('p')
+				if (pElement) {
+					pElement.textContent = t(OCA.Onlyoffice.AppName, 'Choose a format to convert {fileName}', { fileName })
+				}
 
 				const extension = OCA.Onlyoffice.getFileExtension(fileName)
-				const selectNode = dialog[0].querySelectorAll('select')[0]
-				const optionNodeOrigin = selectNode.querySelectorAll('option')[0]
+				const selectNode = dialogElement.querySelector('select')
+				const optionNodeOrigin = selectNode.querySelector('option')
 
-				$(optionNodeOrigin).attr('data-value', extension)
-				$(optionNodeOrigin).text(t(OCA.Onlyoffice.AppName, 'Origin format'))
+				optionNodeOrigin.setAttribute('data-value', extension)
+				optionNodeOrigin.textContent = t(OCA.Onlyoffice.AppName, 'Origin format')
 
-				dialog[0].dataset.format = extension
+				dialogElement.dataset.format = extension
 				selectNode.onchange = function() {
-					dialog[0].dataset.format = $('#onlyoffice-download-select option:selected').attr('data-value')
+					const selectedOption = selectNode.querySelector('option:checked')
+					dialogElement.dataset.format = selectedOption.getAttribute('data-value')
 				}
 
 				OCA.Onlyoffice.setting.formats[extension].saveas.forEach(ext => {
 					const optionNode = optionNodeOrigin.cloneNode(true)
-
-					$(optionNode).attr('data-value', ext)
-					$(optionNode).text(ext)
-
+					optionNode.setAttribute('data-value', ext)
+					optionNode.textContent = ext
 					selectNode.append(optionNode)
 				})
 
-				$('body').append(dialog)
+				document.body.appendChild(dialogElement)
 
-				$('#download-picker').ocdialog({
+				window.$('#download-picker').ocdialog({
 					closeOnEscape: true,
 					modal: true,
 					buttons: [{
 						text: t('core', 'Cancel'),
 						classes: 'cancel',
 						click() {
-							$(this).ocdialog('close')
+							window.$(this).ocdialog('close')
 						},
 					}, {
 						text: t('onlyoffice', 'Download'),
@@ -409,10 +439,13 @@ import { loadState } from '@nextcloud/initial-state'
 							})
 
 							location.href = downloadLink
-							$(this).ocdialog('close')
+							window.$(this).ocdialog('close')
 						},
 					}],
 				})
+			})
+			.catch((error) => {
+				OCP.Toast.error(error.message || t(OCA.Onlyoffice.AppName, 'Failed to load template'))
 			})
 	}
 
@@ -504,9 +537,9 @@ import { loadState } from '@nextcloud/initial-state'
 		}
 
 		if (OCA.Files && OCA.Files.fileActions) {
-			$.each(formats, function(ext, config) {
+			Object.entries(formats).forEach(([ext, config]) => {
 				if (!config.mime) {
-					return true
+					return
 				}
 
 				const mimeTypes = config.mime
@@ -563,13 +596,13 @@ import { loadState } from '@nextcloud/initial-state'
 				id: 'onlyoffice-open-def',
 				displayName: () => t(OCA.Onlyoffice.AppName, 'Open in ONLYOFFICE'),
 				iconSvgInline: () => AppDarkSvg,
-				enabled: (files) => {
-					const config = getConfig(files[0])
+				enabled: ({ nodes }) => {
+					const config = getConfig(nodes[0])
 
 					if (!config) return false
 					if (!config.def) return false
 
-					if (Permission.READ !== (files[0].permissions & Permission.READ)) { return false }
+					if (Permission.READ !== (nodes[0].permissions & Permission.READ)) { return false }
 
 					return true
 				},
@@ -582,13 +615,13 @@ import { loadState } from '@nextcloud/initial-state'
 				id: 'onlyoffice-open',
 				displayName: () => t(OCA.Onlyoffice.AppName, 'Open in ONLYOFFICE'),
 				iconSvgInline: () => AppDarkSvg,
-				enabled: (files) => {
-					const config = getConfig(files[0])
+				enabled: ({ nodes }) => {
+					const config = getConfig(nodes[0])
 
 					if (!config) return false
 					if (config.def) return false
 
-					if (Permission.READ !== (files[0].permissions & Permission.READ)) { return false }
+					if (Permission.READ !== (nodes[0].permissions & Permission.READ)) { return false }
 
 					return true
 				},
@@ -601,19 +634,19 @@ import { loadState } from '@nextcloud/initial-state'
 				id: 'onlyoffice-convert',
 				displayName: () => t(OCA.Onlyoffice.AppName, 'Convert with ONLYOFFICE'),
 				iconSvgInline: () => AppDarkSvg,
-				enabled: (files) => {
-					const config = getConfig(files[0])
+				enabled: ({ nodes }) => {
+					const config = getConfig(nodes[0])
 
 					if (!config) return false
 					if (!config.conv) return false
 
 					const required = isPublicShare() ? Permission.UPDATE : Permission.READ
-					if (required !== (files[0].permissions & required)) { return false }
+					if (required !== (nodes[0].permissions & required)) { return false }
 
-					if (files[0].attributes['mount-type'] === 'shared') {
-						if (required !== (files[0].attributes['share-permissions'] & required)) { return false }
+					if (nodes[0].attributes['mount-type'] === 'shared') {
+						if (required !== (nodes[0].attributes['share-permissions'] & required)) { return false }
 
-						const attributes = JSON.parse(files[0].attributes['share-attributes'])
+						const attributes = JSON.parse(nodes[0].attributes['share-attributes'])
 						const downloadAttribute = attributes.find((attribute) => attribute.scope === 'permissions' && attribute.key === 'download')
 						if (downloadAttribute !== undefined && downloadAttribute.enabled === false) { return false }
 					}
@@ -627,19 +660,19 @@ import { loadState } from '@nextcloud/initial-state'
 				id: 'onlyoffice-create-form',
 				displayName: () => t(OCA.Onlyoffice.AppName, 'Create form'),
 				iconSvgInline: () => AppDarkSvg,
-				enabled: (files) => {
-					const config = getConfig(files[0])
+				enabled: ({ nodes }) => {
+					const config = getConfig(nodes[0])
 
 					if (!config) return false
 					if (!config.createForm) return false
 
 					const required = isPublicShare() ? Permission.UPDATE : Permission.READ
-					if (required !== (files[0].permissions & required)) { return false }
+					if (required !== (nodes[0].permissions & required)) { return false }
 
-					if (files[0].attributes['mount-type'] === 'shared') {
-						if (required !== (files[0].attributes['share-permissions'] & required)) { return false }
+					if (nodes[0].attributes['mount-type'] === 'shared') {
+						if (required !== (nodes[0].attributes['share-permissions'] & required)) { return false }
 
-						const attributes = JSON.parse(files[0].attributes['share-attributes'])
+						const attributes = JSON.parse(nodes[0].attributes['share-attributes'])
 						const downloadAttribute = attributes.find((attribute) => attribute.scope === 'permissions' && attribute.key === 'download')
 						if (downloadAttribute !== undefined && downloadAttribute.enabled === false) { return false }
 					}
@@ -654,19 +687,19 @@ import { loadState } from '@nextcloud/initial-state'
 					id: 'onlyoffice-download-as',
 					displayName: () => t(OCA.Onlyoffice.AppName, 'Download as'),
 					iconSvgInline: () => AppDarkSvg,
-					enabled: (files) => {
+					enabled: ({ nodes }) => {
 						if (OCA.Onlyoffice.setting.disableDownload) {
 							return false
 						}
-						const config = getConfig(files[0])
+						const config = getConfig(nodes[0])
 
 						if (!config) return false
 						if (!config.saveas) return false
 
-						if (Permission.READ !== (files[0].permissions & Permission.READ)) { return false }
+						if (Permission.READ !== (nodes[0].permissions & Permission.READ)) { return false }
 
-						if (files[0].attributes['mount-type'] === 'shared') {
-							const attributes = JSON.parse(files[0].attributes['share-attributes'])
+						if (nodes[0].attributes['mount-type'] === 'shared') {
+							const attributes = JSON.parse(nodes[0].attributes['share-attributes'])
 							const downloadAttribute = attributes.find((attribute) => attribute.scope === 'permissions' && attribute.key === 'download')
 							if (downloadAttribute !== undefined && downloadAttribute.enabled === false) { return false }
 						}
@@ -895,7 +928,10 @@ import { loadState } from '@nextcloud/initial-state'
 					button.target = '_blank'
 				}
 
-				$('#preview').prepend(button)
+			const previewElement = document.getElementById('preview')
+			if (previewElement) {
+				previewElement.prepend(button)
+			}
 			} else {
 				OCA.Onlyoffice.frameSelector = '#onlyofficeFrame'
 				const container = document.createElement('div')
@@ -909,7 +945,7 @@ import { loadState } from '@nextcloud/initial-state'
 				container.appendChild(iframe)
 				const appContent = document.querySelector('#app-content') || document.querySelector('#app-content-vue')
 				appContent.appendChild(container)
-				$('body').addClass('onlyoffice-inline')
+				document.body.classList.add('onlyoffice-inline')
 			}
 		} else {
 			OC.Plugins.register('OCA.Files.NewFileMenu', OCA.Onlyoffice.NewFileMenu)

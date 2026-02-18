@@ -26,25 +26,25 @@
  *
  */
 
-/* global _, jQuery */
+/* global _ */
 
 import { spawnDialog } from '@nextcloud/vue/functions/dialog'
 import { getRequestToken } from '@nextcloud/auth'
 import { generateFilePath } from '@nextcloud/router'
 import { defineAsyncComponent } from 'vue'
+import axios from '@nextcloud/axios'
 
 /**
- * @param {object} $ JQueryStatic object
  * @param {object} OC Nextcloud OCA object
  */
-(function($, OC) {
+(function(OC) {
 	// eslint-disable-next-line
 	__webpack_nonce__ = btoa(getRequestToken())
 
 	// eslint-disable-next-line
 	__webpack_public_path__ = generateFilePath('onlyoffice', '', 'js/')
 
-	$(document).ready(function() {
+	document.addEventListener('DOMContentLoaded', function() {
 		OCA.Onlyoffice = _.extend({}, OCA.Onlyoffice)
 		if (!OCA.Onlyoffice.AppName) {
 			OCA.Onlyoffice = {
@@ -53,51 +53,96 @@ import { defineAsyncComponent } from 'vue'
 		}
 
 		const advToogle = function() {
-			$('#onlyofficeSecretPanel').toggleClass('onlyoffice-hide')
-			$('#onlyofficeAdv .icon').toggleClass('icon-triangle-s icon-triangle-n')
-		}
-
-		if ($('#onlyofficeInternalUrl').val().length
-			|| $('#onlyofficeStorageUrl').val().length
-			|| $('#onlyofficeJwtHeader').val().length) {
-			advToogle()
-		}
-
-		$('#onlyofficeAdv').click(advToogle)
-
-		$('#onlyofficeGroups').prop('checked', $('#onlyofficeLimitGroups').val() !== '')
-
-		const groupListToggle = function() {
-			if ($('#onlyofficeGroups').prop('checked')) {
-				OC.Settings.setupGroupsSelect($('#onlyofficeLimitGroups'))
-			} else {
-				$('#onlyofficeLimitGroups').select2('destroy')
+			const secretPanel = document.getElementById('onlyofficeSecretPanel')
+			if (secretPanel) {
+				secretPanel.classList.toggle('onlyoffice-hide')
+			}
+			const advIcon = document.querySelector('#onlyofficeAdv .icon')
+			if (advIcon) {
+				advIcon.classList.toggle('icon-triangle-s')
+				advIcon.classList.toggle('icon-triangle-n')
 			}
 		}
 
-		$('#onlyofficeGroups').click(groupListToggle)
-		groupListToggle()
+		const internalUrl = document.getElementById('onlyofficeInternalUrl')
+		const storageUrl = document.getElementById('onlyofficeStorageUrl')
+		const jwtHeader = document.getElementById('onlyofficeJwtHeader')
+		if ((internalUrl && internalUrl.value.length)
+			|| (storageUrl && storageUrl.value.length)
+			|| (jwtHeader && jwtHeader.value.length)) {
+			advToogle()
+		}
 
+		const advButton = document.getElementById('onlyofficeAdv')
+		if (advButton) {
+			advButton.addEventListener('click', advToogle)
+		}
+
+		const groupsCheckbox = document.getElementById('onlyofficeGroups')
+		const limitGroupsSelect = document.getElementById('onlyofficeLimitGroups')
+		if (groupsCheckbox && limitGroupsSelect) {
+			groupsCheckbox.checked = limitGroupsSelect.value !== ''
+		}
+
+		const groupListToggle = function() {
+			if (groupsCheckbox && groupsCheckbox.checked) {
+				OC.Settings.setupGroupsSelect(window.$(limitGroupsSelect))
+			} else if (limitGroupsSelect) {
+				window.$(limitGroupsSelect).select2('destroy')
+			}
+		}
+
+		if (groupsCheckbox) {
+			groupsCheckbox.addEventListener('click', groupListToggle)
+			groupListToggle()
+		}
+
+		const demoCheckbox = document.getElementById('onlyofficeDemo')
 		const demoToggle = function() {
-			$('#onlyofficeAddrSettings input:not(#onlyofficeStorageUrl)').prop('disabled', $('#onlyofficeDemo').prop('checked'))
+			const addrInputs = document.querySelectorAll('#onlyofficeAddrSettings input:not(#onlyofficeStorageUrl)')
+			const isChecked = demoCheckbox && demoCheckbox.checked
+			addrInputs.forEach(input => {
+				input.disabled = isChecked
+			})
 		}
 
-		$('#onlyofficeDemo').click(demoToggle)
-		demoToggle()
+		if (demoCheckbox) {
+			demoCheckbox.addEventListener('click', demoToggle)
+			demoToggle()
+		}
 
+		const watermarkEnabledCheckbox = document.getElementById('onlyofficeWatermark_enabled')
+		const watermarkSettings = document.getElementById('onlyofficeWatermarkSettings')
 		const watermarkToggle = function() {
-			$('#onlyofficeWatermarkSettings').toggleClass('onlyoffice-hide', !$('#onlyofficeWatermark_enabled').prop('checked'))
+			if (watermarkSettings) {
+				const isChecked = watermarkEnabledCheckbox && watermarkEnabledCheckbox.checked
+				watermarkSettings.classList.toggle('onlyoffice-hide', !isChecked)
+			}
 		}
 
-		$('#onlyofficeWatermark_enabled').click(watermarkToggle)
+		if (watermarkEnabledCheckbox) {
+			watermarkEnabledCheckbox.addEventListener('click', watermarkToggle)
+		}
 
-		$('#onlyofficeWatermark_shareAll').click(function() {
-			$('#onlyofficeWatermark_shareRead').parent().toggleClass('onlyoffice-hide')
-		})
+		const watermarkShareAll = document.getElementById('onlyofficeWatermark_shareAll')
+		if (watermarkShareAll) {
+			watermarkShareAll.addEventListener('click', function() {
+				const watermarkShareRead = document.getElementById('onlyofficeWatermark_shareRead')
+				if (watermarkShareRead && watermarkShareRead.parentElement) {
+					watermarkShareRead.parentElement.classList.toggle('onlyoffice-hide')
+				}
+			})
+		}
 
-		$('#onlyofficeWatermark_linkAll').click(function() {
-			$('#onlyofficeWatermark_link_sensitive').toggleClass('onlyoffice-hide')
-		})
+		const watermarkLinkAll = document.getElementById('onlyofficeWatermark_linkAll')
+		if (watermarkLinkAll) {
+			watermarkLinkAll.addEventListener('click', function() {
+				const watermarkLinkSensitive = document.getElementById('onlyofficeWatermark_link_sensitive')
+				if (watermarkLinkSensitive) {
+					watermarkLinkSensitive.classList.toggle('onlyoffice-hide')
+				}
+			})
+		}
 
 		const watermarkGroupLists = [
 			'allGroups',
@@ -110,11 +155,13 @@ import { defineAsyncComponent } from 'vue'
 
 		const watermarkNodeBehaviour = function(watermark) {
 			const watermarkListToggle = function() {
-				if ($('#onlyofficeWatermark_' + watermark).prop('checked')) {
+				const watermarkCheckbox = document.getElementById('onlyofficeWatermark_' + watermark)
+				if (watermarkCheckbox && watermarkCheckbox.checked) {
 					if (watermark.indexOf('Group') >= 0) {
-						OC.Settings.setupGroupsSelect($('#onlyofficeWatermark_' + watermark + 'List'))
+						const listElement = document.getElementById('onlyofficeWatermark_' + watermark + 'List')
+						OC.Settings.setupGroupsSelect(window.$(listElement))
 					} else {
-						$('#onlyofficeWatermark_' + watermark + 'List').select2({
+						window.$('#onlyofficeWatermark_' + watermark + 'List').select2({
 							allowClear: true,
 							closeOnSelect: false,
 							multiple: true,
@@ -127,7 +174,7 @@ import { defineAsyncComponent } from 'vue'
 								})
 							}, 100, true),
 							initSelection(element, callback) {
-								const selection = ($(element).val() || []).split('|').map(function(tagId) {
+								const selection = (element.value || '').split('|').map(function(tagId) {
 									return OC.SystemTags.collection.get(tagId)
 								})
 								callback(selection)
@@ -147,168 +194,214 @@ import { defineAsyncComponent } from 'vue'
 						})
 					}
 				} else {
-					$('#onlyofficeWatermark_' + watermark + 'List').select2('destroy')
+					const listElement = document.getElementById('onlyofficeWatermark_' + watermark + 'List')
+					if (listElement) {
+						window.$(listElement).select2('destroy')
+					}
 				}
 			}
 
-			$('#onlyofficeWatermark_' + watermark).click(watermarkListToggle)
-			watermarkListToggle()
+			const watermarkCheckbox = document.getElementById('onlyofficeWatermark_' + watermark)
+			if (watermarkCheckbox) {
+				watermarkCheckbox.addEventListener('click', watermarkListToggle)
+				watermarkListToggle()
+			}
 		}
 
-		$.each(watermarkGroupLists, function(i, watermarkGroup) {
+		watermarkGroupLists.forEach((watermarkGroup) => {
 			watermarkNodeBehaviour(watermarkGroup)
 		})
 
 		if (OC.SystemTags && OC.SystemTags.collection) {
 			OC.SystemTags.collection.fetch({
 				success() {
-					$.each(watermarkTagLists, function(i, watermarkTag) {
+					watermarkTagLists.forEach((watermarkTag) => {
 						watermarkNodeBehaviour(watermarkTag)
 					})
 				},
 			})
 		}
 
-		const connectionError = document.getElementById('onlyofficeSettingsState').value
+		const connectionErrorEl = document.getElementById('onlyofficeSettingsState')
+		const connectionError = connectionErrorEl ? connectionErrorEl.value : ''
 		if (connectionError !== '') {
 			OCP.Toast.error(t(OCA.Onlyoffice.AppName, 'Error when trying to connect') + ' (' + connectionError + ')')
 		}
 
-		$('#onlyofficeAddrSave').click(function() {
-			$('.section-onlyoffice').addClass('icon-loading')
-			const onlyofficeUrl = $('#onlyofficeUrl').val().trim()
+		const addrSaveButton = document.getElementById('onlyofficeAddrSave')
+		if (addrSaveButton) {
+			addrSaveButton.addEventListener('click', function() {
+				const section = document.querySelector('.section-onlyoffice')
+				if (section) section.classList.add('icon-loading')
 
-			if (!onlyofficeUrl.length) {
-				$('#onlyofficeInternalUrl, #onlyofficeStorageUrl, #onlyofficeSecret, #onlyofficeJwtHeader').val('')
-			}
+				const onlyofficeUrl = (document.getElementById('onlyofficeUrl').value || '').trim()
 
-			const onlyofficeInternalUrl = ($('#onlyofficeInternalUrl').val() || '').trim()
-			const onlyofficeStorageUrl = ($('#onlyofficeStorageUrl').val() || '').trim()
-			const onlyofficeVerifyPeerOff = $('#onlyofficeVerifyPeerOff').prop('checked')
-			const onlyofficeSecret = ($('#onlyofficeSecret').val() || '').trim()
-			const jwtHeader = ($('#onlyofficeJwtHeader').val() || '').trim()
-			const demo = $('#onlyofficeDemo').prop('checked')
+				if (!onlyofficeUrl.length) {
+					const internalUrl = document.getElementById('onlyofficeInternalUrl')
+					const storageUrl = document.getElementById('onlyofficeStorageUrl')
+					const secret = document.getElementById('onlyofficeSecret')
+					const jwtHeader = document.getElementById('onlyofficeJwtHeader')
+					if (internalUrl) internalUrl.value = ''
+					if (storageUrl) storageUrl.value = ''
+					if (secret) secret.value = ''
+					if (jwtHeader) jwtHeader.value = ''
+				}
 
-			$.ajax({
-				method: 'PUT',
-				url: OC.generateUrl('apps/' + OCA.Onlyoffice.AppName + '/ajax/settings/address'),
-				data: {
-					documentserver: onlyofficeUrl,
-					documentserverInternal: onlyofficeInternalUrl,
-					storageUrl: onlyofficeStorageUrl,
-					verifyPeerOff: onlyofficeVerifyPeerOff,
-					secret: onlyofficeSecret,
-					jwtHeader,
-					demo,
-				},
-				success: function onSuccess(response) {
-					$('.section-onlyoffice').removeClass('icon-loading')
-					if (response && (response.documentserver != null || demo)) {
-						$('#onlyofficeUrl').val(response.documentserver)
-						$('#onlyofficeInternalUrl').val(response.documentserverInternal)
-						$('#onlyofficeStorageUrl').val(response.storageUrl)
-						$('#onlyofficeSecret').val(response.secret)
-						$('#onlyofficeJwtHeader').val(response.jwtHeader)
+				const onlyofficeInternalUrl = (document.getElementById('onlyofficeInternalUrl')?.value || '').trim()
+				const onlyofficeStorageUrl = (document.getElementById('onlyofficeStorageUrl')?.value || '').trim()
+				const verifyPeerOffCheckbox = document.getElementById('onlyofficeVerifyPeerOff')
+				const onlyofficeVerifyPeerOff = verifyPeerOffCheckbox ? verifyPeerOffCheckbox.checked : false
+				const onlyofficeSecret = (document.getElementById('onlyofficeSecret')?.value || '').trim()
+				const jwtHeader = (document.getElementById('onlyofficeJwtHeader')?.value || '').trim()
+				const demoCheckbox = document.getElementById('onlyofficeDemo')
+				const demo = demoCheckbox ? demoCheckbox.checked : false
 
-						$('.section-onlyoffice-common, .section-onlyoffice-templates, .section-onlyoffice-watermark').toggleClass('onlyoffice-hide', (response.documentserver == null && !demo) || !!response.error.length)
+			axios.put(OC.generateUrl('apps/' + OCA.Onlyoffice.AppName + '/ajax/settings/address'), {
+				documentserver: onlyofficeUrl,
+				documentserverInternal: onlyofficeInternalUrl,
+				storageUrl: onlyofficeStorageUrl,
+				verifyPeerOff: onlyofficeVerifyPeerOff,
+				secret: onlyofficeSecret,
+				jwtHeader,
+				demo,
+			})
+				.then((response) => {
+					const section = document.querySelector('.section-onlyoffice')
+					if (section) section.classList.remove('icon-loading')
 
-						const versionMessage = response.version ? (' (' + t(OCA.Onlyoffice.AppName, 'version') + ' ' + response.version + ')') : ''
+					const data = response.data
+					if (data && (data.documentserver != null || demo)) {
+						const urlInput = document.getElementById('onlyofficeUrl')
+						const internalUrlInput = document.getElementById('onlyofficeInternalUrl')
+						const storageUrlInput = document.getElementById('onlyofficeStorageUrl')
+						const secretInput = document.getElementById('onlyofficeSecret')
+						const jwtHeaderInput = document.getElementById('onlyofficeJwtHeader')
+						if (urlInput) urlInput.value = data.documentserver
+						if (internalUrlInput) internalUrlInput.value = data.documentserverInternal
+						if (storageUrlInput) storageUrlInput.value = data.storageUrl
+						if (secretInput) secretInput.value = data.secret
+						if (jwtHeaderInput) jwtHeaderInput.value = data.jwtHeader
 
-						if (response.error) {
-							OCP.Toast.error(t(OCA.Onlyoffice.AppName, 'Error when trying to connect') + ' (' + response.error + ')' + versionMessage)
+						const toggleSections = document.querySelectorAll('.section-onlyoffice-common, .section-onlyoffice-templates, .section-onlyoffice-watermark')
+						const shouldHide = (data.documentserver == null && !demo) || !!data.error.length
+						toggleSections.forEach(el => el.classList.toggle('onlyoffice-hide', shouldHide))
+
+						const versionMessage = data.version ? (' (' + t(OCA.Onlyoffice.AppName, 'version') + ' ' + data.version + ')') : ''
+
+						if (data.error) {
+							OCP.Toast.error(t(OCA.Onlyoffice.AppName, 'Error when trying to connect') + ' (' + data.error + ')' + versionMessage)
 						} else {
-							if (response.secret !== null) {
+							if (data.secret !== null) {
 								OCP.Toast.success(t(OCA.Onlyoffice.AppName, 'Server settings have been successfully updated') + versionMessage)
 							} else {
 								spawnDialog(defineAsyncComponent(() => import('./views/EmptyJwtInfoDialog.vue')))
 							}
 						}
 					} else {
-						$('.section-onlyoffice-common, .section-onlyoffice-templates, .section-onlyoffice-watermark').addClass('onlyoffice-hide')
+						const hideSections = document.querySelectorAll('.section-onlyoffice-common, .section-onlyoffice-templates, .section-onlyoffice-watermark')
+						hideSections.forEach(el => el.classList.add('onlyoffice-hide'))
 					}
-				},
-			})
+				})
+				.catch((error) => {
+					const section = document.querySelector('.section-onlyoffice')
+					if (section) section.classList.remove('icon-loading')
+					OCP.Toast.error(error.message || t(OCA.Onlyoffice.AppName, 'Failed to save settings'))
+				})
 		})
+	}
 
-		$('#onlyofficeSave').click(function() {
-			$('.section-onlyoffice').addClass('icon-loading')
+	const commonSaveButton = document.getElementById('onlyofficeCommonSave')
+	if (commonSaveButton) {
+		commonSaveButton.addEventListener('click', function() {
+			const section = document.querySelector('.section-onlyoffice')
+			if (section) section.classList.add('icon-loading')
 
 			const defFormats = {}
-			$('input[id^="onlyofficeDefFormat"]').each(function() {
-				defFormats[this.name] = this.checked
+			document.querySelectorAll('input[id^="onlyofficeDefFormat"]').forEach(function(input) {
+				defFormats[input.name] = input.checked
 			})
 
 			const editFormats = {}
-			$('input[id^="onlyofficeEditFormat"]').each(function() {
-				editFormats[this.name] = this.checked
+			document.querySelectorAll('input[id^="onlyofficeEditFormat"]').forEach(function(input) {
+				editFormats[input.name] = input.checked
 			})
 
-			const sameTab = $('#onlyofficeSameTab').is(':checked')
-			const enableSharing = $('#onlyofficeEnableSharing').is(':checked')
-			const preview = $('#onlyofficePreview').is(':checked')
-			const advanced = $('#onlyofficeAdvanced').is(':checked')
-			const cronChecker = $('#onlyofficeCronChecker').is(':checked')
-			const emailNotifications = $('#onlyofficeEmailNotifications').is(':checked')
-			const versionHistory = $('#onlyofficeVersionHistory').is(':checked')
+			const sameTab = document.getElementById('onlyofficeSameTab')?.checked || false
+			const enableSharing = document.getElementById('onlyofficeEnableSharing')?.checked || false
+			const preview = document.getElementById('onlyofficePreview')?.checked || false
+			const advanced = document.getElementById('onlyofficeAdvanced')?.checked || false
+			const cronChecker = document.getElementById('onlyofficeCronChecker')?.checked || false
+			const emailNotifications = document.getElementById('onlyofficeEmailNotifications')?.checked || false
+			const versionHistory = document.getElementById('onlyofficeVersionHistory')?.checked || false
 
-			const limitGroupsString = $('#onlyofficeGroups').prop('checked') ? $('#onlyofficeLimitGroups').val() : ''
+			const groupsCheckbox = document.getElementById('onlyofficeGroups')
+			const limitGroupsElement = document.getElementById('onlyofficeLimitGroups')
+			const limitGroupsString = (groupsCheckbox?.checked && limitGroupsElement) ? limitGroupsElement.value : ''
 			const limitGroups = limitGroupsString ? limitGroupsString.split('|') : []
 
-			const chat = $('#onlyofficeChat').is(':checked')
-			const compactHeader = $('#onlyofficeCompactHeader').is(':checked')
-			const feedback = $('#onlyofficeFeedback').is(':checked')
-			const forcesave = $('#onlyofficeForcesave').is(':checked')
-			const liveViewOnShare = $('#onlyofficeLiveViewOnShare').is(':checked')
-			const help = $('#onlyofficeHelp').is(':checked')
-			const reviewDisplay = $("input[type='radio'][name='reviewDisplay']:checked").attr('id').replace('onlyofficeReviewDisplay_', '')
-			const theme = $("input[type='radio'][name='theme']:checked").attr('id').replace('onlyofficeTheme_', '')
-			const unknownAuthor = $('#onlyofficeUnknownAuthor').val().trim()
+			const chat = document.getElementById('onlyofficeChat')?.checked || false
+			const compactHeader = document.getElementById('onlyofficeCompactHeader')?.checked || false
+			const feedback = document.getElementById('onlyofficeFeedback')?.checked || false
+			const forcesave = document.getElementById('onlyofficeForcesave')?.checked || false
+			const liveViewOnShare = document.getElementById('onlyofficeLiveViewOnShare')?.checked || false
+			const help = document.getElementById('onlyofficeHelp')?.checked || false
+			const reviewDisplay = document.querySelector("input[type='radio'][name='reviewDisplay']:checked")?.id.replace('onlyofficeReviewDisplay_', '') || ''
+			const theme = document.querySelector("input[type='radio'][name='theme']:checked")?.id.replace('onlyofficeTheme_', '') || ''
+			const unknownAuthorInput = document.getElementById('onlyofficeUnknownAuthor')
+			const unknownAuthor = unknownAuthorInput ? unknownAuthorInput.value.trim() : ''
 
-			$.ajax({
-				method: 'PUT',
-				url: OC.generateUrl('apps/' + OCA.Onlyoffice.AppName + '/ajax/settings/common'),
-				data: {
-					defFormats,
-					editFormats,
-					sameTab,
-					enableSharing,
-					preview,
-					advanced,
-					cronChecker,
-					emailNotifications,
-					versionHistory,
-					limitGroups,
-					chat,
-					compactHeader,
-					feedback,
-					forcesave,
-					liveViewOnShare,
-					help,
-					reviewDisplay,
-					theme,
-					unknownAuthor,
-				},
-				success: function onSuccess(response) {
-					$('.section-onlyoffice').removeClass('icon-loading')
-					if (response) {
-						OCP.Toast.success(t(OCA.Onlyoffice.AppName, 'Common settings have been successfully updated'))
-					}
-				},
+			axios.put(OC.generateUrl('apps/' + OCA.Onlyoffice.AppName + '/ajax/settings/common'), {
+				defFormats,
+				editFormats,
+				sameTab,
+				enableSharing,
+				preview,
+				advanced,
+				cronChecker,
+				emailNotifications,
+				versionHistory,
+				limitGroups,
+				chat,
+				compactHeader,
+				feedback,
+				forcesave,
+				liveViewOnShare,
+				help,
+				reviewDisplay,
+				theme,
+				unknownAuthor,
+			})
+			.then((response) => {
+				const section = document.querySelector('.section-onlyoffice')
+				if (section) section.classList.remove('icon-loading')
+				if (response.data) {
+					OCP.Toast.success(t(OCA.Onlyoffice.AppName, 'Common settings have been successfully updated'))
+				}
+			})
+			.catch((error) => {
+				const section = document.querySelector('.section-onlyoffice')
+				if (section) section.classList.remove('icon-loading')
+				OCP.Toast.error(error.message || t(OCA.Onlyoffice.AppName, 'Failed to save settings'))
 			})
 		})
+	}
 
-		$('#onlyofficeSecuritySave').click(function() {
-			$('.section-onlyoffice').addClass('icon-loading')
+	const securitySaveButton = document.getElementById('onlyofficeSecuritySave')
+	if (securitySaveButton) {
+		securitySaveButton.addEventListener('click', function() {
+			const section = document.querySelector('.section-onlyoffice')
+			if (section) section.classList.add('icon-loading')
 
-			const plugins = $('#onlyofficePlugins').is(':checked')
-			const macros = $('#onlyofficeMacros').is(':checked')
-			const protection = $("input[type='radio'][name='protection']:checked").attr('id').replace('onlyofficeProtection_', '')
+			const plugins = document.getElementById('onlyofficePlugins')?.checked || false
+			const macros = document.getElementById('onlyofficeMacros')?.checked || false
+			const protection = document.querySelector("input[type='radio'][name='protection']:checked")?.id.replace('onlyofficeProtection_', '') || ''
 
 			const watermarkSettings = {
-				enabled: $('#onlyofficeWatermark_enabled').is(':checked'),
+				enabled: document.getElementById('onlyofficeWatermark_enabled')?.checked || false,
 			}
 			if (watermarkSettings.enabled) {
-				watermarkSettings.text = ($('#onlyofficeWatermark_text').val() || '').trim()
+				const watermarkTextInput = document.getElementById('onlyofficeWatermark_text')
+				watermarkSettings.text = watermarkTextInput ? watermarkTextInput.value.trim() : ''
 
 				const watermarkLabels = [
 					'allGroups',
@@ -320,50 +413,67 @@ import { defineAsyncComponent } from 'vue'
 					'shareAll',
 					'shareRead',
 				]
-				$.each(watermarkLabels, function(i, watermarkLabel) {
-					watermarkSettings[watermarkLabel] = $('#onlyofficeWatermark_' + watermarkLabel).is(':checked')
+				watermarkLabels.forEach((watermarkLabel) => {
+					const checkbox = document.getElementById('onlyofficeWatermark_' + watermarkLabel)
+					watermarkSettings[watermarkLabel] = checkbox ? checkbox.checked : false
 				})
 
-				$.each(watermarkGroupLists.concat(watermarkTagLists), function(i, watermarkList) {
-					const list = $('#onlyofficeWatermark_' + watermarkList).is(':checked') ? $('#onlyofficeWatermark_' + watermarkList + 'List').val() : ''
+				watermarkGroupLists.concat(watermarkTagLists).forEach((watermarkList) => {
+					const checkbox = document.getElementById('onlyofficeWatermark_' + watermarkList)
+					const listElement = document.getElementById('onlyofficeWatermark_' + watermarkList + 'List')
+					const list = (checkbox?.checked && listElement) ? listElement.value : ''
 					watermarkSettings[watermarkList + 'List'] = list ? list.split('|') : []
 				})
 			}
 
-			$.ajax({
-				method: 'PUT',
-				url: OC.generateUrl('apps/' + OCA.Onlyoffice.AppName + '/ajax/settings/security'),
-				data: {
-					watermarks: watermarkSettings,
-					plugins,
-					macros,
-					protection,
-				},
-				success: function onSuccess(response) {
-					$('.section-onlyoffice').removeClass('icon-loading')
-					if (response) {
-						OCP.Toast.success(t(OCA.Onlyoffice.AppName, 'Security settings have been successfully updated'))
-					}
-				},
+			axios.put(OC.generateUrl('apps/' + OCA.Onlyoffice.AppName + '/ajax/settings/security'), {
+				watermarks: watermarkSettings,
+				plugins,
+				macros,
+				protection,
+			})
+			.then((response) => {
+				const section = document.querySelector('.section-onlyoffice')
+				if (section) section.classList.remove('icon-loading')
+				if (response.data) {
+					OCP.Toast.success(t(OCA.Onlyoffice.AppName, 'Security settings have been successfully updated'))
+				}
+			})
+			.catch((error) => {
+				const section = document.querySelector('.section-onlyoffice')
+				if (section) section.classList.remove('icon-loading')
+				OCP.Toast.error(error.message || t(OCA.Onlyoffice.AppName, 'Failed to save settings'))
 			})
 		})
+	}
 
-		$('.section-onlyoffice-addr input').keypress(function(e) {
+	document.querySelectorAll('.section-onlyoffice-addr input').forEach((input) => {
+		input.addEventListener('keypress', function(e) {
 			const code = e.keyCode || e.which
 			if (code === 13) {
-				$('#onlyofficeAddrSave').click()
+				const addrSaveButton = document.getElementById('onlyofficeAddrSave')
+				if (addrSaveButton) addrSaveButton.click()
 			}
 		})
+	})
 
-		$('#onlyofficeSecret-show').click(function() {
-			if ($('#onlyofficeSecret').attr('type') === 'password') {
-				$('#onlyofficeSecret').attr('type', 'text')
-			} else {
-				$('#onlyofficeSecret').attr('type', 'password')
+	const secretShowButton = document.getElementById('onlyofficeSecret-show')
+	if (secretShowButton) {
+		secretShowButton.addEventListener('click', function() {
+			const secretInput = document.getElementById('onlyofficeSecret')
+			if (secretInput) {
+				if (secretInput.type === 'password') {
+					secretInput.type = 'text'
+				} else {
+					secretInput.type = 'password'
+				}
 			}
 		})
+	}
 
-		$('#onlyofficeClearVersionHistory').click(function() {
+	const clearVersionHistoryButton = document.getElementById('onlyofficeClearVersionHistory')
+	if (clearVersionHistoryButton) {
+		clearVersionHistoryButton.addEventListener('click', function() {
 			OC.dialogs.confirm(
 				t(OCA.Onlyoffice.AppName, 'Are you sure you want to clear metadata?'),
 				t(OCA.Onlyoffice.AppName, 'Confirm metadata removal'),
@@ -372,32 +482,42 @@ import { defineAsyncComponent } from 'vue'
 						return
 					}
 
-					$('.section-onlyoffice').addClass('icon-loading')
+					const section = document.querySelector('.section-onlyoffice')
+					if (section) section.classList.add('icon-loading')
 
-					$.ajax({
-						method: 'DELETE',
-						url: OC.generateUrl('apps/' + OCA.Onlyoffice.AppName + '/ajax/settings/history'),
-						success: function onSuccess(response) {
-							$('.section-onlyoffice').removeClass('icon-loading')
-							if (response) {
+					axios.delete(OC.generateUrl('apps/' + OCA.Onlyoffice.AppName + '/ajax/settings/history'))
+						.then((response) => {
+							const section = document.querySelector('.section-onlyoffice')
+							if (section) section.classList.remove('icon-loading')
+							if (response.data) {
 								OCP.Toast.success(t(OCA.Onlyoffice.AppName, 'All history successfully deleted'))
 							}
 						},
+					)
+					.catch((error) => {
+						const section = document.querySelector('.section-onlyoffice')
+						if (section) section.classList.remove('icon-loading')
+						OCP.Toast.error(error.message || t(OCA.Onlyoffice.AppName, 'Failed to clear history'))
 					})
 				},
 			)
 		})
+	}
 
-		$('#onlyofficeAddTemplate').change(function() {
+	const addTemplateInput = document.getElementById('onlyofficeAddTemplate')
+	if (addTemplateInput) {
+		addTemplateInput.addEventListener('change', function() {
 			const file = this.files[0]
 			const data = new FormData()
 
 			data.append('file', file)
 
-			$('.section-onlyoffice').addClass('icon-loading')
+			const section = document.querySelector('.section-onlyoffice')
+			if (section) section.classList.add('icon-loading')
 			OCA.Onlyoffice.AddTemplate(file, (template, error) => {
 
-				$('.section-onlyoffice').removeClass('icon-loading')
+				const section = document.querySelector('.section-onlyoffice')
+				if (section) section.classList.remove('icon-loading')
 				const message = error
 					? t(OCA.Onlyoffice.AppName, 'Error') + ': ' + error
 					: t(OCA.Onlyoffice.AppName, 'Template successfully added')
@@ -413,14 +533,20 @@ import { defineAsyncComponent } from 'vue'
 				OCP.Toast.success(message)
 			})
 		})
+	}
 
-		$(document).on('click', '.onlyoffice-template-delete', function(event) {
-			const item = $(event.target).parents('.onlyoffice-template-item')
-			const templateId = $(item).attr('data-id')
+	document.addEventListener('click', function(event) {
+		if (event.target.classList.contains('onlyoffice-template-delete')) {
+			const item = event.target.closest('.onlyoffice-template-item')
+			const templateId = item ? item.getAttribute('data-id') : null
 
-			$('.section-onlyoffice').addClass('icon-loading')
+			if (!templateId) return
+
+			const section = document.querySelector('.section-onlyoffice')
+			if (section) section.classList.add('icon-loading')
 			OCA.Onlyoffice.DeleteTemplate(templateId, (response) => {
-				$('.section-onlyoffice').removeClass('icon-loading')
+				const section = document.querySelector('.section-onlyoffice')
+				if (section) section.classList.remove('icon-loading')
 
 				const message = response.error
 					? t(OCA.Onlyoffice.AppName, 'Error') + ': ' + response.error
@@ -430,14 +556,18 @@ import { defineAsyncComponent } from 'vue'
 					return
 				}
 
-				$(item).detach()
+				if (item && item.parentNode) {
+					item.parentNode.removeChild(item)
+				}
 				OCP.Toast.success(message)
 			})
-		})
+		}
 
-		$(document).on('click', '.onlyoffice-template-item p', function(event) {
-			const item = $(event.target).parents('.onlyoffice-template-item')
-			const templateId = $(item).attr('data-id')
+		if (event.target.matches('.onlyoffice-template-item p')) {
+			const item = event.target.closest('.onlyoffice-template-item')
+			const templateId = item ? item.getAttribute('data-id') : null
+
+			if (!templateId) return
 
 			const url = OC.generateUrl('/apps/' + OCA.Onlyoffice.AppName + '/{fileId}?template={template}',
 				{
@@ -446,11 +576,13 @@ import { defineAsyncComponent } from 'vue'
 				})
 
 			window.open(url)
-		})
+		}
 
-		$(document).on('click', '.onlyoffice-template-download', function(event) {
-			const item = $(event.target).parents('.onlyoffice-template-item')
-			const templateId = $(item).attr('data-id')
+		if (event.target.classList.contains('onlyoffice-template-download')) {
+			const item = event.target.closest('.onlyoffice-template-item')
+			const templateId = item ? item.getAttribute('data-id') : null
+
+			if (!templateId) return
 
 			const downloadLink = OC.generateUrl('apps/' + OCA.Onlyoffice.AppName + '/downloadas?fileId={fileId}&template={template}', {
 				fileId: templateId,
@@ -458,7 +590,8 @@ import { defineAsyncComponent } from 'vue'
 			})
 
 			location.href = downloadLink
-		})
+		}
+	})
 
 		const sameTabCheckbox = document.getElementById('onlyofficeSameTab')
 		const sharingBlock = document.getElementById('onlyofficeEnableSharingBlock')
@@ -471,4 +604,4 @@ import { defineAsyncComponent } from 'vue'
 		}
 	})
 
-})(jQuery, OC)
+})(OC)
