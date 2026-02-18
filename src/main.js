@@ -33,17 +33,20 @@
 
 import {
 	File,
-	FileAction,
 	registerFileAction,
 	Permission,
 	DefaultType,
 	addNewFileMenuEntry,
-	davGetClient,
-	davRootPath,
-	davGetDefaultPropfind,
-	davResultToNode,
 } from '@nextcloud/files'
+import {
+	getClient,
+	getRootPath,
+	getDefaultPropfind,
+	resultToNode,
+} from '@nextcloud/files/dav'
 import { emit } from '@nextcloud/event-bus'
+import { generateUrl } from '@nextcloud/router'
+import { getCurrentUser } from '@nextcloud/auth'
 import AppDarkSvg from '!!raw-loader!../img/app-dark.svg'
 import NewDocxSvg from '!!raw-loader!../img/new-docx.svg'
 import NewXlsxSvg from '!!raw-loader!../img/new-xlsx.svg'
@@ -88,10 +91,10 @@ import { loadState } from '@nextcloud/initial-state'
 					mtime: new Date(),
 					mime: response.mimetype,
 					name: response.name,
-					owner: OC.getCurrentUser().uid || null,
+					owner: getCurrentUser()?.uid || null,
 					permissions: Permission.ALL,
 					type: 'file',
-					root: filesContext?.root || '/files/' + OC.getCurrentUser().uid,
+					root: filesContext?.root || '/files/' + getCurrentUser()?.uid,
 				})
 				emit('files:node:created', file)
 			} else {
@@ -128,7 +131,7 @@ import { loadState } from '@nextcloud/initial-state'
 			createData.shareToken = encodeURIComponent(getSharingToken())
 		}
 
-		$.post(OC.generateUrl('apps/' + OCA.Onlyoffice.AppName + '/ajax/new'),
+		$.post(generateUrl('apps/' + OCA.Onlyoffice.AppName + '/ajax/new'),
 			createData,
 			function onSuccess(response) {
 				if (response.error) {
@@ -161,14 +164,14 @@ import { loadState } from '@nextcloud/initial-state'
 		if (fileName) {
 			filePath = fileDir.replace(/\/$/, '') + '/' + fileName
 		}
-		let url = OC.generateUrl('/apps/' + OCA.Onlyoffice.AppName + '/{fileId}?filePath={filePath}',
+		let url = generateUrl('/apps/' + OCA.Onlyoffice.AppName + '/{fileId}?filePath={filePath}',
 			{
 				fileId,
 				filePath,
 			})
 
 		if (isPublicShare()) {
-			url = OC.generateUrl('apps/' + OCA.Onlyoffice.AppName + '/s/{shareToken}?fileId={fileId}',
+			url = generateUrl('apps/' + OCA.Onlyoffice.AppName + '/s/{shareToken}?fileId={fileId}',
 				{
 					shareToken: encodeURIComponent(getSharingToken()),
 					fileId,
@@ -327,7 +330,7 @@ import { loadState } from '@nextcloud/initial-state'
 			convertData.shareToken = encodeURIComponent(getSharingToken())
 		}
 
-		$.post(OC.generateUrl('apps/' + OCA.Onlyoffice.AppName + '/ajax/convert'),
+		$.post(generateUrl('apps/' + OCA.Onlyoffice.AppName + '/ajax/convert'),
 			convertData,
 			function onSuccess(response) {
 				if (response.error) {
@@ -400,7 +403,7 @@ import { loadState } from '@nextcloud/initial-state'
 						classes: 'primary',
 						click() {
 							const format = this.dataset.format
-							const downloadLink = OC.generateUrl('apps/' + OCA.Onlyoffice.AppName + '/downloadas?fileId={fileId}&toExtension={toExtension}', {
+							const downloadLink = generateUrl('apps/' + OCA.Onlyoffice.AppName + '/downloadas?fileId={fileId}&toExtension={toExtension}', {
 								fileId,
 								toExtension: format,
 							})
@@ -439,11 +442,11 @@ import { loadState } from '@nextcloud/initial-state'
 				const targetFolderPath = OC.dirname(filePath)
 
 				if (!dialogFileList) {
-					const results = await davGetClient().getDirectoryContents(davRootPath + targetFolderPath, {
+					const results = await getClient().getDirectoryContents(getRootPath() + targetFolderPath, {
 						details: true,
-						data: davGetDefaultPropfind(),
+						data: getDefaultPropfind(),
 					})
-					dialogFileList = results.data.map((result) => davResultToNode(result))
+					dialogFileList = results.data.map((result) => resultToNode(result))
 				}
 
 				if (type === 'target') {
@@ -556,7 +559,7 @@ import { loadState } from '@nextcloud/initial-state'
 				})
 			})
 		} else {
-			registerFileAction(new FileAction({
+			registerFileAction({
 				id: 'onlyoffice-open-def',
 				displayName: () => t(OCA.Onlyoffice.AppName, 'Open in ONLYOFFICE'),
 				iconSvgInline: () => AppDarkSvg,
@@ -573,9 +576,9 @@ import { loadState } from '@nextcloud/initial-state'
 				exec: OCA.Onlyoffice.FileClickExec,
 				default: DefaultType.HIDDEN,
 				order: -1,
-			}))
+			})
 
-			registerFileAction(new FileAction({
+			registerFileAction({
 				id: 'onlyoffice-open',
 				displayName: () => t(OCA.Onlyoffice.AppName, 'Open in ONLYOFFICE'),
 				iconSvgInline: () => AppDarkSvg,
@@ -592,9 +595,9 @@ import { loadState } from '@nextcloud/initial-state'
 				exec(file, view, dir) {
 					OCA.Onlyoffice.FileClickExec(file, view, dir, false)
 				},
-			}))
+			})
 
-			registerFileAction(new FileAction({
+			registerFileAction({
 				id: 'onlyoffice-convert',
 				displayName: () => t(OCA.Onlyoffice.AppName, 'Convert with ONLYOFFICE'),
 				iconSvgInline: () => AppDarkSvg,
@@ -618,9 +621,9 @@ import { loadState } from '@nextcloud/initial-state'
 					return true
 				},
 				exec: OCA.Onlyoffice.FileConvertClickExec,
-			}))
+			})
 
-			registerFileAction(new FileAction({
+			registerFileAction({
 				id: 'onlyoffice-create-form',
 				displayName: () => t(OCA.Onlyoffice.AppName, 'Create form'),
 				iconSvgInline: () => AppDarkSvg,
@@ -644,10 +647,10 @@ import { loadState } from '@nextcloud/initial-state'
 					return true
 				},
 				exec: OCA.Onlyoffice.CreateFormClickExec,
-			}))
+			})
 
 			if (!isPublicShare()) {
-				registerFileAction(new FileAction({
+				registerFileAction({
 					id: 'onlyoffice-download-as',
 					displayName: () => t(OCA.Onlyoffice.AppName, 'Download as'),
 					iconSvgInline: () => AppDarkSvg,
@@ -671,7 +674,7 @@ import { loadState } from '@nextcloud/initial-state'
 						return true
 					},
 					exec: OCA.Onlyoffice.DownloadClickExec,
-				}))
+				})
 			}
 		}
 	}
@@ -877,7 +880,7 @@ import { loadState } from '@nextcloud/initial-state'
 				return
 			}
 
-			const editorUrl = OC.generateUrl('apps/' + OCA.Onlyoffice.AppName + '/s/' + encodeURIComponent(getSharingToken()))
+			const editorUrl = generateUrl('apps/' + OCA.Onlyoffice.AppName + '/s/' + encodeURIComponent(getSharingToken()))
 
 			if (_oc_appswebroots.richdocuments
 				|| (_oc_appswebroots.files_pdfviewer && extension === 'pdf')
