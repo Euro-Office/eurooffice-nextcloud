@@ -302,16 +302,17 @@ import { loadState } from '@nextcloud/initial-state'
 		OCA.Onlyoffice.context.fileName = fileName
 	}
 
-	OCA.Onlyoffice.FileClickExec = async function(file, view, dir, isDefault = true) {
+	OCA.Onlyoffice.FileClickExec = async function({ nodes }) {
 		if (OCA.Onlyoffice.context !== null && OCA.Onlyoffice.setting.sameTab && !OCA.Onlyoffice.Desktop) {
 			return null
 		}
 
-		OCA.Onlyoffice.OpenEditor(file.fileid, dir, file.basename, 0, isDefault)
+		const node = nodes[0]
+		OCA.Onlyoffice.OpenEditor(node.fileid, node.dirname, node.basename, 0)
 
 		OCA.Onlyoffice.context = {
-			fileName: file.basename,
-			dir,
+			fileName: node.basename,
+			dir: node.dirname,
 		}
 
 		return null
