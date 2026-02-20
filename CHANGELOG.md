@@ -2,6 +2,7 @@
 
 ##
 ## Changed
+- fixed opening editor for shared non-default formats
 - Nextcloud v31 is no longer supported
 
 ## 9.13.0
