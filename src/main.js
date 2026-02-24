@@ -246,6 +246,7 @@ import { loadState } from '@nextcloud/initial-state'
 	}
 
 	OCA.Onlyoffice.SetDefaultUrl = function() {
+		// eslint-disable-next-line no-unused-vars
 		const { openfile, enableSharing, ...query } = OCP.Files.Router.query
 		window.OCP?.Files?.Router?.goToRoute(
 			null, // use default route
