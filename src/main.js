@@ -246,10 +246,11 @@ import { loadState } from '@nextcloud/initial-state'
 	}
 
 	OCA.Onlyoffice.SetDefaultUrl = function() {
+		const { openfile, enableSharing, ...query } = OCP.Files.Router.query
 		window.OCP?.Files?.Router?.goToRoute(
 			null, // use default route
 			{ view: 'files', fileid: undefined },
-			{ ...OCP.Files.Router.query, openfile: undefined, enableSharing: undefined },
+			query,
 		)
 	}
 
