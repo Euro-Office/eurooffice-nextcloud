@@ -184,8 +184,8 @@ import { loadState } from '@nextcloud/initial-state'
 			|| (!OCA.Onlyoffice.setting.sameTab && !isDefault)) {
 			OCA.Onlyoffice.SetDefaultUrl()
 			winEditor = window.open(url, '_blank')
-		} else if (isPublicShare() && OCA.Onlyoffice.isViewIsFile()) {
-			location.href = url
+		// } else if (isPublicShare() && OCA.Onlyoffice.isViewIsFile()) {
+		// 	location.href = url
 		} else {
 			if (OCA.Onlyoffice.setting.enableSharing
 				&& !isPublicShare()
@@ -888,27 +888,26 @@ import { loadState } from '@nextcloud/initial-state'
 				return
 			}
 
-			const editorUrl = OC.generateUrl('apps/' + OCA.Onlyoffice.AppName + '/s/' + encodeURIComponent(getSharingToken()))
+			registerFileAction(new FileAction({
+				id: 'onlyoffice-public-open',
+				displayName: () => t(OCA.Onlyoffice.AppName, 'Open in ONLYOFFICE'),
+				iconSvgInline: () => AppDarkSvg,
+				enabled: (files) => {
+					if (Permission.READ !== (files[0].permissions & Permission.READ)) { return false }
 
-			if (_oc_appswebroots.richdocuments
-				|| (_oc_appswebroots.files_pdfviewer && extension === 'pdf')
-				|| (_oc_appswebroots.text && extension === 'txt')) {
+					return true
+				},
+				exec(file, view, dir) {
+					OCA.Onlyoffice.FileClickExec(file, view, dir, false)
+				},
+			}))
 
-				registerFileAction(new FileAction({
-					id: 'onlyoffice-public-open button',
-					displayName: () => t(OCA.Onlyoffice.AppName, 'Open in ONLYOFFICE'),
-					iconSvgInline: () => AppDarkSvg,
-					enabled: (files) => {
-						if (Permission.READ !== (files[0].permissions & Permission.READ)) { return false }
+			if (config.def
+				&& !_oc_appswebroots.richdocuments
+				&& !(_oc_appswebroots.files_pdfviewer && extension === 'pdf')
+				&& !(_oc_appswebroots.text && extension === 'txt')) {
+				const editorUrl = OC.generateUrl('apps/' + OCA.Onlyoffice.AppName + '/s/' + encodeURIComponent(getSharingToken()))
 
-						return true
-					},
-					exec(file, view, dir) {
-						OCA.Onlyoffice.FileClickExec(file, view, dir, false)
-					},
-				}))
-
-			} else {
 				OCA.Onlyoffice.frameSelector = '#onlyofficeFrame'
 				const container = document.createElement('div')
 				container.classList.add('onlyoffice-iframe-container')
