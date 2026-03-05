@@ -26,6 +26,8 @@
  *
  */
 
+import { showError, showSuccess } from '@nextcloud/dialogs'
+
 /* global _, DocsAPI, jQuery, moment, oc_defaults */
 
 /**
@@ -494,7 +496,7 @@
 			}),
 		function onSuccess(response) {
 			if (response.error) {
-				OCP.Toast.error(response.error)
+				showError(response.error)
 				return
 			}
 			response.c = documentSelectionType
@@ -689,10 +691,10 @@
 
 		switch (type) {
 		case 'success':
-			OCP.Toast.success(message, props)
+			showSuccess(message, props)
 			break
 		case 'error':
-			OCP.Toast.error(message, props)
+			showError(message, props)
 			break
 		}
 	}
