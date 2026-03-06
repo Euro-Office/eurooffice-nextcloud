@@ -49,6 +49,7 @@ jobs:
           rm ./stylelint.config.js
           rm ./vite.config.mjs
           rm ./tsconfig.json
+          rm ./CLAUDE.md
           cd $cwd
           tar -czvf onlyoffice.tar.gz onlyoffice
       - name: Upload Artifact
