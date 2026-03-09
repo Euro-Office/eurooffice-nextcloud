@@ -151,6 +151,12 @@ if ($_["tagsEnabled"]) {
     </p>
 
     <p>
+        <input type="checkbox" class="checkbox" id="onlyofficeEnableExternalStorage"
+            <?php if ($_["enableExternalStorage"]) { ?>checked="checked"<?php } ?> />
+        <label for="onlyofficeEnableExternalStorage"><?php p($l->t("Enable editors for files on external storage")) ?></label>
+    </p>
+
+    <p>
         <input type="checkbox" class="checkbox" id="onlyofficeCronChecker"
             <?php if ($_["cronChecker"]) { ?>checked="checked"<?php } ?> />
         <label for="onlyofficeCronChecker"><?php p($l->t("Enable background connection check to the editors")) ?></label>

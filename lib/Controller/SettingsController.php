@@ -96,7 +96,8 @@ class SettingsController extends Controller {
             "reviewDisplay" => $this->appConfig->getCustomizationReviewDisplay(),
             "theme" => $this->appConfig->getCustomizationTheme(true),
             "templates" => $this->getGlobalTemplates(),
-            "unknownAuthor" => $this->appConfig->getUnknownAuthor()
+            "unknownAuthor" => $this->appConfig->getUnknownAuthor(),
+            "enableExternalStorage" => $this->appConfig->getEnableExternalStorage()
         ];
         return new TemplateResponse($this->appName, "settings", $data, "blank");
     }
@@ -196,6 +197,7 @@ class SettingsController extends Controller {
         string $reviewDisplay,
         string $theme,
         string $unknownAuthor,
+        bool $enableExternalStorage = true,
         array $limitGroups = []
     ): DataResponse {
 
@@ -218,6 +220,7 @@ class SettingsController extends Controller {
         $this->appConfig->setCustomizationReviewDisplay($reviewDisplay);
         $this->appConfig->setCustomizationTheme($theme);
         $this->appConfig->setUnknownAuthor($unknownAuthor);
+        $this->appConfig->setEnableExternalStorage($enableExternalStorage);
 
         return new DataResponse();
     }

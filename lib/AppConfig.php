@@ -92,6 +92,11 @@ class AppConfig {
     private string $_enableSharing = "enableSharing";
 
     /**
+     * The config key for enabling file actions on external storage
+     */
+    private string $_enableExternalStorage = "enableExternalStorage";
+
+    /**
      * The config key for the generate preview
      */
     private string $_preview = "preview";
@@ -653,6 +658,22 @@ class AppConfig {
      */
     public function getEnableSharing(): bool {
         return $this->appConfig->getValueString($this->appName, $this->_enableSharing, "false") === "true";
+    }
+
+    /**
+     * Save the enable external storage setting
+     */
+    public function setEnableExternalStorage(bool $value): void {
+        $this->logger->info("Set enable external storage: " . json_encode($value), ["app" => $this->appName]);
+
+        $this->appConfig->setValueString($this->appName, $this->_enableExternalStorage, json_encode($value));
+    }
+
+    /**
+     * Get the enable external storage setting
+     */
+    public function getEnableExternalStorage(): bool {
+        return $this->appConfig->getValueString($this->appName, $this->_enableExternalStorage, "true") === "true";
     }
 
     /**

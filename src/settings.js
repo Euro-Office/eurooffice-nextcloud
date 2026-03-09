@@ -256,6 +256,7 @@ import { defineAsyncComponent } from 'vue'
 			const reviewDisplay = $("input[type='radio'][name='reviewDisplay']:checked").attr('id').replace('onlyofficeReviewDisplay_', '')
 			const theme = $("input[type='radio'][name='theme']:checked").attr('id').replace('onlyofficeTheme_', '')
 			const unknownAuthor = $('#onlyofficeUnknownAuthor').val().trim()
+			const enableExternalStorage = $('#onlyofficeEnableExternalStorage').is(':checked')
 
 			$.ajax({
 				method: 'PUT',
@@ -280,6 +281,7 @@ import { defineAsyncComponent } from 'vue'
 					reviewDisplay,
 					theme,
 					unknownAuthor,
+					enableExternalStorage,
 				},
 				success: function onSuccess(response) {
 					$('.section-onlyoffice').removeClass('icon-loading')
