@@ -2,6 +2,7 @@
 
 ##
 ## Changed
+- disable editor for external storage files when the enable external storage setting is off
 - updated PHP codebase to Nextcloud 32 API
 - adopted PHP 8.1 syntax
 - improved PHP type coverage
@@ -10,6 +11,9 @@
 - migrated from legacy hooks to event listeners
 - fixed opening editor for shared link
 - Nextcloud v31 is no longer supported
+
+## Added
+- enable external storage setting
 
 ## 9.13.0
 ## Changed
