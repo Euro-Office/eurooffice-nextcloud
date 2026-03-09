@@ -569,6 +569,11 @@ import { loadState } from '@nextcloud/initial-state'
 				displayName: () => t(OCA.Onlyoffice.AppName, 'Open in ONLYOFFICE'),
 				iconSvgInline: () => AppDarkSvg,
 				enabled: (files) => {
+					if (!OCA.Onlyoffice.setting.enableExternalStorage
+						&& (files[0].attributes['mount-type'] === 'external' || files[0].attributes['mount-type'] === 'external-root')) {
+						return false
+					}
+
 					const config = getConfig(files[0])
 
 					if (!config) return false
@@ -588,6 +593,11 @@ import { loadState } from '@nextcloud/initial-state'
 				displayName: () => t(OCA.Onlyoffice.AppName, 'Open in ONLYOFFICE'),
 				iconSvgInline: () => AppDarkSvg,
 				enabled: (files) => {
+					if (!OCA.Onlyoffice.setting.enableExternalStorage
+						&& (files[0].attributes['mount-type'] === 'external' || files[0].attributes['mount-type'] === 'external-root')) {
+						return false
+					}
+
 					const config = getConfig(files[0])
 
 					if (!config) return false
