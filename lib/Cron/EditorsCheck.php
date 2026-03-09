@@ -35,12 +35,9 @@ use OCP\IGroup;
 use OCP\IGroupManager;
 use OCP\IL10N;
 use OCP\IURLGenerator;
+use OCP\Notification\IManager as INotificationManager;
 use Psr\Log\LoggerInterface;
 
-/**
- * Editors availability check background job
- *
- */
 class EditorsCheck extends TimedJob {
 
     public function __construct(
@@ -52,7 +49,8 @@ class EditorsCheck extends TimedJob {
         private readonly IGroupManager $groupManager,
         private readonly EmailManager $emailManager,
         private readonly LoggerInterface $logger,
-        private readonly DocumentService $documentService
+        private readonly DocumentService $documentService,
+        private readonly INotificationManager $notificationManager,
     ) {
         parent::__construct($time);
         $this->setInterval($this->appConfig->getEditorsCheckInterval());
@@ -93,6 +91,10 @@ class EditorsCheck extends TimedJob {
             $this->notifyAdmins();
         } else {
             $this->logger->debug("Nextcloud Office server availability check is finished successfully");
+            if (!$this->appConfig->settingsAreSuccessful()) {
+                $this->appConfig->setSettingsError("");
+                $this->dismissAdminNotifications();
+            }
         }
     }
 
@@ -119,18 +121,30 @@ class EditorsCheck extends TimedJob {
     }
 
     /**
+     * Dismiss notifications for admins when the server becomes available again
+     */
+    private function dismissAdminNotifications(): void {
+        $notification = $this->notificationManager->createNotification();
+        $notification->setApp($this->appName)
+            ->setObject("editorsCheck", $this->trans->t("ONLYOFFICE server is not available"));
+        foreach ($this->getUsersToNotify() as $uid) {
+            $notification->setUser($uid);
+            $this->notificationManager->markProcessed($notification);
+        }
+    }
+
+    /**
      * Send notification to admins
      */
     private function notifyAdmins(): void {
-        $notificationManager = \OCP\Server::get(\OCP\Notification\IManager::class);
-        $notification = $notificationManager->createNotification();
+        $notification = $this->notificationManager->createNotification();
         $notification->setApp($this->appName)
             ->setDateTime(new \DateTime())
             ->setObject("editorsCheck", $this->trans->t("Nextcloud Office server is not available"))
             ->setSubject("editorscheck_info");
         foreach ($this->getUsersToNotify() as $uid) {
             $notification->setUser($uid);
-            $notificationManager->notify($notification);
+            $this->notificationManager->notify($notification);
             if ($this->appConfig->getEmailNotifications()) {
                 $this->emailManager->notifyEditorsCheckEmail($uid);
             }
