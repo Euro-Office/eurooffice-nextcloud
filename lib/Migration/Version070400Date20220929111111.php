@@ -55,7 +55,7 @@ class Version070400Date20220929111111 extends SimpleMigrationStep {
                 'default' => 0,
             ]);
             $table->setPrimaryKey(['id']);
-            $table->addUniqueIndex(['file_id'], 'eurooffice_file_id_index');
+            $table->addUniqueIndex(['file_id'], 'eo_filekey_file_id');
         }
 
         if (!$schema->hasTable('eurooffice_permissions')) {
@@ -73,7 +73,7 @@ class Version070400Date20220929111111 extends SimpleMigrationStep {
                 'default' => 0,
             ]);
             $table->setPrimaryKey(['id']);
-            $table->addUniqueIndex(['share_id'], 'eurooffice_share_id_index');
+            $table->addUniqueIndex(['share_id'], 'eo_permissions_share_id');
         }
 
         if (!$schema->hasTable('eurooffice_instance')) {
@@ -95,7 +95,7 @@ class Version070400Date20220929111111 extends SimpleMigrationStep {
                 'default' => 0,
             ]);
             $table->setPrimaryKey(['id']);
-            $table->addUniqueIndex(['remote'], 'eurooffice_remote_index');
+            $table->addUniqueIndex(['remote'], 'eo_instance_remote');
         }
 
         return $schema;

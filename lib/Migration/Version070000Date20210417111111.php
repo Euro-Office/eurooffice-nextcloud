@@ -55,7 +55,7 @@ class Version070000Date20210417111111 extends SimpleMigrationStep {
                 'default' => 0,
             ]);
             $table->setPrimaryKey(['id']);
-            $table->addUniqueIndex(['file_id'], 'file_id_index');
+            $table->addUniqueIndex(['file_id'], 'eo_filekey_file_id');
         }
         return $schema;
     }
