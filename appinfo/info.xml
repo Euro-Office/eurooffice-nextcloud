@@ -1,4 +1,4 @@
-﻿<?xml version="1.0"?>
+<?xml version="1.0"?>
 <info>
     <id>eurooffice</id>
     <name>Euro-Office</name>
@@ -14,6 +14,7 @@ Furthermore, you can seamlessly connect any AI assistant, including local ones, 
 Whether you’re working with internal teams or external collaborators, the Euro-Office app for Nextcloud enhances productivity, simplifies workflows, and ensures your files remain secure.
 ]]></description>
     <licence>agpl</licence>
+	<author>Euro-Office contributors</author>
     <author mail="dev@onlyoffice.com" homepage="https://www.onlyoffice.com/">Ascensio System SIA</author>
     <version>10.0.0</version>
     <namespace>Eurooffice</namespace>
@@ -21,23 +22,20 @@ Whether you’re working with internal teams or external collaborators, the Euro
         <prevent_group_restriction/>
     </types>
     <documentation>
-        <admin>https://helpcenter.onlyoffice.com/integration/nextcloud.aspx</admin>
-        <user>https://helpcenter.onlyoffice.com/integration/nextcloud.aspx</user>
-        <developer>https://github.com/ONLYOFFICE/onlyoffice-nextcloud</developer>
+        <developer>https://github.com/Euro-Office/eurooffice-nextcloud</developer>
     </documentation>
     <category>files</category>
     <category>integration</category>
     <category>office</category>
     <category>tools</category>
-    <website>https://www.onlyoffice.com</website>
-    <discussion>https://forum.onlyoffice.com/</discussion>
-    <bugs>https://github.com/ONLYOFFICE/onlyoffice-nextcloud/issues</bugs>
-    <repository type="git">https://github.com/ONLYOFFICE/onlyoffice-nextcloud.git</repository>
-    <screenshot small-thumbnail="https://raw.githubusercontent.com/ONLYOFFICE/onlyoffice-nextcloud/master/screenshots/main_small.png">https://raw.githubusercontent.com/ONLYOFFICE/onlyoffice-nextcloud/master/screenshots/main.png</screenshot>
-    <screenshot>https://raw.githubusercontent.com/ONLYOFFICE/onlyoffice-nextcloud/master/screenshots/settings.png</screenshot>
-    <screenshot>https://raw.githubusercontent.com/ONLYOFFICE/onlyoffice-nextcloud/master/screenshots/new.png</screenshot>
-    <screenshot>https://raw.githubusercontent.com/ONLYOFFICE/onlyoffice-nextcloud/master/screenshots/open.png</screenshot>
-    <screenshot>https://raw.githubusercontent.com/ONLYOFFICE/onlyoffice-nextcloud/master/screenshots/open_form.png</screenshot>
+	<website>https://github.com/euro-office</website>
+    <bugs>https://github.com/Euro-Office/eurooffice-nextcloud/issues</bugs>
+    <repository type="git">https://github.com/Euro-Office/eurooffice-nextcloud.git</repository>
+    <screenshot small-thumbnail="https://raw.githubusercontent.com/Euro-Office/eurooffice-nextcloud/master/screenshots/main_small.png">https://raw.githubusercontent.com/Euro-Office/eurooffice-nextcloud/master/screenshots/main.png</screenshot>
+    <screenshot>https://raw.githubusercontent.com/Euro-Office/eurooffice-nextcloud/master/screenshots/settings.png</screenshot>
+    <screenshot>https://raw.githubusercontent.com/Euro-Office/eurooffice-nextcloud/master/screenshots/new.png</screenshot>
+    <screenshot>https://raw.githubusercontent.com/Euro-Office/eurooffice-nextcloud/master/screenshots/open.png</screenshot>
+    <screenshot>https://raw.githubusercontent.com/Euro-Office/eurooffice-nextcloud/master/screenshots/open_form.png</screenshot>
     <dependencies>
         <nextcloud min-version="33" max-version="33"/>
     </dependencies>
