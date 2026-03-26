@@ -1,0 +1,15 @@
+/.github
+/.git
+/.gitignore
+/.gitmodules
+/.eslintrc.js
+/.stylelintrc.json
+/node_modules/
+/src
+/composer.json
+/composer.lock
+/npm-shrinkwrap.json
+/package.json
+/ruleset.xml
+/stylelint.config.js
+/webpack.js

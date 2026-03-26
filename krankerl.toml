@@ -1,0 +1,7 @@
+[package]
+before_cmds = [
+    "git submodule update --init --recursive",
+    "npm install",
+    "npm run build",
+    "composer install --no-dev --optimize-autoloader",
+]
