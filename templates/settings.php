@@ -40,12 +40,12 @@ if ($_["tagsEnabled"]) {
 ?>
 <div class="section section-eurooffice section-eurooffice-addr">
     <h2>
-        ONLYOFFICE
+        Euro-Office
     </h2>
 
     <div class="eurooffice-description">
-        <h1><?php p($l->t("Welcome to ONLYOFFICE Docs!")) ?></h1>
-        <p><?php p($l->t("Edit and collaborate on text documents, spreadsheets, presentations, and PDFs within Nextcloud using ONLYOFFICE Docs.")) ?></p>
+        <h1><?php p($l->t("Welcome to Euro-Office Docs!")) ?></h1>
+        <p><?php p($l->t("Edit and collaborate on text documents, spreadsheets, presentations, and PDFs within Nextcloud using Euro-Office Docs.")) ?></p>
         <div class="useful-links">
             <a href="https://helpcenter.eurooffice.com/integration/nextcloud.aspx" target="_blank"><?php p($l->t("Learn more")) ?></a>
             <a href="https://feedback.eurooffice.com/forums/966080-your-voice-matters?category_id=519288" target="_blank"><?php p($l->t("Suggest a feature")) ?></a>
@@ -54,9 +54,9 @@ if ($_["tagsEnabled"]) {
 
     <div id="euroofficeAddrSettings">
         <h2><?php p($l->t("Server settings")) ?></h2>
-        <p class="settings-hint"><?php p($l->t("ONLYOFFICE Docs Location specifies the address of the server with the document services installed. Please change the '<documentserver>' for the server address in the below line.")) ?></p>
+        <p class="settings-hint"><?php p($l->t("Euro-Office Docs Location specifies the address of the server with the document services installed. Please change the '<documentserver>' for the server address in the below line.")) ?></p>
 
-        <p><?php p($l->t("ONLYOFFICE Docs address")) ?></p>
+        <p><?php p($l->t("Euro-Office Docs address")) ?></p>
         <p><input id="euroofficeUrl" value="<?php p($_["documentserver"]) ?>" placeholder="https://<documentserver>/" type="text"></p>
 
         <p>
@@ -82,10 +82,10 @@ if ($_["tagsEnabled"]) {
             <p class="eurooffice-header"><?php p($l->t("Authorization header (leave blank to use default header)")) ?></p>
             <p><input id="euroofficeJwtHeader" value="<?php p($_["jwtHeader"]) ?>" placeholder="Authorization" type="text"></p>
 
-            <p class="eurooffice-header"><?php p($l->t("ONLYOFFICE Docs address for internal requests from the server")) ?></p>
+            <p class="eurooffice-header"><?php p($l->t("Euro-Office Docs address for internal requests from the server")) ?></p>
             <p><input id="euroofficeInternalUrl" value="<?php p($_["documentserverInternal"]) ?>" placeholder="https://<documentserver>/" type="text"></p>
 
-            <p class="eurooffice-header"><?php p($l->t("Server address for internal requests from ONLYOFFICE Docs")) ?></p>
+            <p class="eurooffice-header"><?php p($l->t("Server address for internal requests from Euro-Office Docs")) ?></p>
             <p><input id="euroofficeStorageUrl" value="<?php p($_["storageUrl"]) ?>" placeholder="<?php p($_["currentServer"]) ?>" type="text"></p>
         </div>
     </div>
@@ -98,13 +98,13 @@ if ($_["tagsEnabled"]) {
             <input type="checkbox" class="checkbox" id="euroofficeDemo"
                 <?php if ($_["demo"]["enabled"]) { ?>checked="checked"<?php } ?>
                 <?php if (!$_["demo"]["available"]) { ?>disabled="disabled"<?php } ?> />
-            <label for="euroofficeDemo"><?php p($l->t("Connect to demo ONLYOFFICE Docs server")) ?></label>
+            <label for="euroofficeDemo"><?php p($l->t("Connect to demo Euro-Office Docs server")) ?></label>
 
             <br />
             <?php if ($_["demo"]["available"]) { ?>
             <em><?php p($l->t("This is a public test server, please do not use it for private sensitive data. The server will be available during a 30-day period.")) ?></em>
             <?php } else { ?>
-            <em><?php p($l->t("The 30-day test period is over, you can no longer connect to demo ONLYOFFICE Docs server.")) ?></em>
+            <em><?php p($l->t("The 30-day test period is over, you can no longer connect to demo Euro-Office Docs server.")) ?></em>
             <?php } ?>
         </div>
     </div>
@@ -124,7 +124,7 @@ if ($_["tagsEnabled"]) {
     <p>
         <input type="checkbox" class="checkbox" id="euroofficePreview"
             <?php if ($_["preview"]) { ?>checked="checked"<?php } ?> />
-        <label for="euroofficePreview"><?php p($l->t("Use ONLYOFFICE to generate a document preview (it will take up disk space)")) ?></label>
+        <label for="euroofficePreview"><?php p($l->t("Use Euro-Office to generate a document preview (it will take up disk space)")) ?></label>
     </p>
 
     <p>
@@ -142,7 +142,7 @@ if ($_["tagsEnabled"]) {
     <p>
         <input type="checkbox" class="checkbox" id="euroofficeAdvanced"
             <?php if ($_["advanced"]) { ?>checked="checked"<?php } ?> />
-        <label for="euroofficeAdvanced"><?php p($l->t("Provide advanced document permissions using ONLYOFFICE Docs")) ?></label>
+        <label for="euroofficeAdvanced"><?php p($l->t("Provide advanced document permissions using Euro-Office Docs")) ?></label>
     </p>
 
     <p>

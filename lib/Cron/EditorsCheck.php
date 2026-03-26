@@ -159,21 +159,21 @@ class EditorsCheck extends TimedJob {
         }
         $host = parse_url($fileUrl)["host"];
         if ($host === "localhost" || $host === "127.0.0.1") {
-            $this->logger->debug("Localhost is not alowed for cron editors availability check. Please provide server address for internal requests from ONLYOFFICE Docs");
+            $this->logger->debug("Localhost is not alowed for cron editors availability check. Please provide server address for internal requests from Euro-Office Docs");
             return;
         }
 
-        $this->logger->debug("ONLYOFFICE check started by cron");
+        $this->logger->debug("Euro-Office check started by cron");
 
         $documentService = new DocumentService($this->trans, $this->config);
         list($error, $version) = $documentService->checkDocServiceUrl($this->urlGenerator, $this->crypt);
 
         if (!empty($error)) {
-            $this->logger->info("ONLYOFFICE server is not available");
+            $this->logger->info("Euro-Office server is not available");
             $this->config->setSettingsError($error);
             $this->notifyAdmins();
         } else {
-            $this->logger->debug("ONLYOFFICE server availability check is finished successfully");
+            $this->logger->debug("Euro-Office server availability check is finished successfully");
         }
     }
 
@@ -208,7 +208,7 @@ class EditorsCheck extends TimedJob {
         $notification = $notificationManager->createNotification();
         $notification->setApp($this->appName)
             ->setDateTime(new \DateTime())
-            ->setObject("editorsCheck", $this->trans->t("ONLYOFFICE server is not available"))
+            ->setObject("editorsCheck", $this->trans->t("Euro-Office server is not available"))
             ->setSubject("editorscheck_info");
         foreach ($this->getUsersToNotify() as $uid) {
             $notification->setUser($uid);

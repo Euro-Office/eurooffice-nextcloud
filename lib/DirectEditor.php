@@ -126,7 +126,7 @@ class DirectEditor implements IEditor {
      * @return string
      */
     public function getName(): string {
-        return "ONLYOFFICE";
+        return "Euro-Office";
     }
 
     /**
@@ -225,7 +225,7 @@ class DirectEditor implements IEditor {
 
             if (empty($documentServerUrl)) {
                 $this->logger->error("documentServerUrl is empty");
-                return $this->renderError($this->trans->t("ONLYOFFICE app is not configured. Please contact admin"));
+                return $this->renderError($this->trans->t("Euro-Office app is not configured. Please contact admin"));
             }
 
             $directToken = $this->crypt->getHash([

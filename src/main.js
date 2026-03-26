@@ -547,7 +547,7 @@ import { loadState } from '@nextcloud/initial-state'
 				mimeTypes.forEach((mime) => {
 					OCA.Files.fileActions.registerAction({
 						name: 'euroofficeOpen',
-						displayName: t(OCA.Onlyoffice.AppName, 'Open in ONLYOFFICE'),
+						displayName: t(OCA.Onlyoffice.AppName, 'Open in Euro-Office'),
 						mime,
 						permissions: OC.PERMISSION_READ,
 						iconClass: 'icon-eurooffice-open',
@@ -561,7 +561,7 @@ import { loadState } from '@nextcloud/initial-state'
 					if (config.conv) {
 						OCA.Files.fileActions.registerAction({
 							name: 'euroofficeConvert',
-							displayName: t(OCA.Onlyoffice.AppName, 'Convert with ONLYOFFICE'),
+							displayName: t(OCA.Onlyoffice.AppName, 'Convert with Euro-Office'),
 							mime,
 							permissions: (isPublicShare() ? OC.PERMISSION_UPDATE : OC.PERMISSION_READ),
 							iconClass: 'icon-eurooffice-convert',
@@ -595,7 +595,7 @@ import { loadState } from '@nextcloud/initial-state'
 		} else {
 			registerFileAction({
 				id: 'eurooffice-open-def',
-				displayName: () => t(OCA.Onlyoffice.AppName, 'Open in ONLYOFFICE'),
+				displayName: () => t(OCA.Onlyoffice.AppName, 'Open in Euro-Office'),
 				iconSvgInline: () => AppDarkSvg,
 				enabled: ({ nodes }) => {
 					const file = nodes[0]
@@ -615,7 +615,7 @@ import { loadState } from '@nextcloud/initial-state'
 
 			registerFileAction({
 				id: 'eurooffice-open',
-				displayName: () => t(OCA.Onlyoffice.AppName, 'Open in ONLYOFFICE'),
+				displayName: () => t(OCA.Onlyoffice.AppName, 'Open in Euro-Office'),
 				iconSvgInline: () => AppDarkSvg,
 				enabled: ({ nodes }) => {
 					const config = getConfig(nodes[0])
@@ -634,7 +634,7 @@ import { loadState } from '@nextcloud/initial-state'
 
 			registerFileAction({
 				id: 'eurooffice-convert',
-				displayName: () => t(OCA.Onlyoffice.AppName, 'Convert with ONLYOFFICE'),
+				displayName: () => t(OCA.Onlyoffice.AppName, 'Convert with Euro-Office'),
 				iconSvgInline: () => AppDarkSvg,
 				enabled: ({ nodes }) => {
 					const config = getConfig(nodes[0])
@@ -924,7 +924,7 @@ import { loadState } from '@nextcloud/initial-state'
 				const button = document.createElement('a')
 				button.href = editorUrl
 				button.className = 'eurooffice-public-open button'
-				button.innerText = t(OCA.Onlyoffice.AppName, 'Open in ONLYOFFICE')
+				button.innerText = t(OCA.Onlyoffice.AppName, 'Open in Euro-Office')
 
 				if (!OCA.Onlyoffice.setting.sameTab) {
 					button.target = '_blank'

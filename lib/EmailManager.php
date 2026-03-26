@@ -189,8 +189,8 @@ class EmailManager {
         }
         $userName = $user->getDisplayName();
 
-        $subject = $this->trans->t("ONLYOFFICE Document Server is unavailable");
-        $bodyHtml = $this->trans->t("This is a mail message to notify that the connection with the ONLYOFFICE Document Server has been lost. Please check the connection settings:");
+        $subject = $this->trans->t("Euro-Office Document Server is unavailable");
+        $bodyHtml = $this->trans->t("This is a mail message to notify that the connection with the Euro-Office Document Server has been lost. Please check the connection settings:");
         $appSettingsLink = $this->urlGenerator->getAbsoluteURL("/settings/admin/".$this->appName);
         $button = [$this->trans->t("Go to Settings"), $appSettingsLink];
         $template = $this->buildEmailTemplate($subject, $subject, $bodyHtml, $button);

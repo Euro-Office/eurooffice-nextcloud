@@ -1,25 +1,19 @@
-# ![](screenshots/icon.png) ONLYOFFICE app for Nextcloud
+# ![](screenshots/icon.png) Euro-Office app for Nextcloud
 
-This app enables users to edit office documents from [Nextcloud](https://nextcloud.com) using ONLYOFFICE Docs packaged as Document Server - [Community or Enterprise Edition](#eurooffice-docs-editions).
+This app enables users to edit office documents from [Nextcloud](https://nextcloud.com) using Euro-Office Docs packaged as Document Server
 
 ## Features ✨
 
 The app allows to:
 
-* ✍️ Create and edit [text documents](https://www.onlyoffice.com/word-processor?utm_source=github&utm_medium=cpc&utm_campaign=GitHubNextcloud), [spreadsheets](https://www.onlyoffice.com/spreadsheet-editor?utm_source=github&utm_medium=cpc&utm_campaign=GitHubNextcloud), and [presentations](https://www.onlyoffice.com/slides?utm_source=github&utm_medium=cpc&utm_campaign=GitHubNextcloud).
+* ✍️ Create and edit text documents, spreadsheets and presentations
 * 📝 Create and edit PDF forms.
-* ✂️ Edit [PDF](https://www.onlyoffice.com/pdf-editor?utm_source=github&utm_medium=cpc&utm_campaign=GitHubNextcloud) files.
-* 📊 View [diagram](https://www.onlyoffice.com/diagram-viewer?utm_source=github&utm_medium=cpc&utm_campaign=GitHubNextcloud) files.
+* ✂️ Edit PDF files
+* 📊 View diagram files
 * 🤝 Share files to other users.
 * 🔒 Protect documents with watermarks.
-* 👥 Co-edit documents in [real time](https://www.onlyoffice.com/seamless-collaboration?utm_source=github&utm_medium=cpc&utm_campaign=GitHubNextcloud): two co-editing modes (Fast and Strict), Track Changes, comments, and built-in chat. Co-editing is also available between several federated Nextcloud instances connected to one Document Server.
-* 🤖 Enable [AI assistants](https://www.onlyoffice.com/ai-assistants?utm_source=github&utm_medium=cpc&utm_campaign=GitHubNextcloud) in the editors to work faster and more efficient (it's possible to connect any AI provider).
+* 👥 Co-edit documents in real time: wo co-editing modes (Fast and Strict), Track Changes, comments, and built-in chat. Co-editing is also available between several federated Nextcloud instances connected to one Document Server.
 
-<p align="center">
-  <a href="https://www.onlyoffice.com/office-for-nextcloud?utm_source=github&utm_medium=cpc&utm_campaign=GitHubNextcloud">
-    <img width="840" src="https://static-site.onlyoffice.com/public/images/templates/office-for-nextcloud/documents/documents-4@2x.png" alt="ONLYOFFICE Docs for Nextcloud">
-  </a>
-</p>
 
 ### Supported formats
 
@@ -38,50 +32,37 @@ The app allows to:
 - **SLIDE**: POTM, POTX, PPSM, PPSX, PPTM, PPTX
 - **PDF**: PDF
 
-## Installing ONLYOFFICE Docs 📦
+## Installing Euro-Office Docs 📦
 
-You will need an instance of ONLYOFFICE Docs (Document Server) that is resolvable and connectable both from Nextcloud and any end clients. ONLYOFFICE Document Server must also be able to POST to Nextcloud directly.
+You will need an instance of Euro-Office Docs (Document Server) that is resolvable and connectable both from Nextcloud and any end clients. Euro-Office Document Server must also be able to POST to Nextcloud directly.
 
-ONLYOFFICE Document Server and Nextcloud can be installed either on different computers, or on the same machine. If you use one machine, set up a custom port for Document Server as by default both ONLYOFFICE Document Server and Nextcloud work on port 80.
+Euro-Office Document Server and Nextcloud can be installed either on different computers, or on the same machine. If you use one machine, set up a custom port for Document Server as by default both Euro-Office Document Server and Nextcloud work on port 80.
 
-You can install free Community version of ONLYOFFICE Docs or scalable Enterprise Edition.
 
-To install free Community version, use [Docker](https://github.com/onlyoffice/Docker-DocumentServer) (recommended) or follow [these instructions](https://helpcenter.onlyoffice.com/docs/installation/docs-community-install-ubuntu.aspx) for Debian, Ubuntu, or derivatives.
-
-To install Enterprise Edition, follow instructions [here](https://helpcenter.onlyoffice.com/docs/installation/enterprise).
-
-Community Edition vs Enterprise Edition comparison can be found [here](#eurooffice-docs-editions).
-
-To use ONLYOFFICE behind a proxy, please refer to [this article](https://helpcenter.onlyoffice.com/docs/installation/docs-community-proxy.aspx).
-
-You can also use our **[Docker installation](https://github.com/ONLYOFFICE/docker-onlyoffice-nextcloud)** to install pre-configured Document Server (free version) and Nextcloud with a couple of commands.
-
-Alternatively, you can opt for ONLYOFFICE Docs Cloud which doesn't require downloading and installation. To get ONLYOFFICE Docs Cloud, get started [here](https://www.onlyoffice.com/docs-registration?utm_source=github&utm_medium=cpc&utm_campaign=GitHubNextcloud).
-
-## Installing ONLYOFFICE app for Nextcloud 📥
+## Installing Euro-Office app for Nextcloud 📥
 
 The Nextcloud administrator can install the app from the in-built application market.
 For that go to the user name and select **Apps**.
 
-After that find **ONLYOFFICE** in the list of available applications and install it.
+After that find **Euro-Office** in the list of available applications and install it.
 
 If the server with the Nextcloud installed does not have an Internet access, or if you need it for some other reason, the administrator can install the application manually.
-To start using ONLYOFFICE Document Server with Nextcloud, the following steps must be performed:
+To start using Euro-Office Document Server with Nextcloud, the following steps must be performed:
 
 1. Go to the Nextcloud server _apps/_ directory (or some other directory [used](https://docs.nextcloud.com/server/latest/admin_manual/apps_management.html#using-custom-app-directories)):
     ```bash
     cd apps/
     ```
-2. Get the ONLYOFFICE app for Nextcloud.
+2. Get the Euro-Office app for Nextcloud.
 There are several ways to do that:
 
-    a. Download the latest signed version from the official store for [Nextcloud](https://apps.nextcloud.com/apps/onlyoffice).
+    a. Download the latest signed version from the official store for [Nextcloud](https://apps.nextcloud.com/apps/eurooffice).
 
-    b. Or you can download the latest signed version from the application [release page](https://github.com/ONLYOFFICE/onlyoffice-nextcloud/releases) on GitHub.
+    b. Or you can download the latest signed version from the application [release page](https://github.com/Euro-Office/eurooffice-nextcloud/releases) on GitHub.
 
     c. Or you can clone the application source code and compile it yourself:
     ```bash
-    git clone https://github.com/ONLYOFFICE/onlyoffice-nextcloud.git onlyoffice
+    git clone https://github.com/Euro-Office/eurooffice-nextcloud.git eurooffice
     cd eurooffice
     git submodule update --init --recursive
     ```
@@ -98,44 +79,44 @@ There are several ways to do that:
     ```bash
     chown -R www-data:www-data eurooffice
     ```
-6. In Nextcloud open the `~/settings/apps/disabled` page with _Not enabled_ apps by administrator and click _Enable_ for the **ONLYOFFICE** application.
+6. In Nextcloud open the `~/settings/apps/disabled` page with _Not enabled_ apps by administrator and click _Enable_ for the **Euro-Office** application.
 
-## Configuring ONLYOFFICE app for Nextcloud 🛠️
+## Configuring Euro-Office app for Nextcloud 🛠️
 
-There are three ways to configure ONLYOFFICE integration settings in Nextcloud.
+There are three ways to configure Euro-Office integration settings in Nextcloud.
 
 ### User interface (UI)
 
 Settings can be modified directly via the Nextcloud admin panel.
 
-For example, in Nextcloud open the `~/settings/admin/onlyoffice` page with administrative settings for **ONLYOFFICE** section.
-Enter the following address to connect ONLYOFFICE Document Server:
+For example, in Nextcloud open the `~/settings/admin/eurooffice` page with administrative settings for **Euro-Office** section.
+Enter the following address to connect Euro-Office Document Server:
 
 ```
 https://<documentserver>/
 ```
 
-Where the **documentserver** is the name of the server with the ONLYOFFICE Document Server installed.
+Where the **documentserver** is the name of the server with the Euro-Office Document Server installed.
 The address must be accessible for the user browser and from the Nextcloud server.
-The Nextcloud server address must also be accessible from ONLYOFFICE Document Server for correct work.
+The Nextcloud server address must also be accessible from Euro-Office Document Server for correct work.
 
-Sometimes your network configuration might not allow the requests between installed Nextcloud and ONLYOFFICE Document Server using the public addresses.
-The _Advanced server settings_ allows to set the ONLYOFFICE Document Server address for internal requests from Nextcloud server and the returning Nextcloud address for the internal requests from ONLYOFFICE Document Server.
+Sometimes your network configuration might not allow the requests between installed Nextcloud and Euro-Office Document Server using the public addresses.
+The _Advanced server settings_ allows to set the Euro-Office Document Server address for internal requests from Nextcloud server and the returning Nextcloud address for the internal requests from Euro-Office Document Server.
 You need to enter them in the appropriate fields.
 
-Starting from version 7.2, JWT is enabled by default and the secret key is generated automatically to restrict the access to ONLYOFFICE Docs and for security reasons and data integrity.
+Starting from version 7.2, JWT is enabled by default and the secret key is generated automatically to restrict the access to Euro-Office Docs and for security reasons and data integrity.
 Specify your own **Secret key** in the Nextcloud administrative configuration.
-In the ONLYOFFICE Docs config file, specify the same secret key and enable the validation.
+In the Euro-Office Docs config file, specify the same secret key and enable the validation.
 
 ### occ commands
 
-Use the occ commands to set ONLYOFFICE settings for Nextcloud in the following way:
+Use the occ commands to set Euro-Office settings for Nextcloud in the following way:
 
 ```sh
 php occ config:app:set eurooffice {setting_key} --value={setting_value}
 ```
 
-where `{setting_key}` is the key of the ONLYOFFICE integration setting, and `{setting_value}` is the corresponding value.
+where `{setting_key}` is the key of the Euro-Office integration setting, and `{setting_value}` is the corresponding value.
 
 ### config.php
 
@@ -147,7 +128,7 @@ Directly define settings in the `config/config.php` file under the `'eurooffice'
 )
 ```
 
-where `{setting_key}` is the key of the ONLYOFFICE integration setting, and `{setting_value}` is the corresponding value.
+where `{setting_key}` is the key of the Euro-Office integration setting, and `{setting_value}` is the corresponding value.
 
 The tables below list all available Nextcloud settings along with the supported configuration methods.
 
@@ -155,16 +136,16 @@ The tables below list all available Nextcloud settings along with the supported 
 
 | Setting key                 | UI name / Description                                                                                                                                                                                                                | Example                                                                   | UI | occ | config.php |
 |-----------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------|----|-----|------------|
-| `demo`                      | Connect to demo ONLYOFFICE Docs server                                                                                                                                                                                               | -                                                                         | +  | -   | -          |
-| `DocumentServerUrl`         | ONLYOFFICE Docs address<br /><br />The connector uses this setting from the `config.php` file if no value is specified in the application configuration via UI or occ command.                                                       | "http://\<documentserver>/"                                               | +  | +   | +          |
-| `DocumentServerInternalUrl` | ONLYOFFICE Docs address for internal requests from the server<br /><br />The connector uses this setting from the `config.php` file if no value is specified in the application configuration via UI or occ command.                 | "http://<internal_url>/"                                                  | +  | +   | +          |
+| `demo`                      | Connect to demo Euro-Office Docs server                                                                                                                                                                                               | -                                                                         | +  | -   | -          |
+| `DocumentServerUrl`         | Euro-Office Docs address<br /><br />The connector uses this setting from the `config.php` file if no value is specified in the application configuration via UI or occ command.                                                       | "http://\<documentserver>/"                                               | +  | +   | +          |
+| `DocumentServerInternalUrl` | Euro-Office Docs address for internal requests from the server<br /><br />The connector uses this setting from the `config.php` file if no value is specified in the application configuration via UI or occ command.                 | "http://<internal_url>/"                                                  | +  | +   | +          |
 | `StorageUrl`                | Nextcloud address available from document server                                                                                                                                                                                     | "http://\<storage_url>/"                                                  | +  | +   | +          |
 | `jwt_secret`                | Secret key (leave blank to disable)                                                                                                                                                                                                  | "your_secret_key"                                                         | +  | +   | +          |
 | `jwt_header`                | JWT header                                                                                                                                                                                                                           | "AuthorizationJWT"                                                        | +  | +   | +          |
-| `sameTab`                   | Open file in the same tab<br /><br />The **Open in ONLYOFFICE** action will be added to the file context menu. You can specify this action as default and it will be used when the file name is clicked for the selected file types. | false                                                                     | +  | +   | -          |
+| `sameTab`                   | Open file in the same tab<br /><br />The **Open in Euro-Office** action will be added to the file context menu. You can specify this action as default and it will be used when the file name is clicked for the selected file types. | false                                                                     | +  | +   | -          |
 | `enableSharing`             | Enable sharing<br /><br />If you forcibly enable this setting  via occ command, the editors will be opened in a new tab even when `sameTab === true`, which is not the intended behavior.                                            | true                                                                      | +  | +   | -          |
-| `preview`                   | Use ONLYOFFICE to generate a document preview                                                                                                                                                                                        | true                                                                      | +  | +   | -          |
-| `advanced`                  | Provide advanced document permissions using ONLYOFFICE Docs                                                                                                                                                                          | true                                                                      | +  | +   | -          |
+| `preview`                   | Use Euro-Office to generate a document preview                                                                                                                                                                                        | true                                                                      | +  | +   | -          |
+| `advanced`                  | Provide advanced document permissions using Euro-Office Docs                                                                                                                                                                          | true                                                                      | +  | +   | -          |
 | `cronChecker`               | Enable background connection check to the editors                                                                                                                                                                                    | true                                                                      | +  | +   | -          |
 | `emailNotifications`        | Enable e-mail notifications                                                                                                                                                                                                          | true                                                                      | +  | +   | -          |
 | `versionHistory`            | Keep metadata for each version once the document is edited                                                                                                                                                                           | true                                                                      | +  | +   | -          |
@@ -208,7 +189,7 @@ The tables below list all available Nextcloud settings along with the supported 
 
 ## Checking the connection ☑️
 
-You can check the connection to ONLYOFFICE Document Server by using the following occ command:
+You can check the connection to Euro-Office Document Server by using the following occ command:
 
 `occ eurooffice:documentserver --check`
 
@@ -225,35 +206,33 @@ The Advanced tab allows you to grant additional access rights only to those user
 
 ## How it works ⚙️
 
-The ONLYOFFICE app follows the API documented here [api.onlyoffice.com](https://api.onlyoffice.com/?utm_source=github&utm_medium=cpc&utm_campaign=GitHubNextcloud):
-
 * When creating a new file, the user navigates to a document folder within Nextcloud and clicks the **Document**, **Spreadsheet** or **Presentation** item in the _new_ (+) menu.
 
 * The browser invokes the `create` method in the `/lib/Controller/EditorController.php` controller.
 This method adds the copy of the file from the assets folder to the folder the user is currently in.
 
-* Or, when opening an existing file, the user navigates to it within Nextcloud and selects the **Open in ONLYOFFICE** menu option.
+* Or, when opening an existing file, the user navigates to it within Nextcloud and selects the **Open in Euro-Office** menu option.
 
 * A new browser tab is opened and the `index` method of the `/lib/Controller/EditorController.php` controller is invoked.
 
 * The app prepares a JSON object with the following properties:
 
-  * **url** - the URL that ONLYOFFICE Document Server uses to download the document;
-  * **callbackUrl** - the URL that ONLYOFFICE Document Server informs about status of the document editing;
-  * **documentServerUrl** - the URL that the client needs to respond to ONLYOFFICE Document Server (can be set at the administrative settings page);
-  * **key** - the etag to instruct ONLYOFFICE Document Server whether to download the document again or not;
+  * **url** - the URL that Euro-Office Document Server uses to download the document;
+  * **callbackUrl** - the URL that Euro-Office Document Server informs about status of the document editing;
+  * **documentServerUrl** - the URL that the client needs to respond to Euro-Office Document Server (can be set at the administrative settings page);
+  * **key** - the etag to instruct Euro-Office Document Server whether to download the document again or not;
 
 * Nextcloud takes this object and constructs a page from `templates/editor.php` template, filling in all of those values so that the client browser can load up the editor.
 
-* The client browser makes a request for the javascript library from ONLYOFFICE Document Server and sends ONLYOFFICE Document Server the DocEditor configuration with the above properties.
+* The client browser makes a request for the javascript library from Euro-Office Document Server and sends Euro-Office Document Server the DocEditor configuration with the above properties.
 
-* Then ONLYOFFICE Document Server downloads the document from Nextcloud and the user begins editing.
+* Then Euro-Office Document Server downloads the document from Nextcloud and the user begins editing.
 
-* ONLYOFFICE Document Server sends a POST request to the _callbackUrl_ to inform Nextcloud that a user is editing the document.
+* Euro-Office Document Server sends a POST request to the _callbackUrl_ to inform Nextcloud that a user is editing the document.
 
 * When all users and client browsers are done with editing, they close the editing window.
 
-* After 10 seconds of inactivity, ONLYOFFICE Document Server sends a POST to the _callbackUrl_  letting Nextcloud know that the clients have finished editing the document and closed it.
+* After 10 seconds of inactivity, Euro-Office Document Server sends a POST to the _callbackUrl_  letting Nextcloud know that the clients have finished editing the document and closed it.
 
 * Nextcloud downloads the new version of the document, replacing the old one.
 
@@ -267,7 +246,7 @@ When the _Log-in credentials, save in session_ authentication type is used, the 
 
 * If you are using a self-signed certificate for your **Document Server**, Nextcloud will not validate such a certificate and will not allow connection to/from **Document Server**. This issue can be solved in two ways.
 
-    You can check the '**Disable certificate verification (insecure)**' box on the ONLYOFFICE administration page, Server settings section, within your Nextcloud.
+    You can check the '**Disable certificate verification (insecure)**' box on the Euro-Office administration page, Server settings section, within your Nextcloud.
 
     Another option is to change the Nextcloud config file manually. Locate the Nextcloud config file (_/nextcloud/config/config.php_) and open it. Insert the following section to it:
 
@@ -282,9 +261,9 @@ When the _Log-in credentials, save in session_ authentication type is used, the 
 
 * If the editors don't open or save documents after a period of proper functioning, the reason can be a problem in changing network settings or disabling any relevant services, or issues with the SSL certificate.
 
-    To solve this, we added an asynchronous background task which runs on the server to check availability of the editors. It allows testing the connection between your **Nextcloud instance** and **ONLYOFFICE Document Server**, namely availability of server addresses and the validity of the JWT secret are being checked.
+    To solve this, we added an asynchronous background task which runs on the server to check availability of the editors. It allows testing the connection between your **Nextcloud instance** and **Euro-Office Document Server**, namely availability of server addresses and the validity of the JWT secret are being checked.
 
-    If any issue is detected, the ONLYOFFICE app for Nextcloud (consequently, the ability to create and open files) will be disabled. As a Nextcloud admin, you will get the corresponding notification.
+    If any issue is detected, the Euro-Office app for Nextcloud (consequently, the ability to create and open files) will be disabled. As a Nextcloud admin, you will get the corresponding notification.
 
     This option allows you to avoid issues when the server settings become incorrect and require changes.
 
@@ -299,94 +278,5 @@ When the _Log-in credentials, save in session_ authentication type is used, the 
 
 * When accessing a document without download permission, file printing and using the system clipboard are not available. Copying and pasting within the editor is available via buttons in the editor toolbar and in the context menu.
 
-* When a file is opened for editing in ONLYOFFICE while being simultaneously edited in other tools, changes may be overwritten or lost. To avoid conflicts and ensure smooth collaboration, we recommend using the Temporary File Lock application: https://apps.nextcloud.com/apps/files_lock. This helps prevent parallel editing and safeguards your work.
+* When a file is opened for editing in Euro-Office while being simultaneously edited in other tools, changes may be overwritten or lost. To avoid conflicts and ensure smooth collaboration, we recommend using the Temporary File Lock application: https://apps.nextcloud.com/apps/files_lock. This helps prevent parallel editing and safeguards your work.
 
-## ONLYOFFICE Docs editions
-
-ONLYOFFICE offers different versions of its online document editors that can be deployed on your own servers.
-
-* Community Edition 🆓 (`onlyoffice-documentserver` package)
-* Enterprise Edition 🏢 (`onlyoffice-documentserver-ee` package)
-
-The table below will help you to make the right choice.
-
-| Pricing and licensing                              | Community Edition                                                                                                                        | Enterprise Edition                                                                                                                              |
-|----------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------|
-|                                                    | [Get it now](https://www.onlyoffice.com/download-community?utm_source=github&utm_medium=cpc&utm_campaign=GitHubNextcloud#docs-community) | [Start Free Trial](https://www.onlyoffice.com/download?utm_source=github&utm_medium=cpc&utm_campaign=GitHubNextcloud#docs-enterprise)           |
-| Cost                                               | FREE                                                                                                                                     | [Go to the pricing page](https://www.onlyoffice.com/docs-enterprise-prices?utm_source=github&utm_medium=cpc&utm_campaign=GitHubNextcloud)       |
-| Simultaneous connections                           | up to 20 maximum                                                                                                                         | As in chosen pricing plan                                                                                                                       |
-| Number of users                                    | up to 20 recommended                                                                                                                     | As in chosen pricing plan                                                                                                                       |
-| License                                            | GNU AGPL v.3                                                                                                                             | Proprietary                                                                                                                                     |
-| **Support**                                        | **Community Edition**                                                                                                                    | **Enterprise Edition**                                                                                                                          |
-| Documentation                                      | [Help Center](https://helpcenter.onlyoffice.com/installation/docs-community-index.aspx)                                                  | [Help Center](https://helpcenter.onlyoffice.com/installation/docs-enterprise-index.aspx)                                                        |
-| Standard support                                   | [GitHub](https://github.com/ONLYOFFICE/DocumentServer/issues) or paid                                                                    | One year support included                                                                                                                       |
-| Premium support                                    | [Contact us](mailto:sales@onlyoffice.com)                                                                                                | [Contact us](mailto:sales@onlyoffice.com)                                                                                                       |
-| **Services**                                       | **Community Edition**                                                                                                                    | **Enterprise Edition**                                                                                                                          |
-| Conversion Service                                 | +                                                                                                                                        | +                                                                                                                                               |
-| Document Builder Service                           | +                                                                                                                                        | +                                                                                                                                               |
-| **Interface**                                      | **Community Edition**                                                                                                                    | **Enterprise Edition**                                                                                                                          |
-| Tabbed interface                                   | +                                                                                                                                        | +                                                                                                                                               |
-| Dark theme                                         | +                                                                                                                                        | +                                                                                                                                               |
-| 125%, 150%, 175%, 200% scaling                     | +                                                                                                                                        | +                                                                                                                                               |
-| White Label                                        | -                                                                                                                                        | -                                                                                                                                               |
-| Integrated test example (node.js)                  | +                                                                                                                                        | +                                                                                                                                               |
-| Mobile web editors                                 | -                                                                                                                                        | +*                                                                                                                                              |
-| **Plugins & Macros**                               | **Community Edition**                                                                                                                    | **Enterprise Edition**                                                                                                                          |
-| Plugins                                            | +                                                                                                                                        | +                                                                                                                                               |
-| Macros                                             | +                                                                                                                                        | +                                                                                                                                               |
-| **Collaborative capabilities**                     | **Community Edition**                                                                                                                    | **Enterprise Edition**                                                                                                                          |
-| Two co-editing modes                               | +                                                                                                                                        | +                                                                                                                                               |
-| Comments                                           | +                                                                                                                                        | +                                                                                                                                               |
-| Built-in chat                                      | +                                                                                                                                        | +                                                                                                                                               |
-| Review and tracking changes                        | +                                                                                                                                        | +                                                                                                                                               |
-| Display modes of tracking changes                  | +                                                                                                                                        | +                                                                                                                                               |
-| Version history                                    | +                                                                                                                                        | +                                                                                                                                               |
-| **Document Editor features**                       | **Community Edition**                                                                                                                    | **Enterprise Edition**                                                                                                                          |
-| Font and paragraph formatting                      | +                                                                                                                                        | +                                                                                                                                               |
-| Object insertion                                   | +                                                                                                                                        | +                                                                                                                                               |
-| Adding Content control                             | +                                                                                                                                        | +                                                                                                                                               |
-| Editing Content control                            | +                                                                                                                                        | +                                                                                                                                               |
-| Layout tools                                       | +                                                                                                                                        | +                                                                                                                                               |
-| Table of contents                                  | +                                                                                                                                        | +                                                                                                                                               |
-| Navigation panel                                   | +                                                                                                                                        | +                                                                                                                                               |
-| Mail Merge                                         | +                                                                                                                                        | +                                                                                                                                               |
-| Comparing Documents                                | +                                                                                                                                        | +                                                                                                                                               |
-| **Spreadsheet Editor features**                    | **Community Edition**                                                                                                                    | **Enterprise Edition**                                                                                                                          |
-| Font and paragraph formatting                      | +                                                                                                                                        | +                                                                                                                                               |
-| Object insertion                                   | +                                                                                                                                        | +                                                                                                                                               |
-| Functions, formulas, equations                     | +                                                                                                                                        | +                                                                                                                                               |
-| Table templates                                    | +                                                                                                                                        | +                                                                                                                                               |
-| Pivot tables                                       | +                                                                                                                                        | +                                                                                                                                               |
-| Data validation                                    | +                                                                                                                                        | +                                                                                                                                               |
-| Conditional formatting                             | +                                                                                                                                        | +                                                                                                                                               |
-| Sparklines                                         | +                                                                                                                                        | +                                                                                                                                               |
-| Sheet Views                                        | +                                                                                                                                        | +                                                                                                                                               |
-| **Presentation Editor features**                   | **Community Edition**                                                                                                                    | **Enterprise Edition**                                                                                                                          |
-| Font and paragraph formatting                      | +                                                                                                                                        | +                                                                                                                                               |
-| Object insertion                                   | +                                                                                                                                        | +                                                                                                                                               |
-| Transitions                                        | +                                                                                                                                        | +                                                                                                                                               |
-| Animations                                         | +                                                                                                                                        | +                                                                                                                                               |
-| Presenter mode                                     | +                                                                                                                                        | +                                                                                                                                               |
-| Notes                                              | +                                                                                                                                        | +                                                                                                                                               |
-| **Form creator features**                          | **Community Edition**                                                                                                                    | **Enterprise Edition**                                                                                                                          |
-| Adding form fields                                 | +                                                                                                                                        | +                                                                                                                                               |
-| Form preview                                       | +                                                                                                                                        | +                                                                                                                                               |
-| Saving as PDF                                      | +                                                                                                                                        | +                                                                                                                                               |
-| **PDF Editor features**                            | **Community Edition**                                                                                                                    | **Enterprise Edition**                                                                                                                          |
-| Text editing and co-editing                        | +                                                                                                                                        | +                                                                                                                                               |
-| Work with pages (adding, deleting, rotating)       | +                                                                                                                                        | +                                                                                                                                               |
-| Inserting objects (shapes, images, hyperlinks, etc.)       | +                                                                                                                                | +                                                                                                                                               |
-| Text annotations (highlight, underline, cross out, stamps) | +                                                                                                                                | +                                                                                                                                               |
-| Comments                                           | +                                                                                                                                        | +                                                                                                                                               |
-| Freehand drawings                                  | +                                                                                                                                        | +                                                                                                                                               |
-| Form filling                                       | +                                                                                                                                        | +                                                                                                                                               |
-|                                                    | [Get it now](https://www.onlyoffice.com/download-community?utm_source=github&utm_medium=cpc&utm_campaign=GitHubNextcloud#docs-community) | [Start Free Trial](https://www.onlyoffice.com/download?utm_source=github&utm_medium=cpc&utm_campaign=GitHubNextcloud#docs-enterprise)           |
-
-\* If supported by DMS.
-
-## Need help? User Feedback and Support 💡
-
-* **🐞 Found a bug?** Please report it by creating an [issue](https://github.com/ONLYOFFICE/onlyoffice-nextcloud/issues).
-* **❓ Have a question?** Ask our community and developers on the [ONLYOFFICE Forum](https://community.onlyoffice.com/).
-* **👨‍💻 Need help for developers?** Check our [API documentation](https://api.onlyoffice.com/?utm_source=github&utm_medium=cpc&utm_campaign=GitHubNextcloud).
-* **💡 Want to suggest a feature?** Share your ideas on our [feedback platform](https://feedback.onlyoffice.com/forums/966080-your-voice-matters).

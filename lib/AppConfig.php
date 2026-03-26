@@ -1477,7 +1477,7 @@ class AppConfig {
     }
 
     /**
-     * Get ONLYOFFICE formats list
+     * Get Euro-Office formats list
      *
      * @return array
      */

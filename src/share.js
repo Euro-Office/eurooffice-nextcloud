@@ -126,7 +126,7 @@ import { registerSidebarTab, FileType } from '@nextcloud/files'
 		const getTemplate = function(callback) {
 			if ($el.find('.eurooffice-share-container').length === 0) {
 				$('<ul>', { class: 'eurooffice-share-container' }).appendTo($el)
-				$('<div>').html(t(OCA.Onlyoffice.AppName, 'Provide advanced document permissions using ONLYOFFICE Docs')).prependTo($el)
+				$('<div>').html(t(OCA.Onlyoffice.AppName, 'Provide advanced document permissions using Euro-Office Docs')).prependTo($el)
 			}
 
 			if (templateItem) {

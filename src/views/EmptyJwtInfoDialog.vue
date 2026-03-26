@@ -65,7 +65,7 @@ export default {
 			const securityUrl = 'https://api.eurooffice.com/docs/docs-api/get-started/how-it-works/security/'
 			return t(
 				'eurooffice',
-				'To ensure the security of important parameters in ONLYOFFICE Docs requests, please set a Secret Key on the Settings page. To learn more, <a href="{url}" target="_blank">click here</a>.',
+				'To ensure the security of important parameters in Euro-Office Docs requests, please set a Secret Key on the Settings page. To learn more, <a href="{url}" target="_blank">click here</a>.',
 				{ url: securityUrl },
 				{ escape: false, sanitize: false },
 			)

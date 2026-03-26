@@ -88,7 +88,7 @@
 					}
 
 					if (!config.documentServerUrl) {
-						OCA.Onlyoffice.showMessage('ONLYOFFICE cannot be reached. Please contact admin', 'error', { timeout: -1 })
+						OCA.Onlyoffice.showMessage('Euro-Office cannot be reached. Please contact admin', 'error', { timeout: -1 })
 						return
 					}
 
@@ -96,11 +96,11 @@
 					script.src = config.documentServerUrl + 'web-apps/apps/api/documents/api.js?shardKey=' + config.document.key
 					script.setAttribute('nonce', btoa(OC.requestToken))
 					script.onerror = function() {
-						OCA.Onlyoffice.showMessage(t(OCA.Onlyoffice.AppName, 'ONLYOFFICE cannot be reached. Please contact admin'), 'error', { timeout: -1 })
+						OCA.Onlyoffice.showMessage(t(OCA.Onlyoffice.AppName, 'Euro-Office cannot be reached. Please contact admin'), 'error', { timeout: -1 })
 					}
 					script.onload = function() {
 						if (typeof DocsAPI === 'undefined') {
-							OCA.Onlyoffice.showMessage(t(OCA.Onlyoffice.AppName, 'ONLYOFFICE cannot be reached. Please contact admin'), 'error', { timeout: -1 })
+							OCA.Onlyoffice.showMessage(t(OCA.Onlyoffice.AppName, 'Euro-Office cannot be reached. Please contact admin'), 'error', { timeout: -1 })
 							return
 						}
 
@@ -142,7 +142,7 @@
 
 						if (config.editorConfig.tenant) {
 							config.events.onAppReady = function() {
-								OCA.Onlyoffice.docEditor.showMessage(t(OCA.Onlyoffice.AppName, 'You are using public demo ONLYOFFICE Docs server. Please do not store private sensitive data.'))
+								OCA.Onlyoffice.docEditor.showMessage(t(OCA.Onlyoffice.AppName, 'You are using public demo Euro-Office Docs server. Please do not store private sensitive data.'))
 							}
 						}
 

@@ -72,7 +72,7 @@ class AdminSection implements IIconSection {
      * @return string
      */
     public function getName() {
-        return "ONLYOFFICE";
+        return "Euro-Office";
     }
 
     /**
