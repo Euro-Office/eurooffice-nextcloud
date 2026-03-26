@@ -27,17 +27,17 @@
  *
  */
 
-    style("onlyoffice", "editor");
-    script("onlyoffice", "onlyoffice-desktop");
+    style("eurooffice", "editor");
+    script("eurooffice", "eurooffice-desktop");
 if (!empty($_["directToken"])) {
-    script("onlyoffice", "onlyoffice-directeditor");
+    script("eurooffice", "eurooffice-directeditor");
 }
-    script("onlyoffice", "onlyoffice-editor");
+    script("eurooffice", "eurooffice-editor");
 ?>
 
 <div id="app"
     <?php if (!empty($_["inviewer"])) { ?>
-        class="onlyoffice-inviewer"
+        class="eurooffice-inviewer"
     <?php } ?>>
 
     <div id="iframeEditor"

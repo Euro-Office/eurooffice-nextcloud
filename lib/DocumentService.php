@@ -27,7 +27,7 @@
  *
  */
 
-namespace OCA\Onlyoffice;
+namespace OCA\Eurooffice;
 
 use OCP\Http\Client\IClientService;
 use OCP\IL10N;
@@ -35,7 +35,7 @@ use OCP\IL10N;
 /**
  * Class service connector to Document Service
  *
- * @package OCA\Onlyoffice
+ * @package OCA\Eurooffice
  */
 class DocumentService {
 
@@ -44,7 +44,7 @@ class DocumentService {
      *
      * @var string
      */
-    private static $appName = "onlyoffice";
+    private static $appName = "eurooffice";
 
     /**
      * l10n service
@@ -417,12 +417,12 @@ class DocumentService {
      * Checking document service location
      *
      * @param OCP\IURLGenerator $urlGenerator - url generator
-     * @param OCA\Onlyoffice\Crypt $crypt -crypt
+     * @param OCA\Eurooffice\Crypt $crypt -crypt
      *
      * @return array
      */
     public function checkDocServiceUrl($urlGenerator, $crypt) {
-        $logger = \OCP\Log\logger('onlyoffice');
+        $logger = \OCP\Log\logger('eurooffice');
         $version = null;
 
         try {

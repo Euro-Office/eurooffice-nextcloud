@@ -27,19 +27,19 @@
  *
  */
 
-namespace OCA\Onlyoffice;
+namespace OCA\Eurooffice;
 
 /**
  * Key manager
  *
- * @package OCA\Onlyoffice
+ * @package OCA\Eurooffice
  */
 class KeyManager {
 
     /**
      * Table name
      */
-    private const TABLENAME_KEY = "onlyoffice_filekey";
+    private const TABLENAME_KEY = "eurooffice_filekey";
 
     /**
      * Get document identifier

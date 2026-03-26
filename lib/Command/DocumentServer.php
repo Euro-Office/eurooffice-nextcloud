@@ -27,11 +27,11 @@
  *
  */
 
-namespace OCA\Onlyoffice\Command;
+namespace OCA\Eurooffice\Command;
 
-use OCA\Onlyoffice\AppConfig;
-use OCA\Onlyoffice\Crypt;
-use OCA\Onlyoffice\DocumentService;
+use OCA\Eurooffice\AppConfig;
+use OCA\Eurooffice\Crypt;
+use OCA\Eurooffice\DocumentService;
 use OCP\IL10N;
 use OCP\IURLGenerator;
 use Symfony\Component\Console\Command\Command;
@@ -93,7 +93,7 @@ class DocumentServer extends Command {
      */
     protected function configure() {
         $this
-            ->setName("onlyoffice:documentserver")
+            ->setName("eurooffice:documentserver")
             ->setDescription("Manage document server")
             ->addOption(
                 "check",

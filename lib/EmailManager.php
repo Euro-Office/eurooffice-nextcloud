@@ -27,7 +27,7 @@
  *
  */
 
-namespace OCA\Onlyoffice;
+namespace OCA\Eurooffice;
 
 use OCP\Mail\IEMailTemplate;
 use OCP\Mail\IMailer;
@@ -39,7 +39,7 @@ use OCP\IUserManager;
 /**
  * Email manager
  *
- * @package OCA\Onlyoffice
+ * @package OCA\Eurooffice
  */
 class EmailManager {
 
@@ -213,7 +213,7 @@ class EmailManager {
      * @return IEMailTemplate
      */
     private function buildEmailTemplate(string $subject, string $heading, string $body, array $button = []) {
-        $template = $this->mailer->createEMailTemplate("onlyoffice.NotifyEmail");
+        $template = $this->mailer->createEMailTemplate("eurooffice.NotifyEmail");
         $template->setSubject($subject);
         $template->addHeader();
         $template->addHeading($heading);

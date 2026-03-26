@@ -26,8 +26,8 @@
  *
  */
 
-#content.app-onlyoffice,
-#body-public #content.app-onlyoffice {
+#content.app-eurooffice,
+#body-public #content.app-eurooffice {
     min-height: calc(100% - 50px);
 }
 
@@ -43,12 +43,12 @@
     margin-top: -50px;
 }
 
-#content.app-onlyoffice #app > iframe {
+#content.app-eurooffice #app > iframe {
     height: calc(100dvh - 50px);
     margin-top: 0px;
 }
 
-.onlyoffice-inviewer > iframe {
+.eurooffice-inviewer > iframe {
     height: 100vh !important;
 }
 

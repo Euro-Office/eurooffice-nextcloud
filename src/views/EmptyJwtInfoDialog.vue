@@ -28,7 +28,7 @@
 		:name="dialogName"
 		:buttons="buttons"
 		@update:open="$emit('close', false)">
-		<div class="onlyoffice-popup-info">
+		<div class="eurooffice-popup-info">
 			<p>{{ successText }}</p>
 			<p v-html="warningHtml" />
 		</div>
@@ -48,8 +48,8 @@ export default {
 
 	data() {
 		return {
-			successText: t('onlyoffice', 'Server settings have been successfully updated'),
-			dialogName: t('onlyoffice', 'Info'),
+			successText: t('eurooffice', 'Server settings have been successfully updated'),
+			dialogName: t('eurooffice', 'Info'),
 			buttons: [
 				{
 					label: t('core', 'Ok'),
@@ -62,9 +62,9 @@ export default {
 
 	computed: {
 		warningHtml() {
-			const securityUrl = 'https://api.onlyoffice.com/docs/docs-api/get-started/how-it-works/security/'
+			const securityUrl = 'https://api.eurooffice.com/docs/docs-api/get-started/how-it-works/security/'
 			return t(
-				'onlyoffice',
+				'eurooffice',
 				'To ensure the security of important parameters in ONLYOFFICE Docs requests, please set a Secret Key on the Settings page. To learn more, <a href="{url}" target="_blank">click here</a>.',
 				{ url: securityUrl },
 				{ escape: false, sanitize: false },
@@ -75,14 +75,14 @@ export default {
 </script>
 
 <style scoped lang="scss">
-.onlyoffice-popup-info {
+.eurooffice-popup-info {
     display: flex;
     flex-direction: column;
     row-gap: 12px;
     padding: 13px;
 }
 
-.onlyoffice-popup-info :deep(a) {
+.eurooffice-popup-info :deep(a) {
     text-decoration: underline;
 }
 

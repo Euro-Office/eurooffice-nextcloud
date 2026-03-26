@@ -27,7 +27,7 @@
  *
  */
 
-namespace OCA\Onlyoffice;
+namespace OCA\Eurooffice;
 
 use OCP\Files\File;
 use OCP\Files\Template\ICustomTemplateProvider;

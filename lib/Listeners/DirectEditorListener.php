@@ -27,10 +27,10 @@
  *
  */
 
-namespace OCA\Onlyoffice\Listeners;
+namespace OCA\Eurooffice\Listeners;
 
-use OCA\Onlyoffice\AppConfig;
-use OCA\Onlyoffice\DirectEditor;
+use OCA\Eurooffice\AppConfig;
+use OCA\Eurooffice\DirectEditor;
 use OCP\DirectEditing\RegisterDirectEditorEvent;
 use OCP\EventDispatcher\Event;
 use OCP\EventDispatcher\IEventListener;

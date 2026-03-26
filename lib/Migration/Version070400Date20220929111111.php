@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace OCA\Onlyoffice\Migration;
+namespace OCA\Eurooffice\Migration;
 
 use Closure;
 use OCP\DB\ISchemaWrapper;
@@ -32,8 +32,8 @@ class Version070400Date20220929111111 extends SimpleMigrationStep {
         /** @var ISchemaWrapper $schema */
         $schema = $schemaClosure();
 
-        if (!$schema->hasTable('onlyoffice_filekey')) {
-            $table = $schema->createTable('onlyoffice_filekey');
+        if (!$schema->hasTable('eurooffice_filekey')) {
+            $table = $schema->createTable('eurooffice_filekey');
             $table->addColumn('id', 'integer', [
                 'autoincrement' => true,
                 'notnull' => true,
@@ -55,11 +55,11 @@ class Version070400Date20220929111111 extends SimpleMigrationStep {
                 'default' => 0,
             ]);
             $table->setPrimaryKey(['id']);
-            $table->addUniqueIndex(['file_id'], 'onlyoffice_file_id_index');
+            $table->addUniqueIndex(['file_id'], 'eurooffice_file_id_index');
         }
 
-        if (!$schema->hasTable('onlyoffice_permissions')) {
-            $table = $schema->createTable('onlyoffice_permissions');
+        if (!$schema->hasTable('eurooffice_permissions')) {
+            $table = $schema->createTable('eurooffice_permissions');
             $table->addColumn('id', 'integer', [
                 'autoincrement' => true,
                 'notnull' => true,
@@ -73,11 +73,11 @@ class Version070400Date20220929111111 extends SimpleMigrationStep {
                 'default' => 0,
             ]);
             $table->setPrimaryKey(['id']);
-            $table->addUniqueIndex(['share_id'], 'onlyoffice_share_id_index');
+            $table->addUniqueIndex(['share_id'], 'eurooffice_share_id_index');
         }
 
-        if (!$schema->hasTable('onlyoffice_instance')) {
-            $table = $schema->createTable('onlyoffice_instance');
+        if (!$schema->hasTable('eurooffice_instance')) {
+            $table = $schema->createTable('eurooffice_instance');
             $table->addColumn('id', 'integer', [
                 'autoincrement' => true,
                 'notnull' => true,
@@ -95,7 +95,7 @@ class Version070400Date20220929111111 extends SimpleMigrationStep {
                 'default' => 0,
             ]);
             $table->setPrimaryKey(['id']);
-            $table->addUniqueIndex(['remote'], 'onlyoffice_remote_index');
+            $table->addUniqueIndex(['remote'], 'eurooffice_remote_index');
         }
 
         return $schema;

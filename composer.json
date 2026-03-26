@@ -1,5 +1,5 @@
 {
-    "name": "onlyoffice/onlyoffice-nextcloud",
+    "name": "eurooffice/eurooffice-nextcloud",
     "authors": [
         {
             "name": "Ascensio System SIA",
@@ -9,7 +9,7 @@
     ],
     "autoload": {
         "psr-4": {
-            "OCA\\Onlyoffice\\": "./lib/"
+            "OCA\\Eurooffice\\": "./lib/"
         }
     },
     "require": {

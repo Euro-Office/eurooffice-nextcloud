@@ -27,7 +27,7 @@
  *
  */
 
-namespace OCA\Onlyoffice;
+namespace OCA\Eurooffice;
 
 use OCP\AppFramework\Http\ContentSecurityPolicy;
 use OCP\AppFramework\Http\Response;
@@ -41,7 +41,7 @@ use Psr\Log\LoggerInterface;
 /**
  * Direct Editor
  *
- * @package OCA\Onlyoffice
+ * @package OCA\Eurooffice
  */
 class DirectEditor implements IEditor {
 

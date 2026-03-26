@@ -1,5 +1,5 @@
 OC.L10N.register(
-    "onlyoffice",
+    "eurooffice",
     {
     "Access denied" : "Accesso negato",
     "Invalid request" : "Richiesta non valida",

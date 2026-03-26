@@ -37,7 +37,7 @@
 	}
 
 	OCA.Onlyoffice = {
-		AppName: 'onlyoffice',
+		AppName: 'eurooffice',
 		frameSelector: null,
 		setting: {},
 	}
@@ -51,7 +51,7 @@
 
 			return createElement('iframe', {
 				attrs: {
-					id: 'onlyofficeViewerFrame',
+					id: 'euroofficeViewerFrame',
 					scrolling: 'no',
 					src: self.url + '&inframe=true&inviewer=true',
 				},
@@ -84,7 +84,7 @@
 	}
 
 	if (OCA.Viewer) {
-		OCA.Onlyoffice.frameSelector = '#onlyofficeViewerFrame'
+		OCA.Onlyoffice.frameSelector = '#euroofficeViewerFrame'
 
 		const mimes = $.map(OCA.Onlyoffice.setting.formats, function(format) {
 			if (format.def) {

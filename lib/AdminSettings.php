@@ -27,10 +27,10 @@
  *
  */
 
-namespace OCA\Onlyoffice;
+namespace OCA\Eurooffice;
 
-use OCA\Onlyoffice\AppInfo\Application;
-use OCA\Onlyoffice\Controller\SettingsController;
+use OCA\Eurooffice\AppInfo\Application;
+use OCA\Eurooffice\Controller\SettingsController;
 use OCP\Settings\ISettings;
 
 /**
@@ -59,7 +59,7 @@ class AdminSettings implements ISettings {
      * @return string
      */
     public function getSection() {
-        return "onlyoffice";
+        return "eurooffice";
     }
 
     /**

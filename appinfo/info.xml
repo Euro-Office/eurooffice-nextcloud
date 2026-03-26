@@ -1,9 +1,9 @@
 ﻿<?xml version="1.0"?>
 <info>
-    <id>onlyoffice</id>
-    <name>ONLYOFFICE</name>
-    <summary>ONLYOFFICE app</summary>
-    <description><![CDATA[The ONLYOFFICE app for Nextcloud brings powerful document editing and collaboration tools directly to your Nextcloud environment. With this integration, you can seamlessly create, edit, and co-author text documents, spreadsheets, presentations, and PDFs, as well as build and fill out PDF forms.
+    <id>eurooffice</id>
+    <name>Euro-Office</name>
+    <summary>Euro-Office app</summary>
+    <description><![CDATA[The Euro-Office app for Nextcloud brings powerful document editing and collaboration tools directly to your Nextcloud environment. With this integration, you can seamlessly create, edit, and co-author text documents, spreadsheets, presentations, and PDFs, as well as build and fill out PDF forms.
 
 Collaborate with your team in real time, make use of Track Changes, version history, comments, integrated chat, and more. Work together on files with federated cloud sharing. Flexible access permissions allow you to control who can view, edit, or comment, ensuring secure role-based collaboration tailored to your needs. Documents can also be protected with watermarks, password settings, and encryption for added security.
 
@@ -11,12 +11,12 @@ The app offers support for over 50 file formats, including DOCX, XLSX, PPTX, PDF
 
 Furthermore, you can seamlessly connect any AI assistant, including local ones, directly to the editors to work faster and more efficient. This allows you to leverage various AI models for tasks like chatbot interactions, translations, OCR, and more.
 
-Whether you’re working with internal teams or external collaborators, the ONLYOFFICE app for Nextcloud enhances productivity, simplifies workflows, and ensures your files remain secure.
+Whether you’re working with internal teams or external collaborators, the Euro-Office app for Nextcloud enhances productivity, simplifies workflows, and ensures your files remain secure.
 ]]></description>
     <licence>agpl</licence>
     <author mail="dev@onlyoffice.com" homepage="https://www.onlyoffice.com/">Ascensio System SIA</author>
     <version>10.0.0</version>
-    <namespace>Onlyoffice</namespace>
+    <namespace>Eurooffice</namespace>
     <types>
         <prevent_group_restriction/>
     </types>
@@ -42,13 +42,13 @@ Whether you’re working with internal teams or external collaborators, the ONLY
         <nextcloud min-version="33" max-version="33"/>
     </dependencies>
     <settings>
-        <admin>OCA\Onlyoffice\AdminSettings</admin>
-        <admin-section>OCA\Onlyoffice\AdminSection</admin-section>
+        <admin>OCA\Eurooffice\AdminSettings</admin>
+        <admin-section>OCA\Eurooffice\AdminSection</admin-section>
     </settings>
     <commands>
-        <command>OCA\Onlyoffice\Command\DocumentServer</command>
+        <command>OCA\Eurooffice\Command\DocumentServer</command>
     </commands>
     <background-jobs>
-        <job>OCA\Onlyoffice\Cron\EditorsCheck</job>
+        <job>OCA\Eurooffice\Cron\EditorsCheck</job>
     </background-jobs>
 </info>

@@ -26,7 +26,7 @@
  *
  */
 
-#onlyofficeViewerFrame {
+#euroofficeViewerFrame {
     background-color: #fff;
     width: 100%;
     height: calc(var(--body-height) + var(--body-container-margin) + 100px);
@@ -36,11 +36,11 @@
     z-index: 110;
 }
 
-.modal-wrapper--full #onlyofficeViewerFrame {
+.modal-wrapper--full #euroofficeViewerFrame {
     top: 0;
 }
 
-.widget-custom #onlyofficeViewerFrame {
+.widget-custom #euroofficeViewerFrame {
     position: unset;
     top: unset;
     min-height: 300px;

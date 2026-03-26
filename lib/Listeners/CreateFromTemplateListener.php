@@ -27,13 +27,13 @@
  *
  */
 
-namespace OCA\Onlyoffice\Listeners;
+namespace OCA\Eurooffice\Listeners;
 
 use OCP\EventDispatcher\Event;
 use OCP\EventDispatcher\IEventListener;
 use OCP\Files\Template\FileCreatedFromTemplateEvent;
 
-use OCA\Onlyoffice\TemplateManager;
+use OCA\Eurooffice\TemplateManager;
 
 /**
  * CreateFromTemplate listener

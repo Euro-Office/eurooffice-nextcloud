@@ -35,19 +35,19 @@
 (function($, OC) {
 
 	OCA.Onlyoffice = _.extend({
-		AppName: 'onlyoffice',
+		AppName: 'eurooffice',
 		templates: null,
 	}, OCA.Onlyoffice)
 
 	OCA.Onlyoffice.OpenTemplatePicker = function(name, extension, type) {
 
-		$('#onlyoffice-template-picker').remove()
+		$('#eurooffice-template-picker').remove()
 
 		$.get(OC.filePath(OCA.Onlyoffice.AppName, 'templates', 'templatePicker.html'),
 			function(tmpl) {
 				const $tmpl = $(tmpl)
 				const dialog = $tmpl.octemplate({
-					dialog_name: 'onlyoffice-template-picker',
+					dialog_name: 'eurooffice-template-picker',
 					dialog_title: t(OCA.Onlyoffice.AppName, 'Select template'),
 				})
 
@@ -55,7 +55,7 @@
 
 				$('body').append(dialog)
 
-				$('#onlyoffice-template-picker').ocdialog({
+				$('#eurooffice-template-picker').ocdialog({
 					closeOnEscape: true,
 					modal: true,
 					buttons: [{
@@ -135,7 +135,7 @@
 	}
 
 	OCA.Onlyoffice.AttachTemplates = function(dialog, type) {
-		const emptyItem = dialog[0].querySelector('.onlyoffice-template-item')
+		const emptyItem = dialog[0].querySelector('.eurooffice-template-item')
 
 		OCA.Onlyoffice.templates.forEach(template => {
 			if (template.type !== type) {
@@ -150,7 +150,7 @@
 			item.onclick = function() {
 				dialog[0].dataset.templateId = template.id
 			}
-			dialog[0].querySelector('.onlyoffice-template-container').appendChild(item)
+			dialog[0].querySelector('.eurooffice-template-container').appendChild(item)
 		})
 
 		$(emptyItem.querySelector('label')).attr('for', 'template_picker-0')
@@ -172,7 +172,7 @@
 				item.children('img').attr('src', template.icon)
 				item.children('p').text(template.name)
 
-				$('.onlyoffice-template-container').append(item)
+				$('.eurooffice-template-container').append(item)
 			})
 	}
 

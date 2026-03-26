@@ -27,7 +27,7 @@
  *
  */
 
-namespace OCA\Onlyoffice;
+namespace OCA\Eurooffice;
 
 use OCA\Talk\Manager as TalkManager;
 use OCP\Constants;
@@ -40,7 +40,7 @@ use Psr\Log\LoggerInterface;
 /**
  * Class expands base permissions
  *
- * @package OCA\Onlyoffice
+ * @package OCA\Eurooffice
  */
 class ExtraPermissions {
 
@@ -82,7 +82,7 @@ class ExtraPermissions {
     /**
      * Table name
      */
-    private const TABLENAME_KEY = "onlyoffice_permissions";
+    private const TABLENAME_KEY = "eurooffice_permissions";
 
     /**
      * Extra permission values

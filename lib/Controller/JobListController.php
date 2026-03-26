@@ -27,10 +27,10 @@
  *
  */
 
-namespace OCA\Onlyoffice\Controller;
+namespace OCA\Eurooffice\Controller;
 
-use OCA\Onlyoffice\AppConfig;
-use OCA\Onlyoffice\Cron\EditorsCheck;
+use OCA\Eurooffice\AppConfig;
+use OCA\Eurooffice\Cron\EditorsCheck;
 use OCP\AppFramework\Controller;
 use OCP\BackgroundJob\IJob;
 use OCP\BackgroundJob\IJobList;
@@ -39,7 +39,7 @@ use OCP\IRequest;
 /**
  * Class JobListController
  *
- * @package OCA\Onlyoffice\Controller
+ * @package OCA\Eurooffice\Controller
  */
 class JobListController extends Controller {
 
@@ -79,7 +79,7 @@ class JobListController extends Controller {
     private function addJob($job) {
         if (!$this->jobList->has($job, null)) {
             $this->jobList->add($job);
-            \OCP\Log\logger('onlyoffice')->debug("Job '".$job."' added to JobList.", ["app" => $this->appName]);
+            \OCP\Log\logger('eurooffice')->debug("Job '".$job."' added to JobList.", ["app" => $this->appName]);
         }
     }
 
@@ -91,7 +91,7 @@ class JobListController extends Controller {
     private function removeJob($job) {
         if ($this->jobList->has($job, null)) {
             $this->jobList->remove($job);
-            \OCP\Log\logger('onlyoffice')->debug("Job '".$job."' removed from JobList.", ["app" => $this->appName]);
+            \OCP\Log\logger('eurooffice')->debug("Job '".$job."' removed from JobList.", ["app" => $this->appName]);
         }
     }
 

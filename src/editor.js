@@ -35,7 +35,7 @@
 (function($, OCA) {
 
 	OCA.Onlyoffice = _.extend({
-		AppName: 'onlyoffice',
+		AppName: 'eurooffice',
 		inframe: false,
 		inviewer: false,
 		fileId: null,
@@ -769,7 +769,7 @@
 			params.push('shareToken=' + encodeURIComponent(OCA.Onlyoffice.shareToken))
 		}
 		if (OCA.Onlyoffice.directToken) {
-			$('html').addClass('onlyoffice-full-page')
+			$('html').addClass('eurooffice-full-page')
 			params.push('directToken=' + encodeURIComponent(OCA.Onlyoffice.directToken))
 		}
 		if (OCA.Onlyoffice.template) {

@@ -27,15 +27,15 @@
  *
  */
 
-namespace OCA\Onlyoffice\Controller;
+namespace OCA\Eurooffice\Controller;
 
 use OCA\DAV\CalDAV\TimezoneService;
-use OCA\Onlyoffice\AppConfig;
-use OCA\Onlyoffice\Crypt;
-use OCA\Onlyoffice\DocumentService;
-use OCA\Onlyoffice\ExtraPermissions;
-use OCA\Onlyoffice\FileUtility;
-use OCA\Onlyoffice\TemplateManager;
+use OCA\Eurooffice\AppConfig;
+use OCA\Eurooffice\Crypt;
+use OCA\Eurooffice\DocumentService;
+use OCA\Eurooffice\ExtraPermissions;
+use OCA\Eurooffice\FileUtility;
+use OCA\Eurooffice\TemplateManager;
 use OCP\AppFramework\Http\JSONResponse;
 use OCP\AppFramework\Http\Attribute\NoAdminRequired;
 use OCP\AppFramework\Http\Attribute\PublicPage;

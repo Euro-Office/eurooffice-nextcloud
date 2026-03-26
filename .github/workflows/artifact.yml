@@ -28,9 +28,9 @@ jobs:
           npm install
           npm run build
           composer install --no-dev --optimize-autoloader
-          mkdir -p onlyoffice
-          rsync -av --exclude='onlyoffice' . onlyoffice
-          cd onlyoffice
+          mkdir -p eurooffice
+          rsync -av --exclude='eurooffice' . eurooffice
+          cd eurooffice
           rm -rf ./.github/
           rm -rf ./.git/
           rm -rf ./assets/document-templates/.git
@@ -49,9 +49,9 @@ jobs:
           rm ./stylelint.config.js
           rm ./webpack.js
           cd $cwd
-          tar -czvf onlyoffice.tar.gz onlyoffice
+          tar -czvf eurooffice.tar.gz eurooffice
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: onlyoffice
-          path: onlyoffice.tar.gz
+          name: eurooffice
+          path: eurooffice.tar.gz

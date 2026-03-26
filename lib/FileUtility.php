@@ -27,7 +27,7 @@
  *
  */
 
-namespace OCA\Onlyoffice;
+namespace OCA\Eurooffice;
 
 use OCP\Constants;
 use OCP\Files\Folder;
@@ -42,7 +42,7 @@ use Psr\Log\LoggerInterface;
 /**
  * File utility
  *
- * @package OCA\Onlyoffice
+ * @package OCA\Eurooffice
  */
 class FileUtility {
 

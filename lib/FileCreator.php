@@ -27,7 +27,7 @@
  *
  */
 
-namespace OCA\Onlyoffice;
+namespace OCA\Eurooffice;
 
 use OCP\DirectEditing\ACreateEmpty;
 use OCP\Files\File;
@@ -37,7 +37,7 @@ use Psr\Log\LoggerInterface;
 /**
  * File creator
  *
- * @package OCA\Onlyoffice
+ * @package OCA\Eurooffice
  */
 class FileCreator extends ACreateEmpty {
 

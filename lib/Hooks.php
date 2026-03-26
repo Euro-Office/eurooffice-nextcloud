@@ -27,7 +27,7 @@
  *
  */
 
-namespace OCA\Onlyoffice;
+namespace OCA\Eurooffice;
 
 use OC\Files\Filesystem;
 use OC\Files\Node\File;
@@ -37,7 +37,7 @@ use OCP\Util;
 /**
  * The class to handle the filesystem hooks
  *
- * @package OCA\Onlyoffice
+ * @package OCA\Eurooffice
  */
 class Hooks {
 
@@ -46,7 +46,7 @@ class Hooks {
      *
      * @var string
      */
-    private static $appName = "onlyoffice";
+    private static $appName = "eurooffice";
 
     public static function connectHooks() {
         // Listen user deletion
@@ -99,7 +99,7 @@ class Hooks {
 
         KeyManager::delete($fileId);
 
-        \OCP\Log\logger('onlyoffice')->debug("Hook fileUpdate " . json_encode($params), ["app" => self::$appName]);
+        \OCP\Log\logger('eurooffice')->debug("Hook fileUpdate " . json_encode($params), ["app" => self::$appName]);
     }
 
     /**
@@ -154,7 +154,7 @@ class Hooks {
                 }
             }
         } catch (\Exception $e) {
-            \OCP\Log\logger('onlyoffice')->error("Hook: fileDelete " . json_encode($params), ['exception' => $e]);
+            \OCP\Log\logger('eurooffice')->error("Hook: fileDelete " . json_encode($params), ['exception' => $e]);
         }
     }
 
@@ -190,7 +190,7 @@ class Hooks {
             FileVersions::deleteVersion($ownerId, $fileInfo, $versionId);
             FileVersions::deleteAuthor($ownerId, $fileInfo, $versionId);
         } catch (\Exception $e) {
-            \OCP\Log\logger('onlyoffice')->error("Hook: fileVersionDelete " . json_encode($params), ['exception' => $e]);
+            \OCP\Log\logger('eurooffice')->error("Hook: fileVersionDelete " . json_encode($params), ['exception' => $e]);
         }
     }
 
@@ -231,7 +231,7 @@ class Hooks {
 
             FileVersions::deleteVersion($ownerId, $fileInfo, $versionId);
         } catch (\Exception $e) {
-            \OCP\Log\logger('onlyoffice')->error("Hook: fileVersionRestore " . json_encode($params), ['exception' => $e]);
+            \OCP\Log\logger('eurooffice')->error("Hook: fileVersionRestore " . json_encode($params), ['exception' => $e]);
         }
     }
 
@@ -254,7 +254,7 @@ class Hooks {
 
             ExtraPermissions::deleteList($shareIds);
         } catch (\Exception $e) {
-            \OCP\Log\logger('onlyoffice')->error("Hook: extraPermissionsDelete " . json_encode($params), ['exception' => $e]);
+            \OCP\Log\logger('eurooffice')->error("Hook: extraPermissionsDelete " . json_encode($params), ['exception' => $e]);
         }
     }
 }

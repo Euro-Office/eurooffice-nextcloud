@@ -27,7 +27,7 @@
  *
  */
 
-namespace OCA\Onlyoffice\AppInfo;
+namespace OCA\Eurooffice\AppInfo;
 
 use OC\EventDispatcher\SymfonyAdapter;
 use OCP\AppFramework\App;
@@ -52,34 +52,34 @@ use OCP\Security\CSP\AddContentSecurityPolicyEvent;
 use OCA\Files\Event\LoadAdditionalScriptsEvent;
 use OCA\Files_Sharing\Event\BeforeTemplateRenderedEvent;
 use OCA\Viewer\Event\LoadViewer;
-use OCA\Onlyoffice\AppConfig;
-use OCA\Onlyoffice\Controller\CallbackController;
-use OCA\Onlyoffice\Controller\EditorController;
-use OCA\Onlyoffice\Controller\EditorApiController;
-use OCA\Onlyoffice\Controller\JobListController;
-use OCA\Onlyoffice\Controller\SharingApiController;
-use OCA\Onlyoffice\Controller\SettingsController;
-use OCA\Onlyoffice\Controller\TemplateController;
-use OCA\Onlyoffice\Listeners\CreateFromTemplateListener;
-use OCA\Onlyoffice\Listeners\FilesListener;
-use OCA\Onlyoffice\Listeners\FileSharingListener;
-use OCA\Onlyoffice\Listeners\DirectEditorListener;
-use OCA\Onlyoffice\Listeners\ViewerListener;
-use OCA\Onlyoffice\Listeners\WidgetListener;
-use OCA\Onlyoffice\DirectEditor;
-use OCA\Onlyoffice\Events\DocumentUnsavedEvent;
-use OCA\Onlyoffice\Hooks;
-use OCA\Onlyoffice\Listeners\ContentSecurityPolicyListener;
-use OCA\Onlyoffice\Listeners\DocumentUnsavedListener;
-use OCA\Onlyoffice\Notifier;
-use OCA\Onlyoffice\Preview;
-use OCA\Onlyoffice\TemplateProvider;
-use OCA\Onlyoffice\SettingsData;
+use OCA\Eurooffice\AppConfig;
+use OCA\Eurooffice\Controller\CallbackController;
+use OCA\Eurooffice\Controller\EditorController;
+use OCA\Eurooffice\Controller\EditorApiController;
+use OCA\Eurooffice\Controller\JobListController;
+use OCA\Eurooffice\Controller\SharingApiController;
+use OCA\Eurooffice\Controller\SettingsController;
+use OCA\Eurooffice\Controller\TemplateController;
+use OCA\Eurooffice\Listeners\CreateFromTemplateListener;
+use OCA\Eurooffice\Listeners\FilesListener;
+use OCA\Eurooffice\Listeners\FileSharingListener;
+use OCA\Eurooffice\Listeners\DirectEditorListener;
+use OCA\Eurooffice\Listeners\ViewerListener;
+use OCA\Eurooffice\Listeners\WidgetListener;
+use OCA\Eurooffice\DirectEditor;
+use OCA\Eurooffice\Events\DocumentUnsavedEvent;
+use OCA\Eurooffice\Hooks;
+use OCA\Eurooffice\Listeners\ContentSecurityPolicyListener;
+use OCA\Eurooffice\Listeners\DocumentUnsavedListener;
+use OCA\Eurooffice\Notifier;
+use OCA\Eurooffice\Preview;
+use OCA\Eurooffice\TemplateProvider;
+use OCA\Eurooffice\SettingsData;
 use Psr\Container\ContainerInterface;
 use Psr\Log\LoggerInterface;
 
 class Application extends App implements IBootstrap {
-    public const APP_ID = "onlyoffice";
+    public const APP_ID = "eurooffice";
 
     private AppConfig $appConfig;
 

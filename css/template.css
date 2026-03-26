@@ -26,58 +26,58 @@
  *
  */
 
-.onlyoffice-template-container li {
+.eurooffice-template-container li {
     margin-bottom: 10px;
 }
 
-.onlyoffice-template-item img,
-.onlyoffice-template-delete,
-.onlyoffice-template-download,
-.onlyoffice-template-item p {
+.eurooffice-template-item img,
+.eurooffice-template-delete,
+.eurooffice-template-download,
+.eurooffice-template-item p {
     display: inline-block;
     margin-right: 10px;
     cursor: pointer;
 }
 
-.onlyoffice-template-delete,
-.onlyoffice-template-download {
+.eurooffice-template-delete,
+.eurooffice-template-download {
     margin-bottom: -4px;
 }
 
-.onlyoffice-template-delete {
+.eurooffice-template-delete {
     opacity: .6;
 }
 
-.onlyoffice-template-download {
+.eurooffice-template-download {
     background-image: url("../../../core/img/actions/download.svg");
     height: 16px;
     width: 16px;
     opacity: .6;
 }
 
-.section-onlyoffice-templates .icon-add {
+.section-eurooffice-templates .icon-add {
     opacity: 0.5;
     padding-left: 44px;
 }
 
-.section-onlyoffice-templates .icon-add:hover {
+.section-eurooffice-templates .icon-add:hover {
     opacity: 0.7;
 }
 
-.onlyoffice-template-item img {
+.eurooffice-template-item img {
     float: left;
     margin-top: 5px;
 }
 
-.onlyoffice-template-item input {
+.eurooffice-template-item input {
     position: absolute;
     left: -10000px;
 }
 
-.onlyoffice-template-item input:checked + label {
+.eurooffice-template-item input:checked + label {
     color: rgb(55, 137, 243);
 }
 
-.section-onlyoffice-templates input {
+.section-eurooffice-templates input {
     display: none;
 }

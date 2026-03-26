@@ -27,12 +27,12 @@
  *
  */
 
-namespace OCA\Onlyoffice;
+namespace OCA\Eurooffice;
 
 /**
  * Token generator
  *
- * @package OCA\Onlyoffice
+ * @package OCA\Eurooffice
  */
 class Crypt {
 

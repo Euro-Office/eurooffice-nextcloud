@@ -27,10 +27,10 @@
  *
  */
 
-namespace OCA\Onlyoffice\Listeners;
+namespace OCA\Eurooffice\Listeners;
 
 use OCP\AppFramework\Http\Events\BeforeTemplateRenderedEvent as HttpBeforeTemplateRenderedEvent;
-use OCA\Onlyoffice\AppConfig;
+use OCA\Eurooffice\AppConfig;
 use OCP\EventDispatcher\Event;
 use OCP\EventDispatcher\IEventListener;
 use OCP\Util;
@@ -66,7 +66,7 @@ class WidgetListener implements IEventListener {
         if (!empty($this->appConfig->getDocumentServerUrl())
             && $this->appConfig->settingsAreSuccessful()
             && $this->appConfig->isUserAllowedToUse()) {
-            Util::addScript("onlyoffice", "onlyoffice-desktop");
+            Util::addScript("eurooffice", "eurooffice-desktop");
         }
     }
 }

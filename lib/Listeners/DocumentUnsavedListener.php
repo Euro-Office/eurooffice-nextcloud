@@ -28,10 +28,10 @@
  *
  */
 
-namespace OCA\Onlyoffice\Listeners;
+namespace OCA\Eurooffice\Listeners;
 
-use OCA\Onlyoffice\AppInfo\Application;
-use OCA\Onlyoffice\Events\DocumentUnsavedEvent;
+use OCA\Eurooffice\AppInfo\Application;
+use OCA\Eurooffice\Events\DocumentUnsavedEvent;
 use OCP\EventDispatcher\Event;
 use OCP\EventDispatcher\IEventListener;
 use OCP\IConfig;

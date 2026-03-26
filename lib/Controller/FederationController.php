@@ -27,13 +27,13 @@
  *
  */
 
-namespace OCA\Onlyoffice\Controller;
+namespace OCA\Eurooffice\Controller;
 
-use OCA\Onlyoffice\AppConfig;
-use OCA\Onlyoffice\DocumentService;
-use OCA\Onlyoffice\FileUtility;
-use OCA\Onlyoffice\KeyManager;
-use OCA\Onlyoffice\RemoteInstance;
+use OCA\Eurooffice\AppConfig;
+use OCA\Eurooffice\DocumentService;
+use OCA\Eurooffice\FileUtility;
+use OCA\Eurooffice\KeyManager;
+use OCA\Eurooffice\RemoteInstance;
 use OCP\AppFramework\Http\DataResponse;
 use OCP\AppFramework\Http\Attribute\NoAdminRequired;
 use OCP\AppFramework\Http\Attribute\NoCSRFRequired;

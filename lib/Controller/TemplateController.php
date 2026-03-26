@@ -27,9 +27,9 @@
  *
  */
 
-namespace OCA\Onlyoffice\Controller;
+namespace OCA\Eurooffice\Controller;
 
-use OCA\Onlyoffice\TemplateManager;
+use OCA\Eurooffice\TemplateManager;
 use OCP\AppFramework\Controller;
 use OCP\AppFramework\Http;
 use OCP\AppFramework\Http\DataResponse;

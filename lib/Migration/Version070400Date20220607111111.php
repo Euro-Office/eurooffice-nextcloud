@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace OCA\Onlyoffice\Migration;
+namespace OCA\Eurooffice\Migration;
 
 use Closure;
 use OCP\DB\ISchemaWrapper;
@@ -32,8 +32,8 @@ class Version070400Date20220607111111 extends SimpleMigrationStep {
         /** @var ISchemaWrapper $schema */
         $schema = $schemaClosure();
 
-        if (!$schema->hasTable('onlyoffice_filekey')) {
-            $table = $schema->createTable('onlyoffice_filekey');
+        if (!$schema->hasTable('eurooffice_filekey')) {
+            $table = $schema->createTable('eurooffice_filekey');
             $table->addColumn('id', 'integer', [
                 'autoincrement' => true,
                 'notnull' => true,
@@ -58,8 +58,8 @@ class Version070400Date20220607111111 extends SimpleMigrationStep {
             $table->addUniqueIndex(['file_id'], 'file_id_index');
         }
 
-        if (!$schema->hasTable('onlyoffice_permissions')) {
-            $table = $schema->createTable('onlyoffice_permissions');
+        if (!$schema->hasTable('eurooffice_permissions')) {
+            $table = $schema->createTable('eurooffice_permissions');
             $table->addColumn('id', 'integer', [
                 'autoincrement' => true,
                 'notnull' => true,

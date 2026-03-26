@@ -27,7 +27,7 @@
  *
  */
 
-namespace OCA\Onlyoffice;
+namespace OCA\Eurooffice;
 
 use OC\Files\View;
 use OCA\Files_Sharing\External\Storage as SharingExternalStorage;
@@ -49,7 +49,7 @@ use Psr\Log\LoggerInterface;
 /**
  * Preview provider
  *
- * @package OCA\Onlyoffice
+ * @package OCA\Eurooffice
  */
 class Preview implements IProviderV2 {
 

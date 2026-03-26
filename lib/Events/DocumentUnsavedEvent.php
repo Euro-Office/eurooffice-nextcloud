@@ -30,7 +30,7 @@ declare(strict_types=1);
  *
  */
 
-namespace OCA\Onlyoffice\Events;
+namespace OCA\Eurooffice\Events;
 
 use OCP\EventDispatcher\Event;
 

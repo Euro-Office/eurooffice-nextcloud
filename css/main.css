@@ -26,10 +26,10 @@
  *
  */
 
-.icon-onlyoffice-open,
-.icon-onlyoffice-convert,
-.icon-onlyoffice-download,
-.icon-onlyoffice-create {
+.icon-eurooffice-open,
+.icon-eurooffice-convert,
+.icon-eurooffice-download,
+.icon-eurooffice-create {
     background-color: var(--color-main-text);
     mask: url("../img/app-dark.svg") no-repeat 50% 50%;
     mask-size: 16px 16px;
@@ -37,38 +37,38 @@
     -webkit-mask-size: 16px 16px;
 }
 
-/* onlyoffice-inline */
-#body-user.onlyoffice-inline #app-navigation,
-#body-user.onlyoffice-inline .app-navigation,
-#body-user.onlyoffice-inline #app-navigation-vue,
-#body-user.onlyoffice-inline .searchbox,
-#body-user.onlyoffice-inline #app-content .files-controls,
-#body-user.onlyoffice-inline #app-content-vue .files-controls,
-#body-user.onlyoffice-inline .files-filestable,
-#body-user.onlyoffice-inline .files-list,
-#body-user.onlyoffice-inline .files-list__header {
+/* eurooffice-inline */
+#body-user.eurooffice-inline #app-navigation,
+#body-user.eurooffice-inline .app-navigation,
+#body-user.eurooffice-inline #app-navigation-vue,
+#body-user.eurooffice-inline .searchbox,
+#body-user.eurooffice-inline #app-content .files-controls,
+#body-user.eurooffice-inline #app-content-vue .files-controls,
+#body-user.eurooffice-inline .files-filestable,
+#body-user.eurooffice-inline .files-list,
+#body-user.eurooffice-inline .files-list__header {
     display: none;
 }
 
-#body-user.onlyoffice-inline #app-navigation-toggle {
+#body-user.eurooffice-inline #app-navigation-toggle {
     display: none !important;
 }
 
-#body-public.onlyoffice-inline #content #app-content,
-#body-user.onlyoffice-inline #content #app-content,
-#body-user.onlyoffice-inline #content #app-content-vue,
-#body-user.onlyoffice-inline #content-vue #app-content-vue {
+#body-public.eurooffice-inline #content #app-content,
+#body-user.eurooffice-inline #content #app-content,
+#body-user.eurooffice-inline #content #app-content-vue,
+#body-user.eurooffice-inline #content-vue #app-content-vue {
     margin-left: 0;
     position: relative;
     overflow: hidden;
     overscroll-behavior-y: none;
 }
 
-#body-public.onlyoffice-inline footer {
+#body-public.eurooffice-inline footer {
     display: none !important;
 }
 
-#onlyofficeFrame {
+#euroofficeFrame {
     background-color: #fff;
     width: 100%;
     height: 100vh;
@@ -78,7 +78,7 @@
     z-index: 1010;
 }
 
-.onlyoffice-public-open {
+.eurooffice-public-open {
     display: inline-block;
     margin-top: 10px;
 }
@@ -118,16 +118,16 @@
     display: none;
 }
 
-.onlyoffice-download-container {
+.eurooffice-download-container {
     display: flex;
 }
 
-.onlyoffice-download-container p {
+.eurooffice-download-container p {
     margin-right: 10px;
     padding-top: 10px;
 }
 
-.onlyoffice-iframe-container {
+.eurooffice-iframe-container {
     position: absolute;
     width: 100%;
     height: 100%;

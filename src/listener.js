@@ -34,7 +34,7 @@
 (function(OCA) {
 
 	OCA.Onlyoffice = _.extend({
-		AppName: 'onlyoffice',
+		AppName: 'eurooffice',
 		frameSelector: null,
 		titleBase: window.document.title,
 		favIconBase: $('link[rel="icon"]').attr('href'),

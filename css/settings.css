@@ -26,61 +26,61 @@
  *
  */
 
- #content .section-onlyoffice .icon-info {
+ #content .section-eurooffice .icon-info {
     box-sizing: content-box;
     padding-top: 6px;
 }
 
-.onlyoffice-header {
+.eurooffice-header {
     display: inline-block;
     margin-top: 16px;
 }
 
-.section-onlyoffice input {
+.section-eurooffice input {
     display: block;
     width: 250px;
 }
 
-.onlyoffice-hide {
+.eurooffice-hide {
     display: none;
 }
 
-#onlyofficeAdv {
+#euroofficeAdv {
     cursor: pointer;
     text-decoration: none;
 }
 
-#onlyofficeAdv .icon {
+#euroofficeAdv .icon {
     display: inline-block;
     margin-bottom: -3px;
 }
 
-#onlyofficeAddrSave {
+#euroofficeAddrSave {
     float: left;
 }
 
-.onlyoffice-demo {
+.eurooffice-demo {
     margin-left: 90px;
 }
 
-#s2id_onlyofficeLimitGroups,
-#s2id_onlyofficeWatermark_allGroupsList,
-#s2id_onlyofficeWatermark_allTagsList,
-#s2id_onlyofficeWatermark_linkTagsList {
+#s2id_euroofficeLimitGroups,
+#s2id_euroofficeWatermark_allGroupsList,
+#s2id_euroofficeWatermark_allTagsList,
+#s2id_euroofficeWatermark_linkTagsList {
     margin-bottom: 16px;
     margin-left: 18px;
     margin-top: 6px;
     width: 250px;
 }
 
-.onlyoffice-exts {
+.eurooffice-exts {
     column-width: 100px;
     -moz-column-width: 100px;
     -webkit-column-width: 100px;
     margin-bottom: 1em;
 }
 
-.onlyoffice-tables {
+.eurooffice-tables {
     margin-top: 4px;
     line-height: initial;
     column-width: 140px;
@@ -89,43 +89,43 @@
     margin-bottom: 1em;
 }
 
-#onlyofficeSecret-show {
+#euroofficeSecret-show {
     left: 205px;
 }
 
-#onlyofficeEnableSharingBlock {
+#euroofficeEnableSharingBlock {
     margin-left: 1.5em;
 }
 
-.onlyoffice-description {
+.eurooffice-description {
     display: flex;
     flex-direction: column;
     row-gap: 11px;
     margin-bottom: 24px;
 }
 
-.onlyoffice-description h1 {
+.eurooffice-description h1 {
     font-size: 32px;
     font-weight: 600;
 }
 
-.onlyoffice-description p {
+.eurooffice-description p {
     font-size: 15px;
     font-weight: 400;
     margin-bottom: 0 !important;
 }
 
-.onlyoffice-description .useful-links {
+.eurooffice-description .useful-links {
     display: flex;
     column-gap: 24px;
 }
 
-.onlyoffice-description .useful-links a {
+.eurooffice-description .useful-links a {
     display: flex;
     gap: 4px;
 }
 
-.onlyoffice-description .useful-links a::after {
+.eurooffice-description .useful-links a::after {
     content: url('../img/top-right-arrow.svg');
     width: 12px;
     height: 12px;

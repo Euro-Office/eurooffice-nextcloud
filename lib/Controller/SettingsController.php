@@ -27,13 +27,13 @@
  *
  */
 
-namespace OCA\Onlyoffice\Controller;
+namespace OCA\Eurooffice\Controller;
 
-use OCA\Onlyoffice\AppConfig;
-use OCA\Onlyoffice\Crypt;
-use OCA\Onlyoffice\DocumentService;
-use OCA\Onlyoffice\FileVersions;
-use OCA\Onlyoffice\TemplateManager;
+use OCA\Eurooffice\AppConfig;
+use OCA\Eurooffice\Crypt;
+use OCA\Eurooffice\DocumentService;
+use OCA\Eurooffice\FileVersions;
+use OCA\Eurooffice\TemplateManager;
 use OCP\AppFramework\Controller;
 use OCP\AppFramework\Http\TemplateResponse;
 use OCP\IL10N;

@@ -43,61 +43,61 @@ import SystemTagsService from './systemtags.js'
 	__webpack_nonce__ = btoa(getRequestToken())
 
 	// eslint-disable-next-line
-	__webpack_public_path__ = generateFilePath('onlyoffice', '', 'js/')
+	__webpack_public_path__ = generateFilePath('eurooffice', '', 'js/')
 
 	$(document).ready(function() {
 		OCA.Onlyoffice = _.extend({}, OCA.Onlyoffice)
 		if (!OCA.Onlyoffice.AppName) {
 			OCA.Onlyoffice = {
-				AppName: 'onlyoffice',
+				AppName: 'eurooffice',
 			}
 		}
 
 		const advToogle = function() {
-			$('#onlyofficeSecretPanel').toggleClass('onlyoffice-hide')
-			$('#onlyofficeAdv .icon').toggleClass('icon-triangle-s icon-triangle-n')
+			$('#euroofficeSecretPanel').toggleClass('eurooffice-hide')
+			$('#euroofficeAdv .icon').toggleClass('icon-triangle-s icon-triangle-n')
 		}
 
-		if ($('#onlyofficeInternalUrl').val().length
-			|| $('#onlyofficeStorageUrl').val().length
-			|| $('#onlyofficeJwtHeader').val().length) {
+		if ($('#euroofficeInternalUrl').val().length
+			|| $('#euroofficeStorageUrl').val().length
+			|| $('#euroofficeJwtHeader').val().length) {
 			advToogle()
 		}
 
-		$('#onlyofficeAdv').click(advToogle)
+		$('#euroofficeAdv').click(advToogle)
 
-		$('#onlyofficeGroups').prop('checked', $('#onlyofficeLimitGroups').val() !== '')
+		$('#euroofficeGroups').prop('checked', $('#euroofficeLimitGroups').val() !== '')
 
 		const groupListToggle = function() {
-			if ($('#onlyofficeGroups').prop('checked')) {
-				OC.Settings.setupGroupsSelect($('#onlyofficeLimitGroups'))
+			if ($('#euroofficeGroups').prop('checked')) {
+				OC.Settings.setupGroupsSelect($('#euroofficeLimitGroups'))
 			} else {
-				$('#onlyofficeLimitGroups').select2('destroy')
+				$('#euroofficeLimitGroups').select2('destroy')
 			}
 		}
 
-		$('#onlyofficeGroups').click(groupListToggle)
+		$('#euroofficeGroups').click(groupListToggle)
 		groupListToggle()
 
 		const demoToggle = function() {
-			$('#onlyofficeAddrSettings input:not(#onlyofficeStorageUrl)').prop('disabled', $('#onlyofficeDemo').prop('checked'))
+			$('#euroofficeAddrSettings input:not(#euroofficeStorageUrl)').prop('disabled', $('#euroofficeDemo').prop('checked'))
 		}
 
-		$('#onlyofficeDemo').click(demoToggle)
+		$('#euroofficeDemo').click(demoToggle)
 		demoToggle()
 
 		const watermarkToggle = function() {
-			$('#onlyofficeWatermarkSettings').toggleClass('onlyoffice-hide', !$('#onlyofficeWatermark_enabled').prop('checked'))
+			$('#euroofficeWatermarkSettings').toggleClass('eurooffice-hide', !$('#euroofficeWatermark_enabled').prop('checked'))
 		}
 
-		$('#onlyofficeWatermark_enabled').click(watermarkToggle)
+		$('#euroofficeWatermark_enabled').click(watermarkToggle)
 
-		$('#onlyofficeWatermark_shareAll').click(function() {
-			$('#onlyofficeWatermark_shareRead').parent().toggleClass('onlyoffice-hide')
+		$('#euroofficeWatermark_shareAll').click(function() {
+			$('#euroofficeWatermark_shareRead').parent().toggleClass('eurooffice-hide')
 		})
 
-		$('#onlyofficeWatermark_linkAll').click(function() {
-			$('#onlyofficeWatermark_link_sensitive').toggleClass('onlyoffice-hide')
+		$('#euroofficeWatermark_linkAll').click(function() {
+			$('#euroofficeWatermark_link_sensitive').toggleClass('eurooffice-hide')
 		})
 
 		const watermarkGroupLists = [
@@ -111,11 +111,11 @@ import SystemTagsService from './systemtags.js'
 
 		const watermarkNodeBehaviour = function(watermark) {
 			const watermarkListToggle = function() {
-				if ($('#onlyofficeWatermark_' + watermark).prop('checked')) {
+				if ($('#euroofficeWatermark_' + watermark).prop('checked')) {
 					if (watermark.indexOf('Group') >= 0) {
-						OC.Settings.setupGroupsSelect($('#onlyofficeWatermark_' + watermark + 'List'))
+						OC.Settings.setupGroupsSelect($('#euroofficeWatermark_' + watermark + 'List'))
 					} else {
-						$('#onlyofficeWatermark_' + watermark + 'List').select2({
+						$('#euroofficeWatermark_' + watermark + 'List').select2({
 							allowClear: true,
 							closeOnSelect: false,
 							multiple: true,
@@ -148,11 +148,11 @@ import SystemTagsService from './systemtags.js'
 						})
 					}
 				} else {
-					$('#onlyofficeWatermark_' + watermark + 'List').select2('destroy')
+					$('#euroofficeWatermark_' + watermark + 'List').select2('destroy')
 				}
 			}
 
-			$('#onlyofficeWatermark_' + watermark).click(watermarkListToggle)
+			$('#euroofficeWatermark_' + watermark).click(watermarkListToggle)
 			watermarkListToggle()
 		}
 
@@ -168,48 +168,48 @@ import SystemTagsService from './systemtags.js'
 			console.error('Failed to load system tags:', error)
 		})
 
-		const connectionError = document.getElementById('onlyofficeSettingsState').value
+		const connectionError = document.getElementById('euroofficeSettingsState').value
 		if (connectionError !== '') {
 			OCP.Toast.error(t(OCA.Onlyoffice.AppName, 'Error when trying to connect') + ' (' + connectionError + ')')
 		}
 
-		$('#onlyofficeAddrSave').click(function() {
-			$('.section-onlyoffice').addClass('icon-loading')
-			const onlyofficeUrl = $('#onlyofficeUrl').val().trim()
+		$('#euroofficeAddrSave').click(function() {
+			$('.section-eurooffice').addClass('icon-loading')
+			const euroofficeUrl = $('#euroofficeUrl').val().trim()
 
-			if (!onlyofficeUrl.length) {
-				$('#onlyofficeInternalUrl, #onlyofficeStorageUrl, #onlyofficeSecret, #onlyofficeJwtHeader').val('')
+			if (!euroofficeUrl.length) {
+				$('#euroofficeInternalUrl, #euroofficeStorageUrl, #euroofficeSecret, #euroofficeJwtHeader').val('')
 			}
 
-			const onlyofficeInternalUrl = ($('#onlyofficeInternalUrl').val() || '').trim()
-			const onlyofficeStorageUrl = ($('#onlyofficeStorageUrl').val() || '').trim()
-			const onlyofficeVerifyPeerOff = $('#onlyofficeVerifyPeerOff').prop('checked')
-			const onlyofficeSecret = ($('#onlyofficeSecret').val() || '').trim()
-			const jwtHeader = ($('#onlyofficeJwtHeader').val() || '').trim()
-			const demo = $('#onlyofficeDemo').prop('checked')
+			const euroofficeInternalUrl = ($('#euroofficeInternalUrl').val() || '').trim()
+			const euroofficeStorageUrl = ($('#euroofficeStorageUrl').val() || '').trim()
+			const euroofficeVerifyPeerOff = $('#euroofficeVerifyPeerOff').prop('checked')
+			const euroofficeSecret = ($('#euroofficeSecret').val() || '').trim()
+			const jwtHeader = ($('#euroofficeJwtHeader').val() || '').trim()
+			const demo = $('#euroofficeDemo').prop('checked')
 
 			$.ajax({
 				method: 'PUT',
 				url: OC.generateUrl('apps/' + OCA.Onlyoffice.AppName + '/ajax/settings/address'),
 				data: {
-					documentserver: onlyofficeUrl,
-					documentserverInternal: onlyofficeInternalUrl,
-					storageUrl: onlyofficeStorageUrl,
-					verifyPeerOff: onlyofficeVerifyPeerOff,
-					secret: onlyofficeSecret,
+					documentserver: euroofficeUrl,
+					documentserverInternal: euroofficeInternalUrl,
+					storageUrl: euroofficeStorageUrl,
+					verifyPeerOff: euroofficeVerifyPeerOff,
+					secret: euroofficeSecret,
 					jwtHeader,
 					demo,
 				},
 				success: function onSuccess(response) {
-					$('.section-onlyoffice').removeClass('icon-loading')
+					$('.section-eurooffice').removeClass('icon-loading')
 					if (response && (response.documentserver != null || demo)) {
-						$('#onlyofficeUrl').val(response.documentserver)
-						$('#onlyofficeInternalUrl').val(response.documentserverInternal)
-						$('#onlyofficeStorageUrl').val(response.storageUrl)
-						$('#onlyofficeSecret').val(response.secret)
-						$('#onlyofficeJwtHeader').val(response.jwtHeader)
+						$('#euroofficeUrl').val(response.documentserver)
+						$('#euroofficeInternalUrl').val(response.documentserverInternal)
+						$('#euroofficeStorageUrl').val(response.storageUrl)
+						$('#euroofficeSecret').val(response.secret)
+						$('#euroofficeJwtHeader').val(response.jwtHeader)
 
-						$('.section-onlyoffice-common, .section-onlyoffice-templates, .section-onlyoffice-watermark').toggleClass('onlyoffice-hide', (response.documentserver == null && !demo) || !!response.error.length)
+						$('.section-eurooffice-common, .section-eurooffice-templates, .section-eurooffice-watermark').toggleClass('eurooffice-hide', (response.documentserver == null && !demo) || !!response.error.length)
 
 						const versionMessage = response.version ? (' (' + t(OCA.Onlyoffice.AppName, 'version') + ' ' + response.version + ')') : ''
 
@@ -223,45 +223,45 @@ import SystemTagsService from './systemtags.js'
 							}
 						}
 					} else {
-						$('.section-onlyoffice-common, .section-onlyoffice-templates, .section-onlyoffice-watermark').addClass('onlyoffice-hide')
+						$('.section-eurooffice-common, .section-eurooffice-templates, .section-eurooffice-watermark').addClass('eurooffice-hide')
 					}
 				},
 			})
 		})
 
-		$('#onlyofficeSave').click(function() {
-			$('.section-onlyoffice').addClass('icon-loading')
+		$('#euroofficeSave').click(function() {
+			$('.section-eurooffice').addClass('icon-loading')
 
 			const defFormats = {}
-			$('input[id^="onlyofficeDefFormat"]').each(function() {
+			$('input[id^="euroofficeDefFormat"]').each(function() {
 				defFormats[this.name] = this.checked
 			})
 
 			const editFormats = {}
-			$('input[id^="onlyofficeEditFormat"]').each(function() {
+			$('input[id^="euroofficeEditFormat"]').each(function() {
 				editFormats[this.name] = this.checked
 			})
 
-			const sameTab = $('#onlyofficeSameTab').is(':checked')
-			const enableSharing = $('#onlyofficeEnableSharing').is(':checked')
-			const preview = $('#onlyofficePreview').is(':checked')
-			const advanced = $('#onlyofficeAdvanced').is(':checked')
-			const cronChecker = $('#onlyofficeCronChecker').is(':checked')
-			const emailNotifications = $('#onlyofficeEmailNotifications').is(':checked')
-			const versionHistory = $('#onlyofficeVersionHistory').is(':checked')
+			const sameTab = $('#euroofficeSameTab').is(':checked')
+			const enableSharing = $('#euroofficeEnableSharing').is(':checked')
+			const preview = $('#euroofficePreview').is(':checked')
+			const advanced = $('#euroofficeAdvanced').is(':checked')
+			const cronChecker = $('#euroofficeCronChecker').is(':checked')
+			const emailNotifications = $('#euroofficeEmailNotifications').is(':checked')
+			const versionHistory = $('#euroofficeVersionHistory').is(':checked')
 
-			const limitGroupsString = $('#onlyofficeGroups').prop('checked') ? $('#onlyofficeLimitGroups').val() : ''
+			const limitGroupsString = $('#euroofficeGroups').prop('checked') ? $('#euroofficeLimitGroups').val() : ''
 			const limitGroups = limitGroupsString ? limitGroupsString.split('|') : []
 
-			const chat = $('#onlyofficeChat').is(':checked')
-			const compactHeader = $('#onlyofficeCompactHeader').is(':checked')
-			const feedback = $('#onlyofficeFeedback').is(':checked')
-			const forcesave = $('#onlyofficeForcesave').is(':checked')
-			const liveViewOnShare = $('#onlyofficeLiveViewOnShare').is(':checked')
-			const help = $('#onlyofficeHelp').is(':checked')
-			const reviewDisplay = $("input[type='radio'][name='reviewDisplay']:checked").attr('id').replace('onlyofficeReviewDisplay_', '')
-			const theme = $("input[type='radio'][name='theme']:checked").attr('id').replace('onlyofficeTheme_', '')
-			const unknownAuthor = $('#onlyofficeUnknownAuthor').val().trim()
+			const chat = $('#euroofficeChat').is(':checked')
+			const compactHeader = $('#euroofficeCompactHeader').is(':checked')
+			const feedback = $('#euroofficeFeedback').is(':checked')
+			const forcesave = $('#euroofficeForcesave').is(':checked')
+			const liveViewOnShare = $('#euroofficeLiveViewOnShare').is(':checked')
+			const help = $('#euroofficeHelp').is(':checked')
+			const reviewDisplay = $("input[type='radio'][name='reviewDisplay']:checked").attr('id').replace('euroofficeReviewDisplay_', '')
+			const theme = $("input[type='radio'][name='theme']:checked").attr('id').replace('euroofficeTheme_', '')
+			const unknownAuthor = $('#euroofficeUnknownAuthor').val().trim()
 
 			$.ajax({
 				method: 'PUT',
@@ -288,7 +288,7 @@ import SystemTagsService from './systemtags.js'
 					unknownAuthor,
 				},
 				success: function onSuccess(response) {
-					$('.section-onlyoffice').removeClass('icon-loading')
+					$('.section-eurooffice').removeClass('icon-loading')
 					if (response) {
 						OCP.Toast.success(t(OCA.Onlyoffice.AppName, 'Common settings have been successfully updated'))
 					}
@@ -296,18 +296,18 @@ import SystemTagsService from './systemtags.js'
 			})
 		})
 
-		$('#onlyofficeSecuritySave').click(function() {
-			$('.section-onlyoffice').addClass('icon-loading')
+		$('#euroofficeSecuritySave').click(function() {
+			$('.section-eurooffice').addClass('icon-loading')
 
-			const plugins = $('#onlyofficePlugins').is(':checked')
-			const macros = $('#onlyofficeMacros').is(':checked')
-			const protection = $("input[type='radio'][name='protection']:checked").attr('id').replace('onlyofficeProtection_', '')
+			const plugins = $('#euroofficePlugins').is(':checked')
+			const macros = $('#euroofficeMacros').is(':checked')
+			const protection = $("input[type='radio'][name='protection']:checked").attr('id').replace('euroofficeProtection_', '')
 
 			const watermarkSettings = {
-				enabled: $('#onlyofficeWatermark_enabled').is(':checked'),
+				enabled: $('#euroofficeWatermark_enabled').is(':checked'),
 			}
 			if (watermarkSettings.enabled) {
-				watermarkSettings.text = ($('#onlyofficeWatermark_text').val() || '').trim()
+				watermarkSettings.text = ($('#euroofficeWatermark_text').val() || '').trim()
 
 				const watermarkLabels = [
 					'allGroups',
@@ -320,11 +320,11 @@ import SystemTagsService from './systemtags.js'
 					'shareRead',
 				]
 				$.each(watermarkLabels, function(i, watermarkLabel) {
-					watermarkSettings[watermarkLabel] = $('#onlyofficeWatermark_' + watermarkLabel).is(':checked')
+					watermarkSettings[watermarkLabel] = $('#euroofficeWatermark_' + watermarkLabel).is(':checked')
 				})
 
 				$.each(watermarkGroupLists.concat(watermarkTagLists), function(i, watermarkList) {
-					const list = $('#onlyofficeWatermark_' + watermarkList).is(':checked') ? $('#onlyofficeWatermark_' + watermarkList + 'List').val() : ''
+					const list = $('#euroofficeWatermark_' + watermarkList).is(':checked') ? $('#euroofficeWatermark_' + watermarkList + 'List').val() : ''
 					watermarkSettings[watermarkList + 'List'] = list ? list.split('|') : []
 				})
 			}
@@ -339,7 +339,7 @@ import SystemTagsService from './systemtags.js'
 					protection,
 				},
 				success: function onSuccess(response) {
-					$('.section-onlyoffice').removeClass('icon-loading')
+					$('.section-eurooffice').removeClass('icon-loading')
 					if (response) {
 						OCP.Toast.success(t(OCA.Onlyoffice.AppName, 'Security settings have been successfully updated'))
 					}
@@ -347,22 +347,22 @@ import SystemTagsService from './systemtags.js'
 			})
 		})
 
-		$('.section-onlyoffice-addr input').keypress(function(e) {
+		$('.section-eurooffice-addr input').keypress(function(e) {
 			const code = e.keyCode || e.which
 			if (code === 13) {
-				$('#onlyofficeAddrSave').click()
+				$('#euroofficeAddrSave').click()
 			}
 		})
 
-		$('#onlyofficeSecret-show').click(function() {
-			if ($('#onlyofficeSecret').attr('type') === 'password') {
-				$('#onlyofficeSecret').attr('type', 'text')
+		$('#euroofficeSecret-show').click(function() {
+			if ($('#euroofficeSecret').attr('type') === 'password') {
+				$('#euroofficeSecret').attr('type', 'text')
 			} else {
-				$('#onlyofficeSecret').attr('type', 'password')
+				$('#euroofficeSecret').attr('type', 'password')
 			}
 		})
 
-		$('#onlyofficeClearVersionHistory').click(function() {
+		$('#euroofficeClearVersionHistory').click(function() {
 			OC.dialogs.confirm(
 				t(OCA.Onlyoffice.AppName, 'Are you sure you want to clear metadata?'),
 				t(OCA.Onlyoffice.AppName, 'Confirm metadata removal'),
@@ -371,13 +371,13 @@ import SystemTagsService from './systemtags.js'
 						return
 					}
 
-					$('.section-onlyoffice').addClass('icon-loading')
+					$('.section-eurooffice').addClass('icon-loading')
 
 					$.ajax({
 						method: 'DELETE',
 						url: OC.generateUrl('apps/' + OCA.Onlyoffice.AppName + '/ajax/settings/history'),
 						success: function onSuccess(response) {
-							$('.section-onlyoffice').removeClass('icon-loading')
+							$('.section-eurooffice').removeClass('icon-loading')
 							if (response) {
 								OCP.Toast.success(t(OCA.Onlyoffice.AppName, 'All history successfully deleted'))
 							}
@@ -387,16 +387,16 @@ import SystemTagsService from './systemtags.js'
 			)
 		})
 
-		$('#onlyofficeAddTemplate').change(function() {
+		$('#euroofficeAddTemplate').change(function() {
 			const file = this.files[0]
 			const data = new FormData()
 
 			data.append('file', file)
 
-			$('.section-onlyoffice').addClass('icon-loading')
+			$('.section-eurooffice').addClass('icon-loading')
 			OCA.Onlyoffice.AddTemplate(file, (template, error) => {
 
-				$('.section-onlyoffice').removeClass('icon-loading')
+				$('.section-eurooffice').removeClass('icon-loading')
 				const message = error
 					? t(OCA.Onlyoffice.AppName, 'Error') + ': ' + error
 					: t(OCA.Onlyoffice.AppName, 'Template successfully added')
@@ -413,13 +413,13 @@ import SystemTagsService from './systemtags.js'
 			})
 		})
 
-		$(document).on('click', '.onlyoffice-template-delete', function(event) {
-			const item = $(event.target).parents('.onlyoffice-template-item')
+		$(document).on('click', '.eurooffice-template-delete', function(event) {
+			const item = $(event.target).parents('.eurooffice-template-item')
 			const templateId = $(item).attr('data-id')
 
-			$('.section-onlyoffice').addClass('icon-loading')
+			$('.section-eurooffice').addClass('icon-loading')
 			OCA.Onlyoffice.DeleteTemplate(templateId, (response) => {
-				$('.section-onlyoffice').removeClass('icon-loading')
+				$('.section-eurooffice').removeClass('icon-loading')
 
 				const message = response.error
 					? t(OCA.Onlyoffice.AppName, 'Error') + ': ' + response.error
@@ -434,8 +434,8 @@ import SystemTagsService from './systemtags.js'
 			})
 		})
 
-		$(document).on('click', '.onlyoffice-template-item p', function(event) {
-			const item = $(event.target).parents('.onlyoffice-template-item')
+		$(document).on('click', '.eurooffice-template-item p', function(event) {
+			const item = $(event.target).parents('.eurooffice-template-item')
 			const templateId = $(item).attr('data-id')
 
 			const url = OC.generateUrl('/apps/' + OCA.Onlyoffice.AppName + '/{fileId}?template={template}',
@@ -447,8 +447,8 @@ import SystemTagsService from './systemtags.js'
 			window.open(url)
 		})
 
-		$(document).on('click', '.onlyoffice-template-download', function(event) {
-			const item = $(event.target).parents('.onlyoffice-template-item')
+		$(document).on('click', '.eurooffice-template-download', function(event) {
+			const item = $(event.target).parents('.eurooffice-template-item')
 			const templateId = $(item).attr('data-id')
 
 			const downloadLink = OC.generateUrl('apps/' + OCA.Onlyoffice.AppName + '/downloadas?fileId={fileId}&template={template}', {
@@ -459,9 +459,9 @@ import SystemTagsService from './systemtags.js'
 			location.href = downloadLink
 		})
 
-		const sameTabCheckbox = document.getElementById('onlyofficeSameTab')
-		const sharingBlock = document.getElementById('onlyofficeEnableSharingBlock')
-		const sharingCheckbox = document.getElementById('onlyofficeEnableSharing')
+		const sameTabCheckbox = document.getElementById('euroofficeSameTab')
+		const sharingBlock = document.getElementById('euroofficeEnableSharingBlock')
+		const sharingCheckbox = document.getElementById('euroofficeEnableSharing')
 
 		sameTabCheckbox.onclick = function() {
 			const isChecked = sameTabCheckbox.checked

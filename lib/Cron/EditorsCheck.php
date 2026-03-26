@@ -27,12 +27,12 @@
  *
  */
 
-namespace OCA\Onlyoffice\Cron;
+namespace OCA\Eurooffice\Cron;
 
-use OCA\Onlyoffice\AppConfig;
-use OCA\Onlyoffice\Crypt;
-use OCA\Onlyoffice\DocumentService;
-use OCA\Onlyoffice\EmailManager;
+use OCA\Eurooffice\AppConfig;
+use OCA\Eurooffice\Crypt;
+use OCA\Eurooffice\DocumentService;
+use OCA\Eurooffice\EmailManager;
 use OCP\AppFramework\Utility\ITimeFactory;
 use OCP\BackgroundJob\IJob;
 use OCP\BackgroundJob\TimedJob;

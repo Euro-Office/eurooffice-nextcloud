@@ -27,10 +27,10 @@
  *
  */
 
-namespace OCA\Onlyoffice\Listeners;
+namespace OCA\Eurooffice\Listeners;
 
-use OCA\Onlyoffice\AppConfig;
-use OCA\Onlyoffice\SettingsData;
+use OCA\Eurooffice\AppConfig;
+use OCA\Eurooffice\SettingsData;
 use OCA\Viewer\Event\LoadViewer;
 use OCP\AppFramework\Services\IInitialState;
 use OCP\EventDispatcher\Event;
@@ -87,11 +87,11 @@ class ViewerListener implements IEventListener {
         if (!empty($this->appConfig->getDocumentServerUrl())
             && $this->appConfig->settingsAreSuccessful()
             && $this->appConfig->isUserAllowedToUse()) {
-            Util::addScript("onlyoffice", "onlyoffice-viewer", "viewer", true);
-            Util::addScript("onlyoffice", "onlyoffice-listener", "viewer");
+            Util::addScript("eurooffice", "eurooffice-viewer", "viewer", true);
+            Util::addScript("eurooffice", "eurooffice-listener", "viewer");
 
-            Util::addStyle("onlyoffice", "viewer");
-            Util::addStyle("onlyoffice", "format");
+            Util::addStyle("eurooffice", "viewer");
+            Util::addStyle("eurooffice", "format");
 
             $container = $this->serverContainer;
             $this->initialState->provideLazyInitialState("settings", function () use ($container) {

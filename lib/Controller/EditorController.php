@@ -27,18 +27,18 @@
  *
  */
 
-namespace OCA\Onlyoffice\Controller;
+namespace OCA\Eurooffice\Controller;
 
 use OCA\Files\Helper;
 use OCA\Files_Versions\Versions\IVersionManager;
-use OCA\Onlyoffice\AppConfig;
-use OCA\Onlyoffice\Crypt;
-use OCA\Onlyoffice\DocumentService;
-use OCA\Onlyoffice\EmailManager;
-use OCA\Onlyoffice\FileUtility;
-use OCA\Onlyoffice\FileVersions;
-use OCA\Onlyoffice\KeyManager;
-use OCA\Onlyoffice\TemplateManager;
+use OCA\Eurooffice\AppConfig;
+use OCA\Eurooffice\Crypt;
+use OCA\Eurooffice\DocumentService;
+use OCA\Eurooffice\EmailManager;
+use OCA\Eurooffice\FileUtility;
+use OCA\Eurooffice\FileVersions;
+use OCA\Eurooffice\KeyManager;
+use OCA\Eurooffice\TemplateManager;
 use OCP\AppFramework\Controller;
 use OCP\AppFramework\Http\ContentSecurityPolicy;
 use OCP\AppFramework\Http\DataDownloadResponse;
@@ -1703,7 +1703,7 @@ class EditorController extends Controller {
             return [null, true];
         }
 
-        if (preg_match('/\/(files|f|onlyoffice)\/(\d+)/', $parsedLink, $matches)) {
+        if (preg_match('/\/(files|f|eurooffice)\/(\d+)/', $parsedLink, $matches)) {
             return [$matches[2], false];
         }
 

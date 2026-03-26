@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace OCA\Onlyoffice\Migration;
+namespace OCA\Eurooffice\Migration;
 
 use Closure;
 use OCP\DB\ISchemaWrapper;
@@ -32,8 +32,8 @@ class Version070000Date20210417111111 extends SimpleMigrationStep {
         /** @var ISchemaWrapper $schema */
         $schema = $schemaClosure();
 
-        if (!$schema->hasTable('onlyoffice_filekey')) {
-            $table = $schema->createTable('onlyoffice_filekey');
+        if (!$schema->hasTable('eurooffice_filekey')) {
+            $table = $schema->createTable('eurooffice_filekey');
             $table->addColumn('id', 'integer', [
                 'autoincrement' => true,
                 'notnull' => true,

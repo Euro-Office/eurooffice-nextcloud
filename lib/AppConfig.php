@@ -27,7 +27,7 @@
  *
  */
 
-namespace OCA\Onlyoffice;
+namespace OCA\Eurooffice;
 
 use \DateInterval;
 use \DateTime;
@@ -36,12 +36,12 @@ use OCP\ICache;
 use OCP\ICacheFactory;
 use OCP\IConfig;
 use Psr\Log\LoggerInterface;
-use OCA\Onlyoffice\AppInfo\Application;
+use OCA\Eurooffice\AppInfo\Application;
 
 /**
  * Application configutarion
  *
- * @package OCA\Onlyoffice
+ * @package OCA\Eurooffice
  */
 class AppConfig {
     /**
@@ -1236,7 +1236,7 @@ class AppConfig {
             // group unknown -> error and allow nobody
             $group = \OC::$server->getGroupManager()->get($groupName);
             if ($group === null) {
-                \OCP\Log\logger('onlyoffice')->error("Group is unknown $groupName", ["app" => $this->appName]);
+                \OCP\Log\logger('eurooffice')->error("Group is unknown $groupName", ["app" => $this->appName]);
                 $this->setLimitGroups(array_diff($groups, [$groupName]));
             } else {
                 if ($group->inGroup($user)) {
@@ -1483,31 +1483,31 @@ class AppConfig {
      */
     private function buildOnlyofficeFormats() {
         try {
-            $onlyofficeFormats = $this->getFormats();
+            $euroofficeFormats = $this->getFormats();
             $result = [];
             $additionalFormats = $this->getAdditionalFormatAttributes();
 
-            if ($onlyofficeFormats !== false) {
-                foreach ($onlyofficeFormats as $onlyOfficeFormat) {
-                    if ($onlyOfficeFormat["name"]
-                        && $onlyOfficeFormat["mime"]
-                        && $onlyOfficeFormat["type"]
-                        && $onlyOfficeFormat["actions"]
-                        && $onlyOfficeFormat["convert"]) {
-                        $result[$onlyOfficeFormat["name"]] = [
-                            "mime" => $onlyOfficeFormat["mime"],
-                            "type" => $onlyOfficeFormat["type"],
-                            "edit" => in_array("edit", $onlyOfficeFormat["actions"]),
-                            "editable" => in_array("lossy-edit", $onlyOfficeFormat["actions"]),
-                            "conv" => in_array("auto-convert", $onlyOfficeFormat["actions"]),
-                            "fillForms" => in_array("fill", $onlyOfficeFormat["actions"]),
-                            "comment" => in_array("comment", $onlyOfficeFormat["actions"]),
-                            "saveas" => $onlyOfficeFormat["convert"],
-                            "review" => in_array("review", $onlyOfficeFormat["actions"]),
-                            "modifyFilter" => in_array("customfilter", $onlyOfficeFormat["actions"]),
+            if ($euroofficeFormats !== false) {
+                foreach ($euroofficeFormats as $euroOfficeFormat) {
+                    if ($euroOfficeFormat["name"]
+                        && $euroOfficeFormat["mime"]
+                        && $euroOfficeFormat["type"]
+                        && $euroOfficeFormat["actions"]
+                        && $euroOfficeFormat["convert"]) {
+                        $result[$euroOfficeFormat["name"]] = [
+                            "mime" => $euroOfficeFormat["mime"],
+                            "type" => $euroOfficeFormat["type"],
+                            "edit" => in_array("edit", $euroOfficeFormat["actions"]),
+                            "editable" => in_array("lossy-edit", $euroOfficeFormat["actions"]),
+                            "conv" => in_array("auto-convert", $euroOfficeFormat["actions"]),
+                            "fillForms" => in_array("fill", $euroOfficeFormat["actions"]),
+                            "comment" => in_array("comment", $euroOfficeFormat["actions"]),
+                            "saveas" => $euroOfficeFormat["convert"],
+                            "review" => in_array("review", $euroOfficeFormat["actions"]),
+                            "modifyFilter" => in_array("customfilter", $euroOfficeFormat["actions"]),
                         ];
-                        if (isset($additionalFormats[$onlyOfficeFormat["name"]])) {
-                            $result[$onlyOfficeFormat["name"]] = array_merge($result[$onlyOfficeFormat["name"]], $additionalFormats[$onlyOfficeFormat["name"]]);
+                        if (isset($additionalFormats[$euroOfficeFormat["name"]])) {
+                            $result[$euroOfficeFormat["name"]] = array_merge($result[$euroOfficeFormat["name"]], $additionalFormats[$euroOfficeFormat["name"]]);
                         }
                     }
                 }
@@ -1584,12 +1584,12 @@ class AppConfig {
      * @return string
      */
     public function getMimeType($ext) {
-        $onlyofficeFormats = $this->getFormats();
+        $euroofficeFormats = $this->getFormats();
         $result = "text/plain";
 
-        foreach ($onlyofficeFormats as $onlyOfficeFormat) {
-            if ($onlyOfficeFormat["name"] === $ext && !empty($onlyOfficeFormat["mime"])) {
-                $result = $onlyOfficeFormat["mime"][0];
+        foreach ($euroofficeFormats as $euroOfficeFormat) {
+            if ($euroOfficeFormat["name"] === $ext && !empty($euroOfficeFormat["mime"])) {
+                $result = $euroOfficeFormat["mime"][0];
                 break;
             }
         }
