@@ -31,11 +31,9 @@ Whether you’re working with internal teams or external collaborators, the Euro
 	<website>https://github.com/euro-office</website>
     <bugs>https://github.com/Euro-Office/eurooffice-nextcloud/issues</bugs>
     <repository type="git">https://github.com/Euro-Office/eurooffice-nextcloud.git</repository>
-    <screenshot small-thumbnail="https://raw.githubusercontent.com/Euro-Office/eurooffice-nextcloud/master/screenshots/main_small.png">https://raw.githubusercontent.com/Euro-Office/eurooffice-nextcloud/master/screenshots/main.png</screenshot>
-    <screenshot>https://raw.githubusercontent.com/Euro-Office/eurooffice-nextcloud/master/screenshots/settings.png</screenshot>
-    <screenshot>https://raw.githubusercontent.com/Euro-Office/eurooffice-nextcloud/master/screenshots/new.png</screenshot>
-    <screenshot>https://raw.githubusercontent.com/Euro-Office/eurooffice-nextcloud/master/screenshots/open.png</screenshot>
-    <screenshot>https://raw.githubusercontent.com/Euro-Office/eurooffice-nextcloud/master/screenshots/open_form.png</screenshot>
+    <screenshot>https://raw.githubusercontent.com/Euro-Office/eurooffice-nextcloud/master/screenshots/document.png</screenshot>
+    <screenshot>https://raw.githubusercontent.com/Euro-Office/eurooffice-nextcloud/master/screenshots/spreadsheet.png</screenshot>
+    <screenshot>https://raw.githubusercontent.com/Euro-Office/eurooffice-nextcloud/master/screenshots/presentation.png</screenshot>
     <dependencies>
         <nextcloud min-version="33" max-version="33"/>
     </dependencies>
