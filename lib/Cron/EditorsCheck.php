@@ -144,16 +144,17 @@ class EditorsCheck extends TimedJob {
      * Send notification to admins
      */
     private function notifyAdmins(): void {
+        $serverUrl = $this->appConfig->getDocumentServerUrl();
         $notification = $this->notificationManager->createNotification();
         $notification->setApp($this->appName)
             ->setDateTime(new \DateTime())
             ->setObject("editorsCheck", self::OBJECT_ID_UNAVAILABLE)
-            ->setSubject("editorscheck_info");
+            ->setSubject("editorscheck_info", ["serverUrl" => $serverUrl]);
         foreach ($this->getUsersToNotify() as $uid) {
             $notification->setUser($uid);
             $this->notificationManager->notify($notification);
             if ($this->appConfig->getEmailNotifications()) {
-                $this->emailManager->notifyEditorsCheckEmail($uid);
+                $this->emailManager->notifyEditorsCheckEmail($uid, $serverUrl);
             }
         }
     }
