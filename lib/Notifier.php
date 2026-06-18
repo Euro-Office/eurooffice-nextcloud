@@ -79,7 +79,7 @@ class Notifier implements INotifier {
                     ->setLink($appSettingsLink, IAction::TYPE_WEB)
                     ->setPrimary(false);
                 $notification->addParsedAction($action);
-                $notification->setParsedSubject($notification->getObjectId())
+                $notification->setParsedSubject($trans->t("Nextcloud Office server is not available"))
                     ->setIcon($this->urlGenerator->getAbsoluteURL($this->urlGenerator->imagePath($this->appName, 'app-dark.svg')));
                 $notification->setParsedMessage($message);
                 break;

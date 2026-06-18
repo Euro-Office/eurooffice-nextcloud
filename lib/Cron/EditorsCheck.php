@@ -40,6 +40,14 @@ use Psr\Log\LoggerInterface;
 
 class EditorsCheck extends TimedJob {
 
+    /**
+     * Stable object id used to correlate the failure notification with its
+     * later dismissal. Must not be a translated string, otherwise the id can
+     * drift between ticks (cron resolves the server default language) and
+     * markProcessed() would match nothing.
+     */
+    private const OBJECT_ID_UNAVAILABLE = "server_unavailable";
+
     public function __construct(
         ITimeFactory $time,
         private readonly string $appName,
@@ -67,10 +75,6 @@ class EditorsCheck extends TimedJob {
             $this->logger->debug("Settings are empty");
             return;
         }
-        if (!$this->appConfig->settingsAreSuccessful()) {
-            $this->logger->debug("Settings are not correct");
-            return;
-        }
         $fileUrl = $this->urlGenerator->linkToRouteAbsolute($this->appName . ".callback.emptyfile");
         if (!$this->appConfig->useDemo() && !empty($this->appConfig->getStorageUrl())) {
             $fileUrl = str_replace($this->urlGenerator->getAbsoluteURL("/"), $this->appConfig->getStorageUrl(), $fileUrl);
@@ -87,8 +91,11 @@ class EditorsCheck extends TimedJob {
 
         if (!empty($error)) {
             $this->logger->info("Nextcloud Office server is not available");
+            $isNewFailure = $this->appConfig->settingsAreSuccessful();
             $this->appConfig->setSettingsError($error);
-            $this->notifyAdmins();
+            if ($isNewFailure) {
+                $this->notifyAdmins();
+            }
         } else {
             $this->logger->debug("Nextcloud Office server availability check is finished successfully");
             if (!$this->appConfig->settingsAreSuccessful()) {
@@ -126,7 +133,7 @@ class EditorsCheck extends TimedJob {
     private function dismissAdminNotifications(): void {
         $notification = $this->notificationManager->createNotification();
         $notification->setApp($this->appName)
-            ->setObject("editorsCheck", $this->trans->t("ONLYOFFICE server is not available"));
+            ->setObject("editorsCheck", self::OBJECT_ID_UNAVAILABLE);
         foreach ($this->getUsersToNotify() as $uid) {
             $notification->setUser($uid);
             $this->notificationManager->markProcessed($notification);
@@ -140,7 +147,7 @@ class EditorsCheck extends TimedJob {
         $notification = $this->notificationManager->createNotification();
         $notification->setApp($this->appName)
             ->setDateTime(new \DateTime())
-            ->setObject("editorsCheck", $this->trans->t("Nextcloud Office server is not available"))
+            ->setObject("editorsCheck", self::OBJECT_ID_UNAVAILABLE)
             ->setSubject("editorscheck_info");
         foreach ($this->getUsersToNotify() as $uid) {
             $notification->setUser($uid);
