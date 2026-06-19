@@ -151,6 +151,9 @@ import axios from '@nextcloud/axios'
 							// the 'eurooffice' namespace so it works on every editor layout
 							// (including the inframe 'base' layout that doesn't run the
 							// Assistant app's own initial-state bootstrap).
+							if (typeof OCA.Eurooffice.docEditor.setSmartPickerAvailable === 'function') {
+								OCA.Eurooffice.docEditor.setSmartPickerAvailable(true)
+							}
 							const assistantAvailable = !!OCP?.InitialState?.loadState?.('eurooffice', 'assistant-enabled', false)
 							if (typeof OCA.Eurooffice.docEditor.setAssistantAvailable === 'function') {
 								OCA.Eurooffice.docEditor.setAssistantAvailable(assistantAvailable)

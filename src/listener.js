@@ -129,13 +129,28 @@ import { getLinkWithPicker } from '@nextcloud/vue/components/NcRichText'
 				this.showSmartPicker = false
 				return
 			}
+			let linkUrl = null
 			try {
-				const linkUrl = await getLinkWithPicker('eurooffice', false)
-				if (linkUrl) {
-					OCA.Eurooffice.onInsertLink(linkUrl)
-				}
+				linkUrl = await getLinkWithPicker('eurooffice', false)
 			} catch (err) {
+				// Cancelling via X/ESC may reject; treat as "no selection".
 				console.debug('Smart Picker cancelled or failed:', err)
+			}
+			if (linkUrl) {
+				OCA.Eurooffice.onInsertLink(linkUrl)
+			} else {
+				// Cancelled (resolve-empty or reject both land here). The
+				// docEditor lives in the editor iframe, not this parent window,
+				// so reach it through the frame. Also restore window focus to
+				// the iframe, which the picker modal took.
+				const frame = document.querySelector(OCA.Eurooffice.frameSelector)
+				const docEditor = frame?.contentWindow?.OCA?.Eurooffice?.docEditor
+				if (frame?.contentWindow) {
+					frame.contentWindow.focus()
+				}
+				if (typeof docEditor?.setSmartPickerCancel === 'function') {
+					docEditor.setSmartPickerCancel()
+				}
 			}
 		}
 		this.showSmartPicker = false
