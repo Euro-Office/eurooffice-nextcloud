@@ -1,6 +1,6 @@
 {
     "name": "eurooffice",
-    "version": "11.0.0",
+    "version": "11.0.1",
     "description": "Euro-Office app for Nextcloud — view, edit and collaborate on documents, spreadsheets and presentations using Euro-Office Docs.",
     "homepage": "https://github.com/Euro-Office/eurooffice-nextcloud",
     "author": "Euro-Office contributors",
