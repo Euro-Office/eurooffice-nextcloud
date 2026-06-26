@@ -1,5 +1,20 @@
 # Change Log
 
+## 11.0.1
+## Added
+- Smart Picker integration for inserting file links into documents
+
+## Changed
+- WebP screenshots replacing old PNGs
+- Renovate bot configured for dependency management
+- Updated dependencies: node 24, @nextcloud/auth, vue, vite, and CI actions
+
+## Fixed
+- File action icons invisible in dark themes
+- Broken and generic appstore links in info.xml
+- Viewer formats iteration (use Object.values())
+- Smart picker link insertion (iframe targeting, await, plain string linkText)
+
 ## 11.0.0
 ## Added
 - NC Assistant Smart Picker integration
