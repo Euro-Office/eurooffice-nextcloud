@@ -522,7 +522,7 @@ import { loadState } from '@nextcloud/initial-state'
 
 			const downloadAttribute = shareAttributes.find((attribute) => attribute.scope === 'permissions' && attribute.key === 'download')
 
-			return downloadAttribute !== undefined && downloadAttribute.enabled === false
+			return downloadAttribute !== undefined && downloadAttribute.value !== true
 		}
 
 		if (OCA.Files && OCA.Files.fileActions) {
