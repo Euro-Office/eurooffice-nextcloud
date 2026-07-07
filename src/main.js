@@ -508,6 +508,13 @@ import { loadState } from '@nextcloud/initial-state'
 			return config
 		}
 
+		const isDownloadDisabledByShareAttributes = function(file) {
+			const shareAttributes = JSON.parse(file.attributes['share-attributes'] || '[]')
+			const downloadAttribute = shareAttributes.find((attribute) => attribute.scope === 'permissions' && attribute.key === 'download')
+
+			return downloadAttribute !== undefined && downloadAttribute.enabled === false
+		}
+
 		if (OCA.Files && OCA.Files.fileActions) {
 			Object.entries(formats).forEach(([ext, config]) => {
 				if (!config.mime) {
@@ -618,9 +625,7 @@ import { loadState } from '@nextcloud/initial-state'
 					if (files[0].attributes['mount-type'] === 'shared') {
 						if (required !== (files[0].attributes['share-permissions'] & required)) { return false }
 
-						const attributes = JSON.parse(files[0].attributes['share-attributes'])
-						const downloadAttribute = attributes.find((attribute) => attribute.scope === 'permissions' && attribute.key === 'download')
-						if (downloadAttribute !== undefined && downloadAttribute.enabled === false) { return false }
+						if (isDownloadDisabledByShareAttributes(files[0])) { return false }
 					}
 
 					return true
@@ -644,9 +649,7 @@ import { loadState } from '@nextcloud/initial-state'
 					if (files[0].attributes['mount-type'] === 'shared') {
 						if (required !== (files[0].attributes['share-permissions'] & required)) { return false }
 
-						const attributes = JSON.parse(files[0].attributes['share-attributes'])
-						const downloadAttribute = attributes.find((attribute) => attribute.scope === 'permissions' && attribute.key === 'download')
-						if (downloadAttribute !== undefined && downloadAttribute.enabled === false) { return false }
+						if (isDownloadDisabledByShareAttributes(files[0])) { return false }
 					}
 
 					return true
@@ -671,9 +674,7 @@ import { loadState } from '@nextcloud/initial-state'
 						if (Permission.READ !== (files[0].permissions & Permission.READ)) { return false }
 
 						if (files[0].attributes['mount-type'] === 'shared') {
-							const attributes = JSON.parse(files[0].attributes['share-attributes'])
-							const downloadAttribute = attributes.find((attribute) => attribute.scope === 'permissions' && attribute.key === 'download')
-							if (downloadAttribute !== undefined && downloadAttribute.enabled === false) { return false }
+							if (isDownloadDisabledByShareAttributes(files[0])) { return false }
 						}
 
 						return true
