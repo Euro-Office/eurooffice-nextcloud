@@ -509,7 +509,17 @@ import { loadState } from '@nextcloud/initial-state'
 		}
 
 		const isDownloadDisabledByShareAttributes = function(file) {
-			const shareAttributes = JSON.parse(file.attributes['share-attributes'] || '[]')
+			let shareAttributes
+			try {
+				shareAttributes = JSON.parse(file.attributes['share-attributes'] || '[]')
+			} catch {
+				return false
+			}
+
+			if (!Array.isArray(shareAttributes)) {
+				return false
+			}
+
 			const downloadAttribute = shareAttributes.find((attribute) => attribute.scope === 'permissions' && attribute.key === 'download')
 
 			return downloadAttribute !== undefined && downloadAttribute.enabled === false
