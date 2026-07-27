@@ -65,8 +65,6 @@ import { loadState } from '@nextcloud/initial-state'
 	}, OCA.Eurooffice)
 
 	OCA.Eurooffice.setting = OCP.InitialState.loadState(OCA.Eurooffice.AppName, 'settings')
-	OCA.Eurooffice.mobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|BB|PlayBook|IEMobile|Windows Phone|Kindle|Silk|Opera Mini|Macintosh/i.test(navigator.userAgent)
-							&& navigator.maxTouchPoints && navigator.maxTouchPoints > 1
 
 	OCA.Eurooffice.CreateFile = function(name, fileList, templateId, targetId, open = true) {
 		const dir = fileList.getCurrentDirectory()
@@ -107,7 +105,7 @@ import { loadState } from '@nextcloud/initial-state'
 
 	OCA.Eurooffice.CreateFileProcess = function(name, dir, templateId, targetId, open, callback) {
 		let winEditor = null
-		if (((!OCA.Eurooffice.setting.sameTab && !OCA.Eurooffice.setting.enableSharing) || OCA.Eurooffice.mobile || OCA.Eurooffice.Desktop) && open) {
+		if (((!OCA.Eurooffice.setting.sameTab && !OCA.Eurooffice.setting.enableSharing) || OCA.Eurooffice.Desktop) && open) {
 			const loaderUrl = OCA.Eurooffice.Desktop ? '' : OC.filePath(OCA.Eurooffice.AppName, 'templates', 'loader.html')
 			winEditor = window.open(loaderUrl)
 		}
@@ -185,7 +183,7 @@ import { loadState } from '@nextcloud/initial-state'
 			OCA.Eurooffice.SetDefaultUrl()
 			winEditor.location.href = url
 		} else if ((!OCA.Eurooffice.setting.sameTab && !OCA.Eurooffice.setting.enableSharing)
-			|| OCA.Eurooffice.mobile || OCA.Eurooffice.Desktop || (isPublicShare() && !OCA.Eurooffice.isViewIsFile()
+			|| OCA.Eurooffice.Desktop || (isPublicShare() && !OCA.Eurooffice.isViewIsFile()
 			&& !OCA.Eurooffice.setting.sameTab && OCA.Eurooffice.setting.enableSharing)
 			|| (!OCA.Eurooffice.setting.sameTab && !isDefault)) {
 			OCA.Eurooffice.SetDefaultUrl()
