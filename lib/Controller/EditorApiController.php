@@ -456,6 +456,12 @@ class EditorApiController extends OCSController {
             $params["editorConfig"]["customization"]["close"]["visible"] = true;
         }
 
+        // The editor renders this as its native close control in the header.
+        // Keep it available for standalone windows and viewer integrations too.
+        if (!$desktop) {
+            $params["editorConfig"]["customization"]["close"]["visible"] = true;
+        }
+
         if (!$canDownload || $this->appConfig->getDisableDownload()) {
             $params["document"]["permissions"]["download"] = false;
             $params["document"]["permissions"]["print"] = false;
