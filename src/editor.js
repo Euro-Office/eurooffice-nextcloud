@@ -187,9 +187,7 @@ import axios from '@nextcloud/axios'
 							}
 						}
 
-						if (OCA.Eurooffice.directEditor || OCA.Eurooffice.inframe) {
-							config.events.onRequestClose = OCA.Eurooffice.onRequestClose
-						}
+						config.events.onRequestClose = OCA.Eurooffice.onRequestClose
 
 						if (OCA.Eurooffice.inframe
 							&& config._files_sharing && !OCA.Eurooffice.shareToken
@@ -467,12 +465,25 @@ import axios from '@nextcloud/axios'
 			return
 		}
 
-		OCA.Eurooffice.docEditor.destroyEditor()
+		if (OCA.Eurooffice.docEditor) {
+			OCA.Eurooffice.docEditor.destroyEditor()
+		}
 
-		window.parent.postMessage({
-			method: 'editorRequestClose',
-		},
-		'*')
+		if (OCA.Eurooffice.inframe) {
+			window.parent.postMessage({
+				method: 'editorRequestClose',
+			},
+			'*')
+			return
+		}
+
+		if (window.opener && !window.opener.closed) {
+			window.opener.focus()
+		}
+		window.close()
+		if (!window.closed) {
+			window.location.assign(OC.generateUrl('/apps/files'))
+		}
 	}
 
 	OCA.Eurooffice.onRequestSharingSettings = function() {
