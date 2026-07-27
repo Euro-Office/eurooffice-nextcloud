@@ -74,6 +74,7 @@ import axios from '@nextcloud/axios'
 				const config = response.data
 				if (config) {
 					OCA.Eurooffice.device = config.type
+					OCA.Eurooffice.folderLink = config._folder_link || OC.generateUrl('/apps/files')
 					if (OCA.Eurooffice.device === 'mobile') {
 						OCA.Eurooffice.resizeEvents()
 					}
@@ -477,13 +478,16 @@ import axios from '@nextcloud/axios'
 			return
 		}
 
+		const returnUrl = OCA.Eurooffice.folderLink || OC.generateUrl('/apps/files')
 		if (window.opener && !window.opener.closed) {
 			window.opener.focus()
+			window.close()
+			if (window.closed) {
+				return
+			}
 		}
-		window.close()
-		if (!window.closed) {
-			window.location.assign(OC.generateUrl('/apps/files'))
-		}
+
+		window.location.replace(returnUrl)
 	}
 
 	OCA.Eurooffice.onRequestSharingSettings = function() {
