@@ -436,6 +436,10 @@ class EditorApiController extends OCSController {
         }
 
         $canGoBack = $folderLink !== null;
+        if ($canGoBack) {
+            $params["_folder_link"] = $folderLink;
+        }
+
         if ($inviewer) {
             if ($canGoBack) {
                 $params["editorConfig"]["customization"]["goback"] = [
