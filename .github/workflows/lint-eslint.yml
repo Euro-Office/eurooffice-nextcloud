@@ -3,9 +3,9 @@ name: ESLint
 on:
   workflow_dispatch:
   push:
-    branches: [master, develop]
+    branches: [main, 'stable*']
   pull_request:
-    branches: [master, develop]
+    branches: [main, 'stable*']
 
 env:
   NODE_VERSION: 20

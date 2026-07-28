@@ -3,9 +3,9 @@ name: Artifact
 on:
   workflow_dispatch:
   push:
-    branches: [master]
+    branches: [main, 'stable*']
   pull_request:
-    branches: [master]
+    branches: [main, 'stable*']
 
 jobs:
   artifact:
