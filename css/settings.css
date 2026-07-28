@@ -121,7 +121,5 @@
 }
 
 .eurooffice-description .useful-links a::after {
-    content: url('../img/top-right-arrow.svg');
-    width: 12px;
-    height: 12px;
+    content: " ↗";
 }
