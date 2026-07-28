@@ -2,5 +2,16 @@
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": [
     "config:recommended"
+  ],
+  "packageRules": [
+    {
+      "description": "stylelint and its shared configs declare peer ranges on each other, so bumping them separately produces an unsatisfiable tree and Renovate cannot regenerate the lockfile. Always update them in a single PR.",
+      "groupName": "stylelint",
+      "matchPackageNames": [
+        "stylelint",
+        "stylelint-config-**",
+        "@nextcloud/stylelint-config"
+      ]
+    }
   ]
 }
