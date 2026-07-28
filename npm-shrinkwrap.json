@@ -1,12 +1,12 @@
 {
     "name": "eurooffice",
-    "version": "11.0.0",
+    "version": "11.0.1",
     "lockfileVersion": 3,
     "requires": true,
     "packages": {
         "": {
             "name": "eurooffice",
-            "version": "11.0.0",
+            "version": "11.0.1",
             "license": "AGPL-3.0",
             "dependencies": {
                 "@nextcloud/auth": "^2.5.2",
@@ -1471,14 +1471,13 @@
             }
         },
         "node_modules/@nextcloud/axios": {
-            "version": "2.5.2",
-            "resolved": "https://registry.npmjs.org/@nextcloud/axios/-/axios-2.5.2.tgz",
-            "integrity": "sha512-8frJb77jNMbz00TjsSqs1PymY0nIEbNM4mVmwen2tXY7wNgRai6uXilIlXKOYB9jR/F/HKRj6B4vUwVwZbhdbw==",
+            "version": "2.6.0",
+            "resolved": "https://registry.npmjs.org/@nextcloud/axios/-/axios-2.6.0.tgz",
+            "integrity": "sha512-ehcIgyora8DAJ+STG6iFI4e+ufPVFrIA6o0FgMKeKdfyaxRJ9UM7L+n7V+rc/qv8sDiWC/hWIKwFtLw2W5yE4Q==",
             "license": "GPL-3.0-or-later",
             "dependencies": {
-                "@nextcloud/auth": "^2.5.1",
-                "@nextcloud/router": "^3.0.1",
-                "axios": "^1.12.2"
+                "@nextcloud/auth": "^2.6.0",
+                "axios": "^1.15.0"
             },
             "engines": {
                 "node": "^20.0.0 || ^22.0.0 || ^24.0.0"
@@ -3230,6 +3229,18 @@
                 "acorn": "^6.0.0 || ^7.0.0 || ^8.0.0"
             }
         },
+        "node_modules/agent-base": {
+            "version": "6.0.2",
+            "resolved": "https://registry.npmjs.org/agent-base/-/agent-base-6.0.2.tgz",
+            "integrity": "sha512-RZNwNclF7+MS/8bDg70amg32dyeZGZxiDuQmZxKLAlQjr3jGyLx+4Kkk58UO7D2QdgFIQCovuSuZESne6RG6XQ==",
+            "license": "MIT",
+            "dependencies": {
+                "debug": "4"
+            },
+            "engines": {
+                "node": ">= 6.0.0"
+            }
+        },
         "node_modules/ajv": {
             "version": "8.18.0",
             "resolved": "https://registry.npmjs.org/ajv/-/ajv-8.18.0.tgz",
@@ -3557,14 +3568,15 @@
             }
         },
         "node_modules/axios": {
-            "version": "1.13.3",
-            "resolved": "https://registry.npmjs.org/axios/-/axios-1.13.3.tgz",
-            "integrity": "sha512-ERT8kdX7DZjtUm7IitEyV7InTHAF42iJuMArIiDIV5YtPanJkgw4hw5Dyg9fh0mihdWNn1GKaeIWErfe56UQ1g==",
+            "version": "1.18.1",
+            "resolved": "https://registry.npmjs.org/axios/-/axios-1.18.1.tgz",
+            "integrity": "sha512-3nTvFlvpn9Zu/RkHUqtc7/+al4UpRW5az71ap5zccp6e8RAYEzhMTecX8Dz1wWDYrPpUoB1HAQEGEAEvUr7S9g==",
             "license": "MIT",
             "dependencies": {
-                "follow-redirects": "^1.15.6",
-                "form-data": "^4.0.4",
-                "proxy-from-env": "^1.1.0"
+                "follow-redirects": "^1.16.0",
+                "form-data": "^4.0.5",
+                "https-proxy-agent": "^5.0.1",
+                "proxy-from-env": "^2.1.0"
             }
         },
         "node_modules/bail": {
@@ -6250,15 +6262,16 @@
             }
         },
         "node_modules/follow-redirects": {
-            "version": "1.15.6",
-            "resolved": "https://registry.npmjs.org/follow-redirects/-/follow-redirects-1.15.6.tgz",
-            "integrity": "sha512-wWN62YITEaOpSK584EZXJafH1AGpO8RVgElfkuXbTOrPX4fIfOyEpW/CsiNd8JdYrAoOvafRTOEnvsO++qCqFA==",
+            "version": "1.16.0",
+            "resolved": "https://registry.npmjs.org/follow-redirects/-/follow-redirects-1.16.0.tgz",
+            "integrity": "sha512-y5rN/uOsadFT/JfYwhxRS5R7Qce+g3zG97+JrtFZlC9klX/W5hD7iiLzScI4nZqUS7DNUdhPgw4xI8W2LuXlUw==",
             "funding": [
                 {
                     "type": "individual",
                     "url": "https://github.com/sponsors/RubenVerborgh"
                 }
             ],
+            "license": "MIT",
             "engines": {
                 "node": ">=4.0"
             },
@@ -6901,6 +6914,19 @@
             "resolved": "https://registry.npmjs.org/https-browserify/-/https-browserify-1.0.0.tgz",
             "integrity": "sha512-J+FkSdyD+0mA0N+81tMotaRMfSL9SGi+xpD3T6YApKsc3bGSXJlfXri3VyFOeYkfLRQisDk1W+jIFFKBeUBbBg==",
             "dev": true
+        },
+        "node_modules/https-proxy-agent": {
+            "version": "5.0.1",
+            "resolved": "https://registry.npmjs.org/https-proxy-agent/-/https-proxy-agent-5.0.1.tgz",
+            "integrity": "sha512-dFcAjpTQFgoLMzC2VwU+C/CbS7uRL0lWmxDITmqm7C+7F0Odmj6s9l6alZc6AELXhrnggM2CeWSXHGOdX2YtwA==",
+            "license": "MIT",
+            "dependencies": {
+                "agent-base": "6",
+                "debug": "4"
+            },
+            "engines": {
+                "node": ">= 6"
+            }
         },
         "node_modules/ieee754": {
             "version": "1.2.1",
@@ -9466,10 +9492,13 @@
             }
         },
         "node_modules/proxy-from-env": {
-            "version": "1.1.0",
-            "resolved": "https://registry.npmjs.org/proxy-from-env/-/proxy-from-env-1.1.0.tgz",
-            "integrity": "sha512-D+zkORCbA9f1tdWRK0RaCR3GPv50cMxcrz4X8k5LTSUD1Dkw47mKJEZQNunItRTkWwgtaUSo1RVFRIG9ZXiFYg==",
-            "license": "MIT"
+            "version": "2.1.0",
+            "resolved": "https://registry.npmjs.org/proxy-from-env/-/proxy-from-env-2.1.0.tgz",
+            "integrity": "sha512-cJ+oHTW1VAEa8cJslgmUZrc+sjRKgAKl3Zyse6+PV38hZe/V6Z14TbCuXcan9F9ghlz4QrFr2c92TNF82UkYHA==",
+            "license": "MIT",
+            "engines": {
+                "node": ">=10"
+            }
         },
         "node_modules/public-encrypt": {
             "version": "4.0.3",
