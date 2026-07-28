@@ -23,8 +23,6 @@
 
 /* eslint-disable import/no-unresolved */
 
-/* global _ */
-
 import AppDarkSvg from '../img/app-dark.svg?raw'
 import axios from '@nextcloud/axios'
 

@@ -21,8 +21,6 @@
  *
  */
 
-/* global _ */
-
 import axios from '@nextcloud/axios'
 import { spawnDialog } from '@nextcloud/vue/functions/dialog'
 import { defineAsyncComponent } from 'vue'

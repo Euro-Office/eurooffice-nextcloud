@@ -21,7 +21,7 @@
  *
  */
 
-/* global _, OC, OCP, t */
+/* global OC, OCP, t */
 
 import { getLinkWithPicker } from '@nextcloud/vue/components/NcRichText'
 
@@ -98,47 +98,47 @@ import { getLinkWithPicker } from '@nextcloud/vue/components/NcRichText'
 	// the modal manually. The modal's built-in close button dismisses it.
 	OCA.Eurooffice.onSmartPickerRequest = async function(selectedText, source) {
 		if (this.showSmartPicker) {
-			return;
+			return
 		}
-		this.showSmartPicker = true;
+		this.showSmartPicker = true
 
 		if (source === 'contextmenu') {
-			const openAssistantForm = window.OCA?.Assistant?.openAssistantForm;
+			const openAssistantForm = window.OCA?.Assistant?.openAssistantForm
 			if (typeof openAssistantForm !== 'function') {
-				console.debug('NC Assistant app is not loaded; smart picker is unavailable');
-				this.showSmartPicker = false;
-				return;
+				console.debug('NC Assistant app is not loaded; smart picker is unavailable')
+				this.showSmartPicker = false
+				return
 			}
 			try {
 				const seedInputs = selectedText
 					? { prompt: selectedText, input: selectedText, text: selectedText }
-					: {};
+					: {}
 				await openAssistantForm({
 					appId: OCA.Eurooffice.AppName,
 					taskType: 'core:text2text',
 					inputs: seedInputs,
 					closeOnResult: false,
-				});
+				})
 			} catch (e) {
 				// Smart Picker cancelled or failed
 			}
 		} else {
 			// Toolbar button: open the Smart Picker provider selection modal
 			if (typeof getLinkWithPicker !== 'function') {
-				console.error('getLinkWithPicker is not available. Make sure @nextcloud/vue supports the Smart Picker.');
-				this.showSmartPicker = false;
-				return;
+				console.error('getLinkWithPicker is not available. Make sure @nextcloud/vue supports the Smart Picker.')
+				this.showSmartPicker = false
+				return
 			}
 			try {
-				const linkUrl = await getLinkWithPicker('eurooffice', false);
+				const linkUrl = await getLinkWithPicker('eurooffice', false)
 				if (linkUrl) {
-					OCA.Eurooffice.onInsertLink(linkUrl);
+					OCA.Eurooffice.onInsertLink(linkUrl)
 				}
 			} catch (err) {
-				console.debug('Smart Picker cancelled or failed:', err);
+				console.debug('Smart Picker cancelled or failed:', err)
 			}
 		}
-		this.showSmartPicker = false;
+		this.showSmartPicker = false
 	}
 
 	OCA.Eurooffice.onRequestMailMergeRecipients = function(recipientMimes) {
@@ -204,10 +204,10 @@ import { getLinkWithPicker } from '@nextcloud/vue/components/NcRichText'
 	OCA.Eurooffice._isDocumentReady = false
 
 	OCA.Eurooffice._doInsertLink = function(link) {
-		if (!link) return;
-		const frame = document.querySelector(OCA.Eurooffice.frameSelector);
+		if (!link) return
+		const frame = document.querySelector(OCA.Eurooffice.frameSelector)
 		if (frame && frame.contentWindow && frame.contentWindow.OCA?.Eurooffice?.docEditor) {
-			frame.contentWindow.OCA.Eurooffice.docEditor.insertLink(link);
+			frame.contentWindow.OCA.Eurooffice.docEditor.insertLink(link)
 		}
 	}
 

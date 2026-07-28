@@ -23,7 +23,7 @@
 
 /* eslint-disable import/no-unresolved */
 
-/* global _, _oc_appswebroots */
+/* global _oc_appswebroots */
 
 import {
 	File,

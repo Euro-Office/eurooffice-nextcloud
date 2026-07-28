@@ -21,7 +21,7 @@
  *
  */
 
-/* global _, _oc_appswebroots, oc_current_user  */
+/* global _oc_appswebroots, oc_current_user  */
 
 /**
  * @param {object} OCA Nextcloud OCA object

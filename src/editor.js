@@ -21,7 +21,7 @@
  *
  */
 
-/* global _, DocsAPI, moment, oc_defaults */
+/* global DocsAPI, moment, oc_defaults */
 
 import axios from '@nextcloud/axios'
 
