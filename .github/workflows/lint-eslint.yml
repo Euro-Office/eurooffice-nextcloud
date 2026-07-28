@@ -8,7 +8,11 @@ on:
     branches: [main, 'stable*']
 
 env:
-  NODE_VERSION: 20
+  # Must stay >= 24: @nextcloud/files@4 requires node ^24.0.0, and npm 10
+  # (bundled with node 20) cannot `npm ci` this lockfile because it tries to
+  # materialise fdir's *optional* picomatch peer. The release workflow already
+  # builds with node ^24 / npm ^11.3.
+  NODE_VERSION: 24
 
 jobs:
   lint:
