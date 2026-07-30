@@ -3,9 +3,9 @@ name: Lint-phpcs
 on:
   workflow_dispatch:
   push:
-    branches: [master, develop]
+    branches: [main, 'stable*']
   pull_request:
-    branches: [master, develop]
+    branches: [main, 'stable*']
 
 permissions:
   contents: read
