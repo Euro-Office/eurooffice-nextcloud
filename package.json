@@ -42,7 +42,7 @@
         "@nextcloud/stylelint-config": "^3.0.1",
         "@nextcloud/vite-config": "^2.5.2",
         "stylelint": "^16.26.1",
-        "stylelint-config-standard": "^36.0.1",
+        "stylelint-config-standard": "^40.0.0",
         "vite": "^7.3.1"
     }
 }
