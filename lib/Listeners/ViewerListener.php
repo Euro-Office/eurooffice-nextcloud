@@ -54,6 +54,9 @@ class ViewerListener implements IEventListener {
             && $this->appConfig->isUserAllowedToUse()) {
             Util::addScript("eurooffice", "eurooffice-viewer", "viewer");
             Util::addScript("eurooffice", "eurooffice-listener", "viewer");
+            // Styles for the bundle above; it renders the Smart Picker modal, which
+            // is unstyled and full-frame without them.
+            Util::addStyle("eurooffice", "eurooffice-listener");
 
             Util::addStyle("eurooffice", "viewer");
             Util::addStyle("eurooffice", "format");

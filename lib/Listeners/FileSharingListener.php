@@ -64,6 +64,9 @@ class FileSharingListener implements IEventListener {
 
             if ($this->appConfig->getSameTab() || $shareType === "file") {
                 Util::addScript("eurooffice", "eurooffice-listener");
+                // Styles for the bundle above; it renders the Smart Picker modal, which
+                // is unstyled and full-frame without them.
+                Util::addStyle("eurooffice", "eurooffice-listener");
             }
 
             $this->initialState->provideLazyInitialState("settings", fn() => Server::get(SettingsData::class));

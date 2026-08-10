@@ -58,6 +58,9 @@ class FilesListener implements IEventListener {
 
             if ($this->appConfig->getSameTab()) {
                 Util::addScript("eurooffice", "eurooffice-listener");
+                // Styles for the bundle above; it renders the Smart Picker modal, which
+                // is unstyled and full-frame without them.
+                Util::addStyle("eurooffice", "eurooffice-listener");
             }
 
             if ($this->appConfig->getAdvanced()
