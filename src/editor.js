@@ -25,6 +25,8 @@
 
 import moment from '@nextcloud/moment'
 import axios from '@nextcloud/axios'
+import { handleAssistantRequest } from './assistant.js'
+import { describeRegistry, handleSmartPickerRequest, hasProviderRegistry, listProviders } from './smartpicker.js'
 
 /**
  * @param {object} OCA Nextcloud OCA object
@@ -151,13 +153,25 @@ import axios from '@nextcloud/axios'
 							// the 'eurooffice' namespace so it works on every editor layout
 							// (including the inframe 'base' layout that doesn't run the
 							// Assistant app's own initial-state bootstrap).
+							//
+							// Both features need a real Nextcloud user: the Reference and
+							// TaskProcessing OCS routes are user-scoped, so on a public
+							// share or an anonymous session they would only produce 401s.
+							// Hide the affordances instead of offering something that fails.
+							const hasUser = !!OCA.Eurooffice.currentUser?.uid && !OCA.Eurooffice.shareToken
+							const assistantAvailable = hasUser
+								&& !!OCP?.InitialState?.loadState?.('eurooffice', 'assistant-enabled', false)
 							if (typeof OCA.Eurooffice.docEditor.setSmartPickerAvailable === 'function') {
-								OCA.Eurooffice.docEditor.setSmartPickerAvailable(true)
+								OCA.Eurooffice.docEditor.setSmartPickerAvailable(hasUser)
 							}
-							const assistantAvailable = !!OCP?.InitialState?.loadState?.('eurooffice', 'assistant-enabled', false)
 							if (typeof OCA.Eurooffice.docEditor.setAssistantAvailable === 'function') {
 								OCA.Eurooffice.docEditor.setAssistantAvailable(assistantAvailable)
 							}
+							// Give the editor the providers for its "/" menu -- but only
+							// when we are the page that will open the picker. In-frame the
+							// parent pushes its own list, and this page has none to give:
+							// it renders as "base", so no RenderReferenceEvent fires here.
+							OCA.Eurooffice.pushSmartPickerProviders('app-ready', hasUser)
 						}
 
 						if ((OCA.Eurooffice.inframe && !OCA.Eurooffice.shareToken)
@@ -174,6 +188,7 @@ import axios from '@nextcloud/axios'
 							config.events.onMetaChange = OCA.Eurooffice.onMetaChange
 							config.events.onRequestRefreshFile = OCA.Eurooffice.onRequestRefreshFile
 							config.events.onRequestSmartPicker = OCA.Eurooffice.onRequestSmartPicker
+							config.events.onRequestAssistant = OCA.Eurooffice.onRequestAssistant
 
 							if (OCA.Eurooffice.currentUser.uid) {
 								config.events.onRequestUsers = OCA.Eurooffice.onRequestUsers
@@ -292,6 +307,8 @@ import axios from '@nextcloud/axios'
 	}
 
 	OCA.Eurooffice.onDocumentReady = function() {
+		OCA.Eurooffice.pushSmartPickerProviders('document-ready',
+			!!OCA.Eurooffice.currentUser?.uid && !OCA.Eurooffice.shareToken)
 		if (OCA.Eurooffice.inframe) {
 			window.parent.postMessage({
 				method: 'onDocumentReady',
@@ -398,16 +415,86 @@ import axios from '@nextcloud/axios'
 			})
 	}
 
+	/**
+	 * Send the editor the providers for its "/" menu.
+	 *
+	 * Called more than once on purpose. The provider list is server-rendered, but
+	 * each app's picker component registers itself when its script runs, and only
+	 * registered ones are openable -- so the answer can improve after app-ready.
+	 * Pushing again later costs nothing and removes the race.
+	 *
+	 * @param {string} reason which moment triggered this, for logs
+	 * @param {boolean} hasUser whether a Nextcloud user is present
+	 */
+	OCA.Eurooffice.pushSmartPickerProviders = function(reason, hasUser) {
+		if (!hasUser || typeof OCA.Eurooffice.docEditor?.setSmartPickerProviders !== 'function') {
+			return
+		}
+		if (!hasProviderRegistry()) {
+			console.warn('[EO picker] no openable providers in this page at ' + reason,
+				{ inframe: OCA.Eurooffice.inframe, ...describeRegistry() })
+			return
+		}
+		OCA.Eurooffice.docEditor.setSmartPickerProviders({ providers: listProviders() })
+	}
+
 	OCA.Eurooffice.onRequestSmartPicker = function(event) {
 		// The web-apps Gateway delivers the user's current selection via
 		// event.data.selectedText so the NC Assistant can seed its input
 		// with the text the user wants to operate on.
 		const selectedText = event?.data?.selectedText ?? event?.selectedText ?? ''
 		const source = event?.data?.source ?? event?.source ?? 'smartpicker'
-		window.parent.postMessage({
-			method: 'editorRequestSmartPicker',
-			param: { selectedText, source },
-		}, '*')
+		// When the editor presented the provider list itself it names the chosen
+		// provider, so we open that provider's picker directly instead of the
+		// Nextcloud provider-selection modal.
+		const providerId = event?.data?.providerId ?? event?.providerId ?? ''
+		// Only relay when there really is an outer page. When the editor is opened
+		// standalone this page IS the top level, so window.parent is window and the
+		// message would be posted straight back to ourselves -- it looked like the
+		// picker silently doing nothing. Serve it here instead.
+		if (OCA.Eurooffice.inframe && window.parent !== window) {
+			window.parent.postMessage({
+				method: 'editorRequestSmartPicker',
+				param: { selectedText, source, providerId },
+			}, '*')
+			return
+		}
+
+		handleSmartPickerRequest({
+			selectedText,
+			source,
+			providerId,
+			target: {
+				// Standalone means not in the Viewer, so no focus trap to join.
+				isInsideViewer: () => false,
+				insertLink: (link) => OCA.Eurooffice.docEditor?.insertLink(link),
+				cancel: () => {
+					if (typeof OCA.Eurooffice.docEditor?.setSmartPickerCancel === 'function') {
+						OCA.Eurooffice.docEditor.setSmartPickerCancel()
+					}
+				},
+			},
+		})
+	}
+
+	/**
+	 * Editor → Nextcloud request for the native Assistant UI.
+	 *
+	 * Runs here rather than in listener.js because this page is always on the
+	 * Nextcloud origin (in-frame or standalone) and already holds the user's
+	 * session, whereas the document server iframe holds neither. The reply is
+	 * correlated by id, so several requests may be in flight at once.
+	 *
+	 * @param {object} event DocsAPI event carrying {id, op, params}
+	 */
+	OCA.Eurooffice.onRequestAssistant = function(event) {
+		const request = event?.data ?? event ?? {}
+		handleAssistantRequest(request, (reply) => {
+			const docEditor = OCA.Eurooffice.docEditor
+			if (typeof docEditor?.setAssistantResult === 'function') {
+				docEditor.setAssistantResult(reply)
+			}
+		})
 	}
 
 	OCA.Eurooffice.onRequestMailMergeRecipients = function() {

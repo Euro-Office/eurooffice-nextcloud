@@ -1337,6 +1337,19 @@ class EditorController extends Controller {
             "anchor" => $anchor
         ];
 
+        // Publish Nextcloud's reference providers into this page: the provider list
+        // as initial state, plus each app's picker component script. Without it the
+        // editor's "/" menu has nothing to offer.
+        //
+        // Also for the inframe layout. That page renders as "base", but "base" still
+        // emits scripts and initial state, and it is the page that builds the menu --
+        // so it has to be able to answer for itself. Relying on the surrounding page
+        // to publish providers only works when there *is* one, which is not true when
+        // this URL is opened directly.
+        if ($isLoggedIn) {
+            $this->eventDispatcher->dispatchTyped(new RenderReferenceEvent());
+        }
+
         $response = null;
         if ($inframe === true) {
             $params["inframe"] = true;

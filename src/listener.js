@@ -23,7 +23,7 @@
 
 /* global OC, OCP, t */
 
-import { getLinkWithPicker } from '@nextcloud/vue/components/NcRichText'
+import { describeRegistry, handleSmartPickerRequest, hasProviderRegistry, listProviders } from './smartpicker.js'
 
 /**
  * @param {object} OCA Nextcloud OCA object
@@ -41,6 +41,17 @@ import { getLinkWithPicker } from '@nextcloud/vue/components/NcRichText'
 		titleBase: window.document.title,
 		favIconBase: getFavIconHref(),
 	}, OCA.Eurooffice)
+
+	/**
+	 * Whether our editor is currently displayed inside the Viewer.
+	 *
+	 * viewer.js only renders this iframe as the Viewer's handler component, so
+	 * its presence means the Viewer is showing us right now -- unlike
+	 * OCA.Viewer, which merely says the app is installed.
+	 *
+	 * @return {boolean} true when running inside the Viewer
+	 */
+	const isInsideViewer = () => !!document.querySelector('#euroofficeViewerFrame')
 
 	OCA.Eurooffice.onRequestClose = function() {
 
@@ -89,71 +100,35 @@ import { getLinkWithPicker } from '@nextcloud/vue/components/NcRichText'
 		}
 	}
 
-	// Open the NC Assistant text-processing form seeded with the editor
-	// selection. We deliberately do NOT add an "Insert into editor" action
-	// button: writing the AI result back into the document strips formatting
-	// and produces low-quality replacements (markup is lost on plain-text
-	// paste). Until that round-trip preserves at least basic styling, the
-	// feature is intentionally read-only — the user copies the result from
-	// the modal manually. The modal's built-in close button dismisses it.
-	OCA.Eurooffice.onSmartPickerRequest = async function(selectedText, source) {
-		if (this.showSmartPicker) {
-			return
-		}
-		this.showSmartPicker = true
-
-		if (source === 'contextmenu') {
-			const openAssistantForm = window.OCA?.Assistant?.openAssistantForm
-			if (typeof openAssistantForm !== 'function') {
-				console.debug('NC Assistant app is not loaded; smart picker is unavailable')
-				this.showSmartPicker = false
-				return
-			}
-			try {
-				const seedInputs = selectedText
-					? { prompt: selectedText, input: selectedText, text: selectedText }
-					: {}
-				await openAssistantForm({
-					appId: OCA.Eurooffice.AppName,
-					taskType: 'core:text2text',
-					inputs: seedInputs,
-					closeOnResult: false,
-				})
-			} catch (e) {
-				// Smart Picker cancelled or failed
-			}
-		} else {
-			// Toolbar button: open the Smart Picker provider selection modal
-			if (typeof getLinkWithPicker !== 'function') {
-				console.error('getLinkWithPicker is not available. Make sure @nextcloud/vue supports the Smart Picker.')
-				this.showSmartPicker = false
-				return
-			}
-			let linkUrl = null
-			try {
-				linkUrl = await getLinkWithPicker('eurooffice', false)
-			} catch (err) {
-				// Cancelling via X/ESC may reject; treat as "no selection".
-				console.debug('Smart Picker cancelled or failed:', err)
-			}
-			if (linkUrl) {
-				OCA.Eurooffice.onInsertLink(linkUrl)
-			} else {
-				// Cancelled (resolve-empty or reject both land here). The
-				// docEditor lives in the editor iframe, not this parent window,
-				// so reach it through the frame. Also restore window focus to
-				// the iframe, which the picker modal took.
-				const frame = document.querySelector(OCA.Eurooffice.frameSelector)
-				const docEditor = frame?.contentWindow?.OCA?.Eurooffice?.docEditor
-				if (frame?.contentWindow) {
-					frame.contentWindow.focus()
-				}
-				if (typeof docEditor?.setSmartPickerCancel === 'function') {
-					docEditor.setSmartPickerCancel()
-				}
-			}
-		}
-		this.showSmartPicker = false
+	/**
+	 * Serve a picker request for an editor running in our iframe.
+	 *
+	 * The flow itself lives in smartpicker.js, shared with the standalone case in
+	 * editor.js; only the way the editor is reached differs and is supplied here.
+	 */
+	OCA.Eurooffice.onSmartPickerRequest = function(selectedText, source, providerId) {
+		const frameWindow = () => document.querySelector(OCA.Eurooffice.frameSelector)?.contentWindow
+		return handleSmartPickerRequest({
+			selectedText,
+			source,
+			providerId,
+			target: {
+				isInsideViewer,
+				// Queued rather than inserted directly: the document may not be
+				// ready yet, and onInsertLink already handles that.
+				insertLink: (link) => OCA.Eurooffice.onInsertLink(link),
+				cancel: () => {
+					// The picker modal took focus from the iframe; give it back
+					// before telling the editor the round-trip is over.
+					const win = frameWindow()
+					win?.focus()
+					const docEditor = win?.OCA?.Eurooffice?.docEditor
+					if (typeof docEditor?.setSmartPickerCancel === 'function') {
+						docEditor.setSmartPickerCancel()
+					}
+				},
+			},
+		})
 	}
 
 	OCA.Eurooffice.onRequestMailMergeRecipients = function(recipientMimes) {
@@ -203,9 +178,31 @@ import { getLinkWithPicker } from '@nextcloud/vue/components/NcRichText'
 		}
 	}
 
+	/**
+	 * Give the editor the providers for its "/" menu.
+	 *
+	 * Sent from here because this is the page that opens the picker, and a provider
+	 * is only openable where its picker component is registered. The editor iframe
+	 * cannot work this out for itself.
+	 */
+	OCA.Eurooffice.pushSmartPickerProviders = function() {
+		const docEditor = document.querySelector(OCA.Eurooffice.frameSelector)
+			?.contentWindow?.OCA?.Eurooffice?.docEditor
+		if (typeof docEditor?.setSmartPickerProviders !== 'function') {
+			return
+		}
+		if (!hasProviderRegistry()) {
+			console.warn('[EO picker] no openable providers in the Files page',
+				describeRegistry())
+			return
+		}
+		docEditor.setSmartPickerProviders({ providers: listProviders() })
+	}
+
 	OCA.Eurooffice.onDocumentReady = function() {
 		OCA.Eurooffice.setViewport()
 		OCA.Eurooffice._isDocumentReady = true
+		OCA.Eurooffice.pushSmartPickerProviders()
 		if (OCA.Eurooffice._pendingInsertLinks && OCA.Eurooffice._pendingInsertLinks.length > 0) {
 			const links = OCA.Eurooffice._pendingInsertLinks
 			OCA.Eurooffice._pendingInsertLinks = []
@@ -284,7 +281,7 @@ import { getLinkWithPicker } from '@nextcloud/vue/components/NcRichText'
 			OCA.Eurooffice.onRequestInsertImage(event.data.param)
 			break
 		case 'editorRequestSmartPicker':
-			OCA.Eurooffice.onSmartPickerRequest(event.data.param?.selectedText, event.data.param?.source)
+			OCA.Eurooffice.onSmartPickerRequest(event.data.param?.selectedText, event.data.param?.source, event.data.param?.providerId)
 			break
 		case 'editorRequestMailMergeRecipients':
 			OCA.Eurooffice.onRequestMailMergeRecipients(event.data.param)
