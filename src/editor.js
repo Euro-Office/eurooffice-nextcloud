@@ -468,6 +468,7 @@ import { describeRegistry, handleSmartPickerRequest, hasProviderRegistry, listPr
 				// Standalone means not in the Viewer, so no focus trap to join.
 				isInsideViewer: () => false,
 				insertLink: (link) => OCA.Eurooffice.docEditor?.insertLink(link),
+				insertResult: (result) => OCA.Eurooffice.docEditor?.insertAssistantResult?.(result),
 				cancel: () => {
 					if (typeof OCA.Eurooffice.docEditor?.setSmartPickerCancel === 'function') {
 						OCA.Eurooffice.docEditor.setSmartPickerCancel()

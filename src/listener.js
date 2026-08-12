@@ -117,6 +117,10 @@ import { describeRegistry, handleSmartPickerRequest, hasProviderRegistry, listPr
 				// Queued rather than inserted directly: the document may not be
 				// ready yet, and onInsertLink already handles that.
 				insertLink: (link) => OCA.Eurooffice.onInsertLink(link),
+				insertResult: (result) => {
+					const docEditor = frameWindow()?.OCA?.Eurooffice?.docEditor
+					docEditor?.insertAssistantResult?.(result)
+				},
 				cancel: () => {
 					// The picker modal took focus from the iframe; give it back
 					// before telling the editor the round-trip is over.

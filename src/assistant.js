@@ -276,10 +276,28 @@ async function cancelTask(correlationId) {
 }
 
 const OPS = {
-	/** Which task types have a provider on this instance. */
+	/**
+	 * Which task types have a provider on this instance and are meant for users.
+	 *
+	 * Since NC33 a task type carries isInternal, marking it as intended for
+	 * internal use rather than something to offer in a UI -- on this instance that
+	 * covers topics, headline, reformulation and others. Drop those: an action we
+	 * cannot legitimately offer should not appear, and the caller already falls back
+	 * to a free-prompt core:text2text when a preferred type is unavailable.
+	 *
+	 * Compared with `=== true` so that servers older than NC33, which omit the
+	 * field entirely, keep every type rather than losing all of them.
+	 */
 	async taskTypes() {
 		const response = await axios.get(generateOcsUrl('taskprocessing/tasktypes'), ocsConfig)
-		return { types: ocsData(response)?.types ?? {} }
+		const types = ocsData(response)?.types ?? {}
+		const userFacing = {}
+		for (const [id, type] of Object.entries(types)) {
+			if (type?.isInternal !== true) {
+				userFacing[id] = type
+			}
+		}
+		return { types: userFacing }
 	},
 
 	/** Schedule + poll one task, returning text and a formatted HTML rendering. */

@@ -21,6 +21,8 @@
  */
 
 import { getLinkWithPicker, getProvider, getProviders, searchProvider } from '@nextcloud/vue/components/NcRichText'
+import { t } from '@nextcloud/l10n'
+import { markdownToHtml } from './assistant.js'
 
 /**
  * Whether this page has a reference registry at all.
@@ -127,7 +129,7 @@ export async function handleSmartPickerRequest({ selectedText, source, providerI
 	busy = true
 	try {
 		if (source === 'contextmenu') {
-			await openAssistant(selectedText)
+			await openAssistant(selectedText, target.isInsideViewer(), target)
 			return
 		}
 
@@ -156,10 +158,17 @@ export async function handleSmartPickerRequest({ selectedText, source, providerI
 			console.debug('[EO picker] closed without a link:', error?.message || error)
 		}
 
-		if (link) {
+		if (!link) {
+			target.cancel()
+			return
+		}
+		// Not every provider returns a URL. The Assistant entries return the
+		// generated text itself, so inserting it as a hyperlink would produce a
+		// paragraph-long link. Nextcloud's own editor makes the same distinction.
+		if (isUrl(link)) {
 			target.insertLink(link)
 		} else {
-			target.cancel()
+			target.insertResult({ html: markdownToHtml(link), text: link })
 		}
 	} finally {
 		busy = false
@@ -167,12 +176,28 @@ export async function handleSmartPickerRequest({ selectedText, source, providerI
 }
 
 /**
+ * Whether a picker result is a link rather than content.
+ *
+ * @param {string} value the value a provider returned
+ * @return {boolean} true when it parses as a URL
+ */
+function isUrl(value) {
+	try {
+		return Boolean(new URL(value))
+	} catch (error) {
+		return false
+	}
+}
+
+/**
  * Seed the Assistant's own form with the selection.
  *
  * @param {string} selectedText the editor's current selection
+ * @param {boolean} isInsideViewer whether the Viewer is currently displaying us
+ * @param {object} target how to reach the editor
  * @return {Promise<void>}
  */
-async function openAssistant(selectedText) {
+async function openAssistant(selectedText, isInsideViewer, target) {
 	const openAssistantForm = window.OCA?.Assistant?.openAssistantForm
 	if (typeof openAssistantForm !== 'function') {
 		console.warn('[EO picker] the Assistant app is not loaded')
@@ -182,9 +207,29 @@ async function openAssistant(selectedText) {
 		await openAssistantForm({
 			appId: 'eurooffice',
 			taskType: 'core:text2text',
-			inputs: selectedText
-				? { prompt: selectedText, input: selectedText, text: selectedText }
-				: {},
+			// The task type's own input slot is named "input"; the Assistant accepts
+			// either a plain `input` string or an `inputs` object keyed by slot.
+			inputs: selectedText ? { input: selectedText } : {},
+			// Decides where the modal is mounted: with this set it is appended to
+			// body and marked .insideViewer so it lands on top of the Viewer rather
+			// than inside a stacking context underneath it.
+			isInsideViewer,
+			// Nextcloud's form has no way of its own to put a result into our
+			// document, so add one. Only shown while closeOnResult is false.
+			actionButtons: [{
+				label: t('eurooffice', 'Insert into document'),
+				title: t('eurooffice', 'Insert this result into the document'),
+				variant: 'primary',
+				onClick: (output) => {
+					const text = typeof output === 'string'
+						? output
+						: (output?.output ?? '')
+					if (!text) {
+						return
+					}
+					target.insertResult({ html: markdownToHtml(text), text })
+				},
+			}],
 			closeOnResult: false,
 		})
 	} catch (error) {
