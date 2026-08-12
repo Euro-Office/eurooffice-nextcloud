@@ -25,7 +25,6 @@
 
 import moment from '@nextcloud/moment'
 import axios from '@nextcloud/axios'
-import { handleAssistantRequest } from './assistant.js'
 import { describeRegistry, handleSmartPickerRequest, hasProviderRegistry, listProviders } from './smartpicker.js'
 
 /**
@@ -188,7 +187,6 @@ import { describeRegistry, handleSmartPickerRequest, hasProviderRegistry, listPr
 							config.events.onMetaChange = OCA.Eurooffice.onMetaChange
 							config.events.onRequestRefreshFile = OCA.Eurooffice.onRequestRefreshFile
 							config.events.onRequestSmartPicker = OCA.Eurooffice.onRequestSmartPicker
-							config.events.onRequestAssistant = OCA.Eurooffice.onRequestAssistant
 
 							if (OCA.Eurooffice.currentUser.uid) {
 								config.events.onRequestUsers = OCA.Eurooffice.onRequestUsers
@@ -475,26 +473,6 @@ import { describeRegistry, handleSmartPickerRequest, hasProviderRegistry, listPr
 					}
 				},
 			},
-		})
-	}
-
-	/**
-	 * Editor → Nextcloud request for the native Assistant UI.
-	 *
-	 * Runs here rather than in listener.js because this page is always on the
-	 * Nextcloud origin (in-frame or standalone) and already holds the user's
-	 * session, whereas the document server iframe holds neither. The reply is
-	 * correlated by id, so several requests may be in flight at once.
-	 *
-	 * @param {object} event DocsAPI event carrying {id, op, params}
-	 */
-	OCA.Eurooffice.onRequestAssistant = function(event) {
-		const request = event?.data ?? event ?? {}
-		handleAssistantRequest(request, (reply) => {
-			const docEditor = OCA.Eurooffice.docEditor
-			if (typeof docEditor?.setAssistantResult === 'function') {
-				docEditor.setAssistantResult(reply)
-			}
 		})
 	}
 
