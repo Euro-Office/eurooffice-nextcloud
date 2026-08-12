@@ -50,6 +50,8 @@ use OCP\AppFramework\Http\Attribute\PublicPage;
 use OCP\AppFramework\Http\Template\PublicTemplateResponse;
 use OCP\AppFramework\Http\TemplateResponse;
 use OCP\AppFramework\Services\IInitialState;
+use OCP\Collaboration\Reference\RenderReferenceEvent;
+use OCP\EventDispatcher\IEventDispatcher;
 use OCP\Constants;
 use OCP\Files\File;
 use OCP\Files\IRootFolder;
@@ -94,6 +96,7 @@ class EditorController extends Controller {
         private readonly ?FolderManager $folderManager,
         private readonly IInitialState $initialState,
         private readonly IAppManager $appManager,
+        private readonly IEventDispatcher $eventDispatcher,
     ) {
         parent::__construct($appName, $request);
     }
