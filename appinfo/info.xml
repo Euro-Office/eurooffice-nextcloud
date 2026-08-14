@@ -16,7 +16,7 @@ Whether you’re working with internal teams or external collaborators, the Next
     <licence>AGPL-3.0-only</licence>
 	<author>Nextcloud Office contributors</author>
     <author mail="dev@onlyoffice.com" homepage="https://www.onlyoffice.com/">Ascensio System SIA</author>
-    <version>11.0.1</version>
+    <version>11.0.2</version>
     <namespace>Eurooffice</namespace>
     <types>
         <prevent_group_restriction/>

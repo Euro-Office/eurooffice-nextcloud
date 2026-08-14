@@ -1,5 +1,15 @@
 # Change Log
 
+## 11.0.2
+## Changed
+- Updated icon design
+
+## Fixed
+- Share-attributes JSON parsing
+- Silent disappearance of file actions (convert, create-form, download-as) and broken download restriction evaluation on Nextcloud 33–35
+- Dark mode external-link arrow
+- Stylelint peer dependency conflict
+
 ## 11.0.1
 ## Added
 - Smart Picker integration for inserting file links into documents
