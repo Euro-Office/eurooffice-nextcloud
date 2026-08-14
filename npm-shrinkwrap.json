@@ -6,7 +6,7 @@
     "packages": {
         "": {
             "name": "eurooffice",
-            "version": "11.0.1",
+            "version": "11.0.2",
             "license": "AGPL-3.0",
             "dependencies": {
                 "@nextcloud/auth": "^2.5.2",
