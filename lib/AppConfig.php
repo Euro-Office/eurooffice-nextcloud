@@ -536,7 +536,9 @@ class AppConfig {
             $this->logger->info("Set secret key", ["app" => $this->appName]);
         }
 
-        $this->appConfig->setValueString($this->appName, $this->_jwtSecret, $secret);
+        // Sensitive, so the key is masked in `occ config:list` and the admin support report
+        // instead of being handed out in plain text.
+        $this->appConfig->setValueString($this->appName, $this->_jwtSecret, $secret, sensitive: true);
     }
 
     /**
