@@ -24,7 +24,7 @@
 /* global _ */
 
 import { spawnDialog } from '@nextcloud/vue/functions/dialog'
-import { defineAsyncComponent } from 'vue'
+import { createApp, defineAsyncComponent } from 'vue'
 import axios from '@nextcloud/axios'
 
 /**
@@ -593,6 +593,13 @@ import axios from '@nextcloud/axios'
 			const isChecked = sameTabCheckbox.checked
 			sharingBlock.style.display = isChecked ? 'none' : 'block'
 			sharingCheckbox.checked = isChecked ? sharingCheckbox.checked : false
+		}
+
+		// Mount FontManager Vue component
+		const fontManagerEl = document.getElementById('eurooffice-font-manager')
+		if (fontManagerEl) {
+			const FontManager = defineAsyncComponent(() => import('./views/FontManager.vue'))
+			createApp(FontManager).mount(fontManagerEl)
 		}
 	})
 
