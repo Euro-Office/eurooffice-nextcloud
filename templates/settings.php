@@ -295,6 +295,12 @@ if ($_["tagsEnabled"]) {
     <p><button id="euroofficeSave" class="button primary"><?php p($l->t("Save")) ?></button></p>
 </div>
 
+<div class="section section-eurooffice section-eurooffice-fonts <?php if ($_["demo"]["enabled"] || empty($_["documentserver"]) || !$_["successful"]) { ?>eurooffice-hide<?php } ?>">
+    <h2><?php p($l->t("Custom fonts")) ?></h2>
+    <p class="settings-hint"><?php p($l->t("Upload custom fonts (TTF, OTF, TTC, WOFF, WOFF2) to make them available in the document editor. Click Regenerate after uploading or deleting fonts to apply changes.")) ?></p>
+    <div id="eurooffice-font-manager"></div>
+</div>
+
 <div class="section section-eurooffice section-eurooffice-templates <?php if (empty($_["documentserver"]) && !$_["demo"]["enabled"] || !$_["successful"]) { ?>eurooffice-hide<?php } ?>">
 
     <h2>

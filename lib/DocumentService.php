@@ -367,7 +367,12 @@ class DocumentService {
             'allow_local_address' => true,
         ];
 
-        $response = $method === "post" ? $client->post($url, $opts) : $client->get($url, $opts);
+        $response = match ($method) {
+            "post"   => $client->post($url, $opts),
+            "delete" => $client->delete($url, $opts),
+            "get"    => $client->get($url, $opts),
+            default  => throw new \InvalidArgumentException("Unsupported HTTP method: $method"),
+        };
 
         return $response->getBody();
     }
