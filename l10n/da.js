@@ -153,6 +153,20 @@ OC.L10N.register(
     "Select file": "Vælg fil",
     "Enable sharing (might increase editors loading time)": "Aktivér deling (kan øge editorernes indlæsningstid)",
     "Same as system": "Samme som system",
-    "Enable live-viewing mode when accessing file by public link" : "Aktivér livevisningstilstand ved adgang til fil via et offentligt link"
+    "Enable live-viewing mode when accessing file by public link" : "Aktivér livevisningstilstand ved adgang til fil via et offentligt link",
+    "Are you sure you want to clear metadata?": "Er du sikker på, at du vil rydde metadata?",
+    "Confirm metadata removal": "Bekræft rydning af metadata",
+    "Welcome to Nextcloud Office!": "Velkommen til Nextcloud Office!",
+    "Edit and collaborate on text documents, spreadsheets, presentations, and PDFs within Nextcloud using Nextcloud Office.": "Rediger og samarbejd om tekstdokumenter, regneark, præsentationer og PDF-filer i Nextcloud med Nextcloud Office.",
+    "Learn more": "Læs mere",
+    "Suggest a feature": "Foreslå en funktion",
+    "Server settings have been successfully updated": "Serverindstillingerne er opdateret",
+    "Common settings have been successfully updated": "De fælles indstillinger er opdateret",
+    "Security settings have been successfully updated": "Sikkerhedsindstillingerne er opdateret",
+    "To ensure the security of important parameters in Nextcloud Office requests, please set a Secret Key on the Settings page. To learn more, <a href=\"{url}\" target=\"_blank\">click here</a>.": "For at sikre vigtige parametre i Nextcloud Office-anmodninger skal du angive en hemmelig nøgle på indstillingssiden. Læs mere <a href=\"{url}\" target=\"_blank\">her</a>.",
+    "Info": "Info",
+    "Open": "Åbn",
+    "%1$s could not be saved. Please open the file again.": "%1$s kunne ikke gemmes. Åbn filen igen.",
+    "{file} could not be saved. Please open the file again.": "{file} kunne ikke gemmes. Åbn filen igen."
 },
 "nplurals=2; plural=(n != 1);");
