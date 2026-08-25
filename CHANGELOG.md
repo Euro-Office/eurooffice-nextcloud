@@ -1,5 +1,9 @@
 # Change Log
 
+## 11.0.4
+## Fixed
+- remove deprecated oc_defaults and explicitly import @nextcloud/moment
+
 ## 11.0.3
 ## Added
 - Font management UI - a new Font Manager section in the EuroOffice admin settings allows admins to list, upload, and delete custom fonts installed on the document server, and trigger font cache regeneration, directly from the Nextcloud interface.
