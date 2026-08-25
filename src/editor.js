@@ -21,8 +21,9 @@
  *
  */
 
-/* global DocsAPI, moment, oc_defaults */
+/* global DocsAPI */
 
+import moment from '@nextcloud/moment'
 import axios from '@nextcloud/axios'
 
 /**
@@ -120,7 +121,7 @@ import axios from '@nextcloud/axios'
 
 							if (docIsChanged !== event.data) {
 								const titleChange = function() {
-									OCA.Eurooffice.currentWindow.document.title = config.document.title + (event.data ? ' *' : '') + ' - ' + oc_defaults.title
+									OCA.Eurooffice.currentWindow.document.title = config.document.title + (event.data ? ' *' : '') + ' - ' + OC.theme.title
 									docIsChanged = event.data
 								}
 
