@@ -1,5 +1,12 @@
 # Change Log
 
+## 11.0.3
+## Added
+- Font management UI - a new Font Manager section in the EuroOffice admin settings allows admins to list, upload, and delete custom fonts installed on the document server, and trigger font cache regeneration, directly from the Nextcloud interface.
+
+## Fixed
+- Admin settings: document server secret field marked as sensitive — The JWT secret input is now rendered as a password field, preventing it from being exposed in browser autofill, logs or screen recordings.
+
 ## 11.0.2
 ## Changed
 - Updated icon design
