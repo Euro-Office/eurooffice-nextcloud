@@ -21,7 +21,9 @@
  *
  */
 
-/* global _oc_appswebroots, oc_current_user  */
+/* global _oc_appswebroots  */
+
+import { getCurrentUser } from '@nextcloud/auth'
 
 /**
  * @param {object} OCA Nextcloud OCA object
@@ -47,7 +49,7 @@
 	domain += OC.getRootPath()
 
 	const data = {
-		displayName: oc_current_user,
+		displayName: getCurrentUser()?.uid,
 		domain,
 		provider: 'Nextcloud',
 	}
