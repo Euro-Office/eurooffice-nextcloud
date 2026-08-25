@@ -953,12 +953,28 @@ class AppConfig {
     }
 
     /**
+     * Normalize a setting value that can reach us either as a JSON boolean
+     * (admin panel, which posts application/json) or as a string ("true",
+     * "yes", "on" - occ commands, config.php, form encoded requests).
+     */
+    public static function isTrue(mixed $value): bool {
+        if (is_bool($value)) {
+            return $value;
+        }
+        if (is_string($value)) {
+            return in_array(strtolower($value), ["true", "yes", "on", "1"], true);
+        }
+        return (bool) $value;
+    }
+
+    /**
      * Save watermark settings
      */
     public function setWatermarkSettings(array $settings): void {
-        $this->logger->info("Set watermark enabled: " . $settings["enabled"], ["app" => $this->appName]);
+        $enabled = self::isTrue($settings["enabled"] ?? false);
+        $this->logger->info("Set watermark enabled: " . ($enabled ? "true" : "false"), ["app" => $this->appName]);
 
-        if ($settings["enabled"] !== "true") {
+        if (!$enabled) {
             $this->appConfig->setValueString(AppConfig::WATERMARK_APP_NAMESPACE, "watermark_enabled", "no");
             return;
         }
@@ -977,10 +993,7 @@ class AppConfig {
             "shareRead",
         ];
         foreach ($watermarkLabels as $key) {
-            if (empty($settings[$key])) {
-                $settings[$key] = [];
-            }
-            $value = $settings[$key] === "true" ? "yes" : "no";
+            $value = self::isTrue($settings[$key] ?? false) ? "yes" : "no";
             $this->appConfig->setValueString(AppConfig::WATERMARK_APP_NAMESPACE, "watermark_" . $key, $value);
         }
 

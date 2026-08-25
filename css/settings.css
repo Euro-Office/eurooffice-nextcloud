@@ -31,9 +31,53 @@
     margin-top: 16px;
 }
 
-.section-eurooffice input {
+.section-eurooffice input:not([type="checkbox"]):not([type="radio"]):not(.eurooffice-picker-mount input) {
     display: block;
     width: 250px;
+}
+
+/*
+ * Nextcloud core still ships the legacy `.checkbox` / `.radio` rules, which move
+ * the real input off-canvas (`position: absolute; inset-inline-start: -10000px`)
+ * and paint a fake control with `label::before`. That markup is deprecated and
+ * misbehaves inside the Vue-managed settings container of recent servers.
+ * Render real, in-flow controls instead so the section does not depend on
+ * core's legacy stylesheet at all.
+ */
+.section-eurooffice input[type="checkbox"].checkbox,
+.section-eurooffice input[type="radio"].radio {
+    position: static;
+    inset-inline-start: auto;
+    top: auto;
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    min-height: 16px;
+    margin: 0 8px 0 0;
+    margin-inline: 0 8px;
+    overflow: visible;
+    vertical-align: middle;
+    accent-color: var(--color-primary-element, #0082c9);
+    cursor: pointer;
+}
+
+.section-eurooffice input[type="checkbox"].checkbox:disabled,
+.section-eurooffice input[type="radio"].radio:disabled {
+    cursor: default;
+}
+
+/* Drop core's pseudo-element control, otherwise it is drawn twice. */
+.section-eurooffice input[type="checkbox"].checkbox + label::before,
+.section-eurooffice input[type="radio"].radio + label::before {
+    content: none;
+}
+
+.section-eurooffice input[type="checkbox"].checkbox + label,
+.section-eurooffice input[type="radio"].radio + label {
+    display: inline;
+    padding: 0;
+    vertical-align: middle;
+    cursor: pointer;
 }
 
 .eurooffice-hide {
@@ -58,14 +102,9 @@
     margin-left: 90px;
 }
 
-#s2id_euroofficeLimitGroups,
-#s2id_euroofficeWatermark_allGroupsList,
-#s2id_euroofficeWatermark_allTagsList,
-#s2id_euroofficeWatermark_linkTagsList {
-    margin-bottom: 16px;
-    margin-left: 18px;
-    margin-top: 6px;
-    width: 250px;
+/* Mount points for the group / system tag pickers (see src/views/ListPicker.vue) */
+.eurooffice-picker-mount {
+    max-width: 400px;
 }
 
 .eurooffice-exts {

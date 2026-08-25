@@ -27,10 +27,6 @@
     style("eurooffice", "template");
     \OCP\Util::addScript("eurooffice", "eurooffice-settings", 'core');
     \OCP\Util::addScript("eurooffice", "eurooffice-template", 'core');
-
-if ($_["tagsEnabled"]) {
-    \OCP\Util::addScript("core", "dist/systemtags");
-}
 ?>
 <div class="section section-eurooffice section-eurooffice-addr">
 
@@ -109,7 +105,8 @@ if ($_["tagsEnabled"]) {
         <input type="checkbox" class="checkbox" id="euroofficeGroups"
             <?php if (count($_["limitGroups"]) > 0) { ?>checked="checked"<?php } ?> />
         <label for="euroofficeGroups"><?php p($l->t("Allow the following groups to access the editors")) ?></label>
-        <input type="hidden" id="euroofficeLimitGroups" value="<?php p(implode("|", $_["limitGroups"])) ?>" style="display: block" />
+        <input type="hidden" id="euroofficeLimitGroups" value="<?php p(implode("|", $_["limitGroups"])) ?>" />
+        <div id="euroofficeLimitGroupsPicker" class="eurooffice-picker-mount eurooffice-hide"></div>
     </p>
 
     <p>
@@ -378,7 +375,8 @@ if ($_["tagsEnabled"]) {
             <input type="checkbox" class="checkbox" id="euroofficeWatermark_allTags"
                 <?php if ($_["watermark"]["allTags"]) { ?>checked="checked"<?php } ?> />
             <label for="euroofficeWatermark_allTags"><?php p($l->t("Show watermark on tagged files")) ?></label>
-            <input type="hidden" id="euroofficeWatermark_allTagsList" value="<?php p(implode("|", $_["watermark"]["allTagsList"])) ?>" style="display: block" />
+            <input type="hidden" id="euroofficeWatermark_allTagsList" value="<?php p(implode("|", $_["watermark"]["allTagsList"])) ?>" />
+            <div id="euroofficeWatermark_allTagsListPicker" class="eurooffice-picker-mount eurooffice-hide"></div>
         </p>
         <?php } ?>
 
@@ -386,7 +384,8 @@ if ($_["tagsEnabled"]) {
             <input type="checkbox" class="checkbox" id="euroofficeWatermark_allGroups"
                 <?php if ($_["watermark"]["allGroups"]) { ?>checked="checked"<?php } ?> />
             <label for="euroofficeWatermark_allGroups"><?php p($l->t("Show watermark for users of groups")) ?></label>
-            <input type="hidden" id="euroofficeWatermark_allGroupsList" value="<?php p(implode("|", $_["watermark"]["allGroupsList"])) ?>" style="display: block" />
+            <input type="hidden" id="euroofficeWatermark_allGroupsList" value="<?php p(implode("|", $_["watermark"]["allGroupsList"])) ?>" />
+            <div id="euroofficeWatermark_allGroupsListPicker" class="eurooffice-picker-mount eurooffice-hide"></div>
         </p>
 
         <p>
@@ -427,7 +426,8 @@ if ($_["tagsEnabled"]) {
                 <input type="checkbox" class="checkbox" id="euroofficeWatermark_linkTags"
                     <?php if ($_["watermark"]["linkTags"]) { ?>checked="checked"<?php } ?> />
                 <label for="euroofficeWatermark_linkTags"><?php p($l->t("Show watermark on link shares with specific system tags")) ?></label>
-                <input type="hidden" id="euroofficeWatermark_linkTagsList" value="<?php p(implode("|", $_["watermark"]["linkTagsList"])) ?>" style="display: block" />
+                <input type="hidden" id="euroofficeWatermark_linkTagsList" value="<?php p(implode("|", $_["watermark"]["linkTagsList"])) ?>" />
+                <div id="euroofficeWatermark_linkTagsListPicker" class="eurooffice-picker-mount eurooffice-hide"></div>
             </p>
             <?php } ?>
         </div>
