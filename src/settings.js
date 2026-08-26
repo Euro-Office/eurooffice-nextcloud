@@ -71,6 +71,9 @@ import axios from '@nextcloud/axios'
 		}
 
 		const ListPicker = defineAsyncComponent(() => import('./views/ListPicker.vue'))
+		// The toggle handlers below run on every click of their checkbox, so
+		// remember which pickers are already mounted. This guards repeated
+		// calls within one page life, not repeated execution of this bundle.
 		const mountedPickers = new Set()
 
 		/**
@@ -595,12 +598,10 @@ import axios from '@nextcloud/axios'
 		// the node that actually ended up in the document.
 		requestAnimationFrame(function() {
 			const fontManagerEl = document.getElementById('eurooffice-font-manager')
-			if (!fontManagerEl || fontManagerEl.dataset.euroofficeMounted === 'true') {
-				return
+			if (fontManagerEl) {
+				const FontManager = defineAsyncComponent(() => import('./views/FontManager.vue'))
+				createApp(FontManager).mount(fontManagerEl)
 			}
-			fontManagerEl.dataset.euroofficeMounted = 'true'
-			const FontManager = defineAsyncComponent(() => import('./views/FontManager.vue'))
-			createApp(FontManager).mount(fontManagerEl)
 		})
 	})
 
