@@ -395,6 +395,7 @@ class CallbackController extends Controller {
         $this->setupManager->tearDown();
 
         $isForcesave = $status === self::TRACKERSTATUS_FORCESAVE || $status === self::TRACKERSTATUS_CORRUPTEDFORCESAVE;
+        $isCorrupted = $status === self::TRACKERSTATUS_CORRUPTED || $status === self::TRACKERSTATUS_CORRUPTEDFORCESAVE;
 
         $callbackUserId = $hashData->userId;
 
@@ -499,17 +500,26 @@ class CallbackController extends Controller {
                         $this->keyManager->lock($fileId, $isForcesave);
                     }
 
-                    $this->logger->debug("Track put content " . $file->getPath());
+                    if ($isCorrupted) {
+                        // DocumentServer reported the conversion as corrupted: $newData is not a
+                        // trustworthy copy of the document (empty/unconverted template, not the
+                        // user's edit). Do not overwrite the real file with it - leave the previous
+                        // content in place and tell the user their edit did not save.
+                        $this->logger->error("Track: $fileId status $status - conversion reported corrupted, not saving");
+                        $this->eventDispatcher->dispatchTyped(new DocumentUnsavedEvent($userId, $fileId, $file->getName()));
+                    } else {
+                        $this->logger->debug("Track put content " . $file->getPath());
 
-                    $retryOperation = function () use ($file, $newData): void {
-                        $this->retryOperation(fn() => $file->putContent($newData));
-                    };
+                        $retryOperation = function () use ($file, $newData): void {
+                            $this->retryOperation(fn() => $file->putContent($newData));
+                        };
 
-                    try {
-                        $lockContext = new LockContext($file, ILock::TYPE_APP, $this->appName);
-                        $this->lockManager->runInScope($lockContext, $retryOperation);
-                    } catch (NoLockProviderException $e) {
-                        $retryOperation();
+                        try {
+                            $lockContext = new LockContext($file, ILock::TYPE_APP, $this->appName);
+                            $this->lockManager->runInScope($lockContext, $retryOperation);
+                        } catch (NoLockProviderException $e) {
+                            $retryOperation();
+                        }
                     }
 
                     if (!$isForcesave) {
@@ -525,7 +535,8 @@ class CallbackController extends Controller {
                         $this->keyManager->setForcesave($fileId, $isForcesave);
                     }
 
-                    if (!$isForcesave
+                    if (!$isCorrupted
+                        && !$isForcesave
                         && !$prevIsForcesave
                         && $this->versionManager instanceof IVersionManager
                         && $this->appConfig->getVersionHistory()) {
@@ -541,7 +552,7 @@ class CallbackController extends Controller {
                         FileVersions::saveHistory($file->getFileInfo(), $history, $changes, $prevVersion);
                     }
 
-                    if (!empty($user) && $this->appConfig->getVersionHistory()) {
+                    if (!$isCorrupted && !empty($user) && $this->appConfig->getVersionHistory()) {
                         FileVersions::saveAuthor($file->getFileInfo(), $user);
                     }
 
