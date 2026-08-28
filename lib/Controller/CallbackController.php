@@ -83,6 +83,14 @@ class CallbackController extends Controller {
     private const TRACKERSTATUS_FORCESAVE = 6;
     private const TRACKERSTATUS_CORRUPTEDFORCESAVE = 7;
 
+    /**
+     * DocumentServer's c_oAscServerCommandErrors.UnknownError - returning this instead of
+     * NoError (0) tells DocumentServer the save did not actually land, which activates its
+     * own "forgotten files" backup and its live updateVersion broadcast to open clients.
+     * There is no dedicated "corrupted" code in that enum.
+     */
+    private const CALLBACK_ERROR_UNKNOWN = 3;
+
     public function __construct(
         string $appName,
         IRequest $request,
@@ -507,6 +515,9 @@ class CallbackController extends Controller {
                         // content in place and tell the user their edit did not save.
                         $this->logger->error("Track: $fileId status $status - conversion reported corrupted, not saving");
                         $this->eventDispatcher->dispatchTyped(new DocumentUnsavedEvent($userId, $fileId, $file->getName()));
+                        // Tell DocumentServer this did not actually save, instead of the default
+                        // "$result = 0" below - see CALLBACK_ERROR_UNKNOWN.
+                        $result = self::CALLBACK_ERROR_UNKNOWN;
                     } else {
                         $this->logger->debug("Track put content " . $file->getPath());
 
@@ -556,7 +567,9 @@ class CallbackController extends Controller {
                         FileVersions::saveAuthor($file->getFileInfo(), $user);
                     }
 
-                    $result = 0;
+                    if (!$isCorrupted) {
+                        $result = 0;
+                    }
                 } catch (\Exception $e) {
                     $this->logger->error("Track: $fileId status $status error", ["exception" => $e]);
                     // if ($status === self::TRACKERSTATUS_MUSTSAVE) {
