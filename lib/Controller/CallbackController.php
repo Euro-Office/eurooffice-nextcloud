@@ -502,6 +502,11 @@ class CallbackController extends Controller {
                     if (RemoteInstance::isRemoteFile($file)) {
                         $isLock = RemoteInstance::lockRemoteKey($file, $isForcesave, false);
                         if ($isForcesave && !$isLock) {
+                            if ($isCorrupted) {
+                                $this->logger->error("Track: $fileId status $status - conversion reported corrupted, not saving (remote lock unavailable)");
+                                $this->eventDispatcher->dispatchTyped(new DocumentUnsavedEvent($userId, $fileId, $file->getName()));
+                                $result = self::CALLBACK_ERROR_UNKNOWN;
+                            }
                             break;
                         }
                     } else {
@@ -514,7 +519,6 @@ class CallbackController extends Controller {
                         // user's edit). Do not overwrite the real file with it - leave the previous
                         // content in place and tell the user their edit did not save.
                         $this->logger->error("Track: $fileId status $status - conversion reported corrupted, not saving");
-                        $this->eventDispatcher->dispatchTyped(new DocumentUnsavedEvent($userId, $fileId, $file->getName()));
                         // Tell DocumentServer this did not actually save, instead of the default
                         // "$result = 0" below - see CALLBACK_ERROR_UNKNOWN.
                         $result = self::CALLBACK_ERROR_UNKNOWN;
@@ -567,7 +571,16 @@ class CallbackController extends Controller {
                         FileVersions::saveAuthor($file->getFileInfo(), $user);
                     }
 
-                    if (!$isCorrupted) {
+                    if ($isCorrupted) {
+                        // Dispatched last, after lock/forcesave bookkeeping above has already run -
+                        // a failure here (e.g. notification backend trouble) must not skip releasing
+                        // the lock or leave forcesave state stuck.
+                        try {
+                            $this->eventDispatcher->dispatchTyped(new DocumentUnsavedEvent($userId, $fileId, $file->getName()));
+                        } catch (\Exception $e) {
+                            $this->logger->error("Track: $fileId failed to dispatch DocumentUnsavedEvent", ["exception" => $e]);
+                        }
+                    } else {
                         $result = 0;
                     }
                 } catch (\Exception $e) {
