@@ -185,6 +185,7 @@ class DirectEditor implements IEditor {
             } else {
                 $csp->addAllowedFrameDomain("'self'");
             }
+            $csp->addAllowedFrameDomain("data:");
             $response->setContentSecurityPolicy($csp);
 
             return $response;
