@@ -1367,6 +1367,7 @@ class EditorController extends Controller {
         } else {
             $csp->addAllowedFrameDomain("'self'");
         }
+        $csp->addAllowedFrameDomain("data:");
         $response->setContentSecurityPolicy($csp);
 
         return $response;
