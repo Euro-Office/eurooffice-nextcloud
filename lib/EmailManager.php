@@ -112,10 +112,11 @@ class EmailManager {
      * Send notification about editors unsuccessfull check via email
      *
      * @param string $uid - user id
+     * @param string $serverUrl - document server url that was checked
      *
      * @return bool
      */
-    public function notifyEditorsCheckEmail(string $uid): bool {
+    public function notifyEditorsCheckEmail(string $uid, string $serverUrl = ""): bool {
         $user = $this->userManager->get($uid);
         if (empty($user)) {
             $this->logger->error("recipient $uid is null");
@@ -130,6 +131,9 @@ class EmailManager {
 
         $subject = $this->trans->t("Nextcloud Office Document Server is unavailable");
         $bodyHtml = $this->trans->t("This is a mail message to notify that the connection with the Nextcloud Office Document Server has been lost. Please check the connection settings:");
+        if (!empty($serverUrl)) {
+            $bodyHtml .= "<br>" . $this->trans->t("Document Server address: %1\$s", [htmlspecialchars($serverUrl, ENT_QUOTES)]);
+        }
         $appSettingsLink = $this->urlGenerator->getAbsoluteURL("/settings/admin/".$this->appName);
         $button = [$this->trans->t("Go to Settings"), $appSettingsLink];
         $template = $this->buildEmailTemplate($subject, $subject, $bodyHtml, $button);
