@@ -553,7 +553,7 @@ class CallbackController extends Controller {
                         }
                     } else {
                         $this->keyManager->lock($fileId, false);
-                        $this->keyManager->setForcesave($fileId, $isForcesave);
+                        $this->keyManager->setForcesave($fileId, $isForcesave && !$isCorrupted);
                     }
 
                     if (!$isCorrupted
