@@ -504,8 +504,8 @@ class CallbackController extends Controller {
                         if ($isForcesave && !$isLock) {
                             if ($isCorrupted) {
                                 $this->logger->error("Track: $fileId status $status - conversion reported corrupted, not saving (remote lock unavailable)");
-                                $this->eventDispatcher->dispatchTyped(new DocumentUnsavedEvent($userId, $fileId, $file->getName()));
                                 $result = self::CALLBACK_ERROR_UNKNOWN;
+                                $this->notifyUnsaved($userId, $fileId, $file->getName());
                             }
                             break;
                         }
@@ -573,13 +573,8 @@ class CallbackController extends Controller {
 
                     if ($isCorrupted) {
                         // Dispatched last, after lock/forcesave bookkeeping above has already run -
-                        // a failure here (e.g. notification backend trouble) must not skip releasing
-                        // the lock or leave forcesave state stuck.
-                        try {
-                            $this->eventDispatcher->dispatchTyped(new DocumentUnsavedEvent($userId, $fileId, $file->getName()));
-                        } catch (\Exception $e) {
-                            $this->logger->error("Track: $fileId failed to dispatch DocumentUnsavedEvent", ["exception" => $e]);
-                        }
+                        // see notifyUnsaved().
+                        $this->notifyUnsaved($userId, $fileId, $file->getName());
                     } else {
                         $result = 0;
                     }
@@ -776,6 +771,22 @@ class CallbackController extends Controller {
         }
 
         return $userId;
+    }
+
+    /**
+     * Tell the user their edit did not save. Dispatch is defensive: a notification-backend
+     * failure must not escape track() and skip the lock/forcesave bookkeeping around it.
+     */
+    private function notifyUnsaved(?string $userId, int $fileId, string $fileName): void {
+        if (empty($userId)) {
+            return;
+        }
+
+        try {
+            $this->eventDispatcher->dispatchTyped(new DocumentUnsavedEvent($userId, $fileId, $fileName));
+        } catch (\Throwable $e) {
+            $this->logger->error("Track: $fileId failed to dispatch DocumentUnsavedEvent", ["exception" => $e]);
+        }
     }
 
     /**
