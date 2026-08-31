@@ -481,21 +481,27 @@ class CallbackController extends Controller {
                     $prevVersion = $file->getFileInfo()->getMtime();
                     $fileName = $file->getName();
                     $curExt = strtolower(pathinfo((string) $fileName, PATHINFO_EXTENSION));
-                    $downloadExt = $filetype;
+                    if (!$isCorrupted) {
+                        // Neither the extension conversion nor the download is needed (or
+                        // trustworthy) for a corrupted conversion - and a corrupted conversion is
+                        // exactly the case where DocumentServer's signed URL is most likely to
+                        // fail here, which would otherwise skip the corrupted-handling below.
+                        $downloadExt = $filetype;
 
-                    if ($downloadExt !== $curExt) {
-                        $key = DocumentService::generateRevisionId($fileId . $url);
+                        if ($downloadExt !== $curExt) {
+                            $key = DocumentService::generateRevisionId($fileId . $url);
 
-                        try {
-                            $this->logger->debug("Converted from $downloadExt to $curExt");
-                            $url = $this->documentService->getConvertedUri($url, $downloadExt, $curExt, $key);
-                        } catch (\Exception $e) {
-                            $this->logger->error("Converted on save error", ["exception" => $e]);
-                            return new JSONResponse(["message" => $e->getMessage()], Http::STATUS_INTERNAL_SERVER_ERROR);
+                            try {
+                                $this->logger->debug("Converted from $downloadExt to $curExt");
+                                $url = $this->documentService->getConvertedUri($url, $downloadExt, $curExt, $key);
+                            } catch (\Exception $e) {
+                                $this->logger->error("Converted on save error", ["exception" => $e]);
+                                return new JSONResponse(["message" => $e->getMessage()], Http::STATUS_INTERNAL_SERVER_ERROR);
+                            }
                         }
-                    }
 
-                    $newData = $this->documentService->request($url);
+                        $newData = $this->documentService->request($url);
+                    }
 
                     $prevIsForcesave = $this->keyManager->wasForcesave($fileId);
 
@@ -580,9 +586,24 @@ class CallbackController extends Controller {
                     }
                 } catch (\Exception $e) {
                     $this->logger->error("Track: $fileId status $status error", ["exception" => $e]);
-                    // if ($status === self::TRACKERSTATUS_MUSTSAVE) {
-                    //     $this->eventDispatcher->dispatchTyped(new DocumentUnsavedEvent($userId, $fileId, $file->getName()));
-                    // }
+                    // A throw between the $isCorrupted guard above and notifyUnsaved() (DB/remote
+                    // lock calls) would otherwise leave the user unnotified and $result at its
+                    // accidental default of 1 instead of the intentional error code.
+                    if ($isCorrupted) {
+                        $result = self::CALLBACK_ERROR_UNKNOWN;
+                        $this->notifyUnsaved($userId, $fileId, $file->getName());
+
+                        if (!RemoteInstance::isRemoteFile($file)) {
+                            // Best-effort: the lock acquired above (line ~519) may not have been
+                            // released yet when the throw happened - don't leave the key-lock row
+                            // stuck at lock=1, which KeyManager::delete() otherwise never cleans up.
+                            try {
+                                $this->keyManager->lock($fileId, false);
+                            } catch (\Exception $lockException) {
+                                $this->logger->error("Track: $fileId failed to release key lock after error", ["exception" => $lockException]);
+                            }
+                        }
+                    }
                 }
                 break;
 
