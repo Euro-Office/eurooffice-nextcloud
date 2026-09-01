@@ -83,6 +83,14 @@ class CallbackController extends Controller {
     private const TRACKERSTATUS_FORCESAVE = 6;
     private const TRACKERSTATUS_CORRUPTEDFORCESAVE = 7;
 
+    /**
+     * DocumentServer's c_oAscServerCommandErrors.UnknownError - returning this instead of
+     * NoError (0) tells DocumentServer the save did not actually land, which activates its
+     * own "forgotten files" backup and its live updateVersion broadcast to open clients.
+     * There is no dedicated "corrupted" code in that enum.
+     */
+    private const CALLBACK_ERROR_UNKNOWN = 3;
+
     public function __construct(
         string $appName,
         IRequest $request,
@@ -395,6 +403,7 @@ class CallbackController extends Controller {
         $this->setupManager->tearDown();
 
         $isForcesave = $status === self::TRACKERSTATUS_FORCESAVE || $status === self::TRACKERSTATUS_CORRUPTEDFORCESAVE;
+        $isCorrupted = $status === self::TRACKERSTATUS_CORRUPTED || $status === self::TRACKERSTATUS_CORRUPTEDFORCESAVE;
 
         $callbackUserId = $hashData->userId;
 
@@ -472,44 +481,66 @@ class CallbackController extends Controller {
                     $prevVersion = $file->getFileInfo()->getMtime();
                     $fileName = $file->getName();
                     $curExt = strtolower(pathinfo((string) $fileName, PATHINFO_EXTENSION));
-                    $downloadExt = $filetype;
+                    if (!$isCorrupted) {
+                        // Neither the extension conversion nor the download is needed (or
+                        // trustworthy) for a corrupted conversion - and a corrupted conversion is
+                        // exactly the case where DocumentServer's signed URL is most likely to
+                        // fail here, which would otherwise skip the corrupted-handling below.
+                        $downloadExt = $filetype;
 
-                    if ($downloadExt !== $curExt) {
-                        $key = DocumentService::generateRevisionId($fileId . $url);
+                        if ($downloadExt !== $curExt) {
+                            $key = DocumentService::generateRevisionId($fileId . $url);
 
-                        try {
-                            $this->logger->debug("Converted from $downloadExt to $curExt");
-                            $url = $this->documentService->getConvertedUri($url, $downloadExt, $curExt, $key);
-                        } catch (\Exception $e) {
-                            $this->logger->error("Converted on save error", ["exception" => $e]);
-                            return new JSONResponse(["message" => $e->getMessage()], Http::STATUS_INTERNAL_SERVER_ERROR);
+                            try {
+                                $this->logger->debug("Converted from $downloadExt to $curExt");
+                                $url = $this->documentService->getConvertedUri($url, $downloadExt, $curExt, $key);
+                            } catch (\Exception $e) {
+                                $this->logger->error("Converted on save error", ["exception" => $e]);
+                                return new JSONResponse(["message" => $e->getMessage()], Http::STATUS_INTERNAL_SERVER_ERROR);
+                            }
                         }
-                    }
 
-                    $newData = $this->documentService->request($url);
+                        $newData = $this->documentService->request($url);
+                    }
 
                     $prevIsForcesave = $this->keyManager->wasForcesave($fileId);
 
                     if (RemoteInstance::isRemoteFile($file)) {
                         $isLock = RemoteInstance::lockRemoteKey($file, $isForcesave, false);
                         if ($isForcesave && !$isLock) {
+                            if ($isCorrupted) {
+                                $this->logger->error("Track: $fileId status $status - conversion reported corrupted, not saving (remote lock unavailable)");
+                                $result = self::CALLBACK_ERROR_UNKNOWN;
+                                $this->notifyUnsaved($userId, $fileId, $file->getName());
+                            }
                             break;
                         }
                     } else {
                         $this->keyManager->lock($fileId, $isForcesave);
                     }
 
-                    $this->logger->debug("Track put content " . $file->getPath());
+                    if ($isCorrupted) {
+                        // DocumentServer reported the conversion as corrupted: $newData is not a
+                        // trustworthy copy of the document (empty/unconverted template, not the
+                        // user's edit). Do not overwrite the real file with it - leave the previous
+                        // content in place and tell the user their edit did not save.
+                        $this->logger->error("Track: $fileId status $status - conversion reported corrupted, not saving");
+                        // Tell DocumentServer this did not actually save, instead of the default
+                        // "$result = 0" below - see CALLBACK_ERROR_UNKNOWN.
+                        $result = self::CALLBACK_ERROR_UNKNOWN;
+                    } else {
+                        $this->logger->debug("Track put content " . $file->getPath());
 
-                    $retryOperation = function () use ($file, $newData): void {
-                        $this->retryOperation(fn() => $file->putContent($newData));
-                    };
+                        $retryOperation = function () use ($file, $newData): void {
+                            $this->retryOperation(fn() => $file->putContent($newData));
+                        };
 
-                    try {
-                        $lockContext = new LockContext($file, ILock::TYPE_APP, $this->appName);
-                        $this->lockManager->runInScope($lockContext, $retryOperation);
-                    } catch (NoLockProviderException $e) {
-                        $retryOperation();
+                        try {
+                            $lockContext = new LockContext($file, ILock::TYPE_APP, $this->appName);
+                            $this->lockManager->runInScope($lockContext, $retryOperation);
+                        } catch (NoLockProviderException $e) {
+                            $retryOperation();
+                        }
                     }
 
                     if (!$isForcesave) {
@@ -522,10 +553,11 @@ class CallbackController extends Controller {
                         }
                     } else {
                         $this->keyManager->lock($fileId, false);
-                        $this->keyManager->setForcesave($fileId, $isForcesave);
+                        $this->keyManager->setForcesave($fileId, $isForcesave && !$isCorrupted);
                     }
 
-                    if (!$isForcesave
+                    if (!$isCorrupted
+                        && !$isForcesave
                         && !$prevIsForcesave
                         && $this->versionManager instanceof IVersionManager
                         && $this->appConfig->getVersionHistory()) {
@@ -541,16 +573,37 @@ class CallbackController extends Controller {
                         FileVersions::saveHistory($file->getFileInfo(), $history, $changes, $prevVersion);
                     }
 
-                    if (!empty($user) && $this->appConfig->getVersionHistory()) {
+                    if (!$isCorrupted && !empty($user) && $this->appConfig->getVersionHistory()) {
                         FileVersions::saveAuthor($file->getFileInfo(), $user);
                     }
 
-                    $result = 0;
+                    if ($isCorrupted) {
+                        // Dispatched last, after lock/forcesave bookkeeping above has already run -
+                        // see notifyUnsaved().
+                        $this->notifyUnsaved($userId, $fileId, $file->getName());
+                    } else {
+                        $result = 0;
+                    }
                 } catch (\Exception $e) {
                     $this->logger->error("Track: $fileId status $status error", ["exception" => $e]);
-                    // if ($status === self::TRACKERSTATUS_MUSTSAVE) {
-                    //     $this->eventDispatcher->dispatchTyped(new DocumentUnsavedEvent($userId, $fileId, $file->getName()));
-                    // }
+                    // A throw between the $isCorrupted guard above and notifyUnsaved() (DB/remote
+                    // lock calls) would otherwise leave the user unnotified and $result at its
+                    // accidental default of 1 instead of the intentional error code.
+                    if ($isCorrupted) {
+                        $result = self::CALLBACK_ERROR_UNKNOWN;
+                        $this->notifyUnsaved($userId, $fileId, $file->getName());
+
+                        if (!RemoteInstance::isRemoteFile($file)) {
+                            // Best-effort: the lock acquired above (line ~519) may not have been
+                            // released yet when the throw happened - don't leave the key-lock row
+                            // stuck at lock=1, which KeyManager::delete() otherwise never cleans up.
+                            try {
+                                $this->keyManager->lock($fileId, false);
+                            } catch (\Exception $lockException) {
+                                $this->logger->error("Track: $fileId failed to release key lock after error", ["exception" => $lockException]);
+                            }
+                        }
+                    }
                 }
                 break;
 
@@ -739,6 +792,22 @@ class CallbackController extends Controller {
         }
 
         return $userId;
+    }
+
+    /**
+     * Tell the user their edit did not save. Dispatch is defensive: a notification-backend
+     * failure must not escape track() and skip the lock/forcesave bookkeeping around it.
+     */
+    private function notifyUnsaved(?string $userId, int $fileId, string $fileName): void {
+        if (empty($userId)) {
+            return;
+        }
+
+        try {
+            $this->eventDispatcher->dispatchTyped(new DocumentUnsavedEvent($userId, $fileId, $fileName));
+        } catch (\Throwable $e) {
+            $this->logger->error("Track: $fileId failed to dispatch DocumentUnsavedEvent", ["exception" => $e]);
+        }
     }
 
     /**
