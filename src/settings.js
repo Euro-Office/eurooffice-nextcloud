@@ -21,8 +21,6 @@
  *
  */
 
-/* global _ */
-
 import { spawnDialog } from '@nextcloud/vue/functions/dialog'
 import { createApp, defineAsyncComponent } from 'vue'
 import axios from '@nextcloud/axios'
@@ -72,12 +70,40 @@ import axios from '@nextcloud/axios'
 			groupsCheckbox.checked = limitGroupsSelect.value !== ''
 		}
 
+		const ListPicker = defineAsyncComponent(() => import('./views/ListPicker.vue'))
+		// The toggle handlers below run on every click of their checkbox, so
+		// remember which pickers are already mounted. This guards repeated
+		// calls within one page life, not repeated execution of this bundle.
+		const mountedPickers = new Set()
+
+		/**
+		 * Mount a group / tag picker next to its hidden value input.
+		 *
+		 * @param {string} target id of the hidden input holding the value
+		 * @param {string} type either 'groups' or 'tags'
+		 * @param {string} label accessible label for the picker
+		 */
+		const mountPicker = function(target, type, label) {
+			const container = document.getElementById(target + 'Picker')
+			if (!container || mountedPickers.has(target)) {
+				return
+			}
+			mountedPickers.add(target)
+			createApp(ListPicker, { target, type, label }).mount(container)
+		}
+
 		const groupListToggle = function() {
-			if (typeof window.$ !== 'function') return
-			if (groupsCheckbox && groupsCheckbox.checked) {
-				OC.Settings.setupGroupsSelect(window.$(limitGroupsSelect))
-			} else if (limitGroupsSelect) {
-				window.$(limitGroupsSelect).select2('destroy')
+			const checked = !!(groupsCheckbox && groupsCheckbox.checked)
+			const container = document.getElementById('euroofficeLimitGroupsPicker')
+			if (container) {
+				container.classList.toggle('eurooffice-hide', !checked)
+			}
+			if (checked) {
+				mountPicker(
+					'euroofficeLimitGroups',
+					'groups',
+					t(OCA.Eurooffice.AppName, 'Allow the following groups to access the editors'),
+				)
 			}
 		}
 
@@ -142,59 +168,28 @@ import axios from '@nextcloud/axios'
 			'linkTags',
 		]
 
+		const watermarkLabels = {
+			allGroups: 'Show watermark for users of groups',
+			allTags: 'Show watermark on tagged files',
+			linkTags: 'Show watermark on link shares with specific system tags',
+		}
+
 		const watermarkNodeBehaviour = function(watermark) {
+			const target = 'euroofficeWatermark_' + watermark + 'List'
+			const type = watermark.indexOf('Group') >= 0 ? 'groups' : 'tags'
+			const watermarkCheckbox = document.getElementById('euroofficeWatermark_' + watermark)
+
 			const watermarkListToggle = function() {
-				const watermarkCheckbox = document.getElementById('euroofficeWatermark_' + watermark)
-				if (watermarkCheckbox && watermarkCheckbox.checked) {
-					if (watermark.indexOf('Group') >= 0) {
-						if (typeof window.$ !== 'function') return
-						const listElement = document.getElementById('euroofficeWatermark_' + watermark + 'List')
-						OC.Settings.setupGroupsSelect(window.$(listElement))
-					} else {
-						if (typeof window.$ !== 'function') return
-						window.$('#euroofficeWatermark_' + watermark + 'List').select2({
-							allowClear: true,
-							closeOnSelect: false,
-							multiple: true,
-							separator: '|',
-							toggleSelect: true,
-							placeholder: t(OCA.Eurooffice.AppName, 'Select tag'),
-							query: _.debounce(function(query) {
-								query.callback({
-									results: OC.SystemTags.collection.filterByName(query.term),
-								})
-							}, 100, true),
-							initSelection(element, callback) {
-								const selection = (element.value || '').split('|').map(function(tagId) {
-									return OC.SystemTags.collection.get(tagId)
-								})
-								callback(selection)
-							},
-							formatResult(tag) {
-								return OC.SystemTags.getDescriptiveTag(tag)
-							},
-							formatSelection(tag) {
-								return tag.get('name')
-							},
-							sortResults(results) {
-								results.sort(function(a, b) {
-									return OC.Util.naturalSortCompare(a.get('name'), b.get('name'))
-								})
-								return results
-							},
-						})
-					}
-				} else {
-					if (typeof window.$ === 'function') {
-						const listElement = document.getElementById('euroofficeWatermark_' + watermark + 'List')
-						if (listElement) {
-							window.$(listElement).select2('destroy')
-						}
-					}
+				const checked = !!(watermarkCheckbox && watermarkCheckbox.checked)
+				const container = document.getElementById(target + 'Picker')
+				if (container) {
+					container.classList.toggle('eurooffice-hide', !checked)
+				}
+				if (checked) {
+					mountPicker(target, type, t(OCA.Eurooffice.AppName, watermarkLabels[watermark]))
 				}
 			}
 
-			const watermarkCheckbox = document.getElementById('euroofficeWatermark_' + watermark)
 			if (watermarkCheckbox) {
 				watermarkCheckbox.addEventListener('click', watermarkListToggle)
 				watermarkListToggle()
@@ -205,15 +200,10 @@ import axios from '@nextcloud/axios'
 			watermarkNodeBehaviour(watermarkGroup)
 		})
 
-		if (OC.SystemTags && OC.SystemTags.collection) {
-			OC.SystemTags.collection.fetch({
-				success() {
-					watermarkTagLists.forEach((watermarkTag) => {
-						watermarkNodeBehaviour(watermarkTag)
-					})
-				},
-			})
-		}
+		// NcSelectTags loads the system tags itself, no OC.SystemTags needed.
+		watermarkTagLists.forEach((watermarkTag) => {
+			watermarkNodeBehaviour(watermarkTag)
+		})
 
 		const connectionErrorEl = document.getElementById('euroofficeSettingsState')
 		const connectionError = connectionErrorEl ? connectionErrorEl.value : ''
@@ -589,18 +579,30 @@ import axios from '@nextcloud/axios'
 		const sharingBlock = document.getElementById('euroofficeEnableSharingBlock')
 		const sharingCheckbox = document.getElementById('euroofficeEnableSharing')
 
-		sameTabCheckbox.onclick = function() {
-			const isChecked = sameTabCheckbox.checked
-			sharingBlock.style.display = isChecked ? 'none' : 'block'
-			sharingCheckbox.checked = isChecked ? sharingCheckbox.checked : false
+		if (sameTabCheckbox) {
+			sameTabCheckbox.addEventListener('click', function() {
+				const isChecked = sameTabCheckbox.checked
+				if (sharingBlock) {
+					sharingBlock.style.display = isChecked ? 'none' : 'block'
+				}
+				if (sharingCheckbox) {
+					sharingCheckbox.checked = isChecked ? sharingCheckbox.checked : false
+				}
+			})
 		}
 
-		// Mount FontManager Vue component
-		const fontManagerEl = document.getElementById('eurooffice-font-manager')
-		if (fontManagerEl) {
-			const FontManager = defineAsyncComponent(() => import('./views/FontManager.vue'))
-			createApp(FontManager).mount(fontManagerEl)
-		}
+		// Mount FontManager Vue component.
+		// Recent servers move the whole server-rendered settings markup into a
+		// Vue-managed container (see SettingsContentWrapper.vue in the settings
+		// app), so re-resolve the mount point on the next frame and mount into
+		// the node that actually ended up in the document.
+		requestAnimationFrame(function() {
+			const fontManagerEl = document.getElementById('eurooffice-font-manager')
+			if (fontManagerEl) {
+				const FontManager = defineAsyncComponent(() => import('./views/FontManager.vue'))
+				createApp(FontManager).mount(fontManagerEl)
+			}
+		})
 	})
 
 })(OC)
