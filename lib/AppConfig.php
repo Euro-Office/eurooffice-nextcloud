@@ -1303,28 +1303,26 @@ class AppConfig {
             $result = [];
             $additionalFormats = $this->getAdditionalFormatAttributes();
 
-            if ($euroofficeFormats !== false) {
-                foreach ($euroofficeFormats as $format) {
-                    if ($format["name"]
-                        && $format["mime"]
-                        && $format["type"]
-                        && $format["actions"]
-                        && $format["convert"]) {
-                        $result[$format["name"]] = [
-                            "mime" => $format["mime"],
-                            "type" => $format["type"],
-                            "edit" => in_array("edit", $format["actions"], true),
-                            "editable" => in_array("lossy-edit", $format["actions"], true),
-                            "conv" => in_array("auto-convert", $format["actions"], true),
-                            "fillForms" => in_array("fill", $format["actions"], true),
-                            "comment" => in_array("comment", $format["actions"], true),
-                            "saveas" => $format["convert"],
-                            "review" => in_array("review", $format["actions"], true),
-                            "modifyFilter" => in_array("customfilter", $format["actions"], true),
-                        ];
-                        if (isset($additionalFormats[$format["name"]])) {
-                            $result[$format["name"]] = array_merge($result[$format["name"]], $additionalFormats[$format["name"]]);
-                        }
+            foreach ($euroofficeFormats as $format) {
+                if ($format["name"]
+                    && $format["mime"]
+                    && $format["type"]
+                    && $format["actions"]
+                    && $format["convert"]) {
+                    $result[$format["name"]] = [
+                        "mime" => $format["mime"],
+                        "type" => $format["type"],
+                        "edit" => in_array("edit", $format["actions"], true),
+                        "editable" => in_array("lossy-edit", $format["actions"], true),
+                        "conv" => in_array("auto-convert", $format["actions"], true),
+                        "fillForms" => in_array("fill", $format["actions"], true),
+                        "comment" => in_array("comment", $format["actions"], true),
+                        "saveas" => $format["convert"],
+                        "review" => in_array("review", $format["actions"], true),
+                        "modifyFilter" => in_array("customfilter", $format["actions"], true),
+                    ];
+                    if (isset($additionalFormats[$format["name"]])) {
+                        $result[$format["name"]] = array_merge($result[$format["name"]], $additionalFormats[$format["name"]]);
                     }
                 }
             }
@@ -1378,15 +1376,34 @@ class AppConfig {
      * @return array
      */
     public function getFormats(): array {
+        $formatsFile = dirname(__DIR__) . DIRECTORY_SEPARATOR . "assets" . DIRECTORY_SEPARATOR . "document-formats" . DIRECTORY_SEPARATOR . "onlyoffice-docs-formats.json";
+
         $cachedFormats = $this->cache->get("document_formats");
         if ($cachedFormats !== null) {
-            return json_decode($cachedFormats, true);
+            $decoded = json_decode($cachedFormats, true);
+            if (is_array($decoded)) {
+                return $decoded;
+            }
+            // Cached value is corrupt (e.g. from a previous failed file read) — evict and re-read.
+            $this->cache->remove("document_formats");
         }
 
-        $formats = file_get_contents(dirname(__DIR__) . DIRECTORY_SEPARATOR . "assets" . DIRECTORY_SEPARATOR . "document-formats" . DIRECTORY_SEPARATOR . "onlyoffice-docs-formats.json");
+        $formats = file_get_contents($formatsFile);
+        if ($formats === false) {
+            $this->logger->error("Failed to read document formats file: " . $formatsFile, ["app" => $this->appName]);
+            return [];
+        }
+
+        $decoded = json_decode($formats, true);
+        if (!is_array($decoded)) {
+            $this->logger->error("Document formats file is not valid JSON: " . $formatsFile, ["app" => $this->appName]);
+            return [];
+        }
+
+        // Only cache content we have confirmed decodes to an array.
         $this->cache->set("document_formats", $formats, 6 * 3600);
         $this->logger->debug("Getting formats from file", ["app" => $this->appName]);
-        return json_decode($formats, true);
+        return $decoded;
     }
 
     /**
