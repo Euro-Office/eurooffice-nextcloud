@@ -534,8 +534,10 @@ import { loadState } from '@nextcloud/initial-state'
 				const mimeTypes = config.mime
 				mimeTypes.forEach((mime) => {
 					OCA.Files.fileActions.registerAction({
-						name: 'euroofficeOpen',
-						displayName: t(OCA.Eurooffice.AppName, 'Open in Nextcloud Office'),
+						name: config.view ? 'euroofficeEdit' : 'euroofficeOpen',
+						displayName: config.view
+							? t(OCA.Eurooffice.AppName, 'Edit in Nextcloud Office')
+							: t(OCA.Eurooffice.AppName, 'Open in Nextcloud Office'),
 						mime,
 						permissions: OC.PERMISSION_READ,
 						iconClass: 'icon-eurooffice-open',
@@ -609,6 +611,26 @@ import { loadState } from '@nextcloud/initial-state'
 
 					if (!config) return false
 					if (config.def) return false
+					if (config.view) return false
+
+					if (Permission.READ !== (files[0].permissions & Permission.READ)) { return false }
+
+					return true
+				},
+				exec({ nodes, view }) {
+					OCA.Eurooffice.FileClickExec({ nodes, view, isDefault: false })
+				},
+			})
+
+			registerFileAction({
+				id: 'eurooffice-edit-pdf',
+				displayName: () => t(OCA.Eurooffice.AppName, 'Edit in Nextcloud Office'),
+				iconSvgInline: () => AppDarkSvg,
+				enabled: ({ nodes: files }) => {
+					const config = getConfig(files[0])
+
+					if (!config) return false
+					if (!config.view) return false
 
 					if (Permission.READ !== (files[0].permissions & Permission.READ)) { return false }
 
@@ -838,7 +860,7 @@ import { loadState } from '@nextcloud/initial-state'
 				},
 			})
 
-			if (config.def
+			if ((config.def || config.view)
 				&& !_oc_appswebroots.richdocuments
 				&& !(_oc_appswebroots.files_pdfviewer && extension === 'pdf')
 				&& !(_oc_appswebroots.text && extension === 'txt')) {

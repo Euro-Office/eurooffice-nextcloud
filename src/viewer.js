@@ -80,7 +80,7 @@
 		OCA.Eurooffice.frameSelector = '#euroofficeViewerFrame'
 
 		const mimes = Object.values(OCA.Eurooffice.setting.formats)
-			.filter(format => format.def)
+			.filter(format => format.def || format.view)
 			.map(format => format.mime)
 			.flat()
 		OCA.Viewer.registerHandler({

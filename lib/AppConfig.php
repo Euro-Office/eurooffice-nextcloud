@@ -1352,7 +1352,8 @@ class AppConfig {
                 "createForm" => true,
             ],
             "pdf" => [
-                "def" => true,
+                "def" => false,
+                "view" => true,
             ],
             "pptx" => [
                 "def" => true,
