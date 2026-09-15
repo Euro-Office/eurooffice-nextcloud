@@ -34,13 +34,20 @@
     position: fixed;
     vertical-align: top;
     left: 0px;
-    height: calc(100dvh - 58px);
+    height: 100dvh;
     margin-top: -50px;
 }
 
 #content.app-eurooffice #app > iframe {
     height: calc(100dvh - 50px);
     margin-top: 0px;
+}
+
+/* Public share inline editor: layout-base has no visible header, anchor straight to viewport */
+#body-public.layout-base #app > iframe {
+    top: 0;
+    margin-top: 0;
+    height: 100dvh;
 }
 
 .eurooffice-inviewer > iframe {
