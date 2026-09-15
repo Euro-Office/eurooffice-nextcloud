@@ -217,21 +217,15 @@ import { loadState } from '@nextcloud/initial-state'
 			iframe.src = url + '&inframe=true&parentOrigin=' + encodeURIComponent(window.location.origin)
 			iframeContainer.appendChild(iframe)
 
-			const frameContainer = document.getElementById('app-content') || document.getElementById('app-content-vue')
-			if (frameContainer) {
-				frameContainer.appendChild(iframeContainer)
+			const mountEl = document.getElementById('content-vue') ?? document.getElementById('content') ?? document.body
+			mountEl.appendChild(iframeContainer)
+			if (mountEl.id === 'content-vue' || mountEl.id === 'content') {
+				iframeContainer.style.cssText = 'position:absolute!important;inset:0!important;z-index:1100!important;overflow:hidden!important'
 			}
 
 			document.body.classList.add('eurooffice-inline')
 
 			getSidebar()?.close()
-
-			const appContentElement = document.getElementById('app-content')
-			const scrollTop = appContentElement ? appContentElement.scrollTop : 0
-			const frameElement = document.querySelector(OCA.Eurooffice.frameSelector)
-			if (frameElement) {
-				frameElement.style.top = scrollTop + 'px'
-			}
 
 			const currentQuery = { ...OCP.Files.Router.query }
 			if (isDefault) {
@@ -262,6 +256,9 @@ import { loadState } from '@nextcloud/initial-state'
 	}
 
 	OCA.Eurooffice.SetDefaultUrl = function() {
+		if (isPublicShare()) {
+			return
+		}
 		// eslint-disable-next-line no-unused-vars
 		const { openfile, enableSharing, ...query } = OCP.Files.Router.query
 		window.OCP?.Files?.Router?.goToRoute(
@@ -867,8 +864,7 @@ import { loadState } from '@nextcloud/initial-state'
 				iframe.allowFullscreen = true
 				iframe.src = `${editorUrl}?inframe=true${config.defViewer ? '&inviewer=true' : ''}&parentOrigin=${encodeURIComponent(window.location.origin)}`
 				container.appendChild(iframe)
-				const appContent = document.querySelector('#app-content') || document.querySelector('#app-content-vue')
-				appContent.appendChild(container)
+				document.body.appendChild(container)
 				document.body.classList.add('eurooffice-inline')
 			}
 		} else {
