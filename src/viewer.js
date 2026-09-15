@@ -21,6 +21,8 @@
  *
  */
 
+/* global _oc_appswebroots */
+
 /**
  * @param {object} OCA Nextcloud OCA object
  */
@@ -80,7 +82,15 @@
 		OCA.Eurooffice.frameSelector = '#euroofficeViewerFrame'
 
 		const mimes = Object.values(OCA.Eurooffice.setting.formats)
-			.filter(format => format.def || format.view)
+			.filter(format => format.def || format.defViewer)
+			.filter(format => {
+				// Don't collide with files_pdfviewer (bundled, enabled by default)
+				if (typeof _oc_appswebroots !== 'undefined' && _oc_appswebroots.files_pdfviewer) {
+					const formatMimes = [].concat(format.mime)
+					if (formatMimes.includes('application/pdf')) return false
+				}
+				return true
+			})
 			.map(format => format.mime)
 			.flat()
 		OCA.Viewer.registerHandler({

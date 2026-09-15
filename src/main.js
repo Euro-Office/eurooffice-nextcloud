@@ -534,8 +534,8 @@ import { loadState } from '@nextcloud/initial-state'
 				const mimeTypes = config.mime
 				mimeTypes.forEach((mime) => {
 					OCA.Files.fileActions.registerAction({
-						name: config.view ? 'euroofficeEdit' : 'euroofficeOpen',
-						displayName: config.view
+						name: config.defViewer ? 'euroofficeEdit' : 'euroofficeOpen',
+						displayName: config.defViewer
 							? t(OCA.Eurooffice.AppName, 'Edit in Nextcloud Office')
 							: t(OCA.Eurooffice.AppName, 'Open in Nextcloud Office'),
 						mime,
@@ -545,7 +545,7 @@ import { loadState } from '@nextcloud/initial-state'
 					})
 
 					if (config.def) {
-						OCA.Files.fileActions.setDefault(mime, 'euroofficeOpen')
+						OCA.Files.fileActions.setDefault(mime, config.defViewer ? 'euroofficeEdit' : 'euroofficeOpen')
 					}
 
 					if (config.conv) {
@@ -591,7 +591,11 @@ import { loadState } from '@nextcloud/initial-state'
 					const config = getConfig(files[0])
 
 					if (!config) return false
-					if (!config.def) return false
+
+					// defViewer formats normally open via OCA.Viewer. Fall back to
+					// editor-default when the Viewer app is absent.
+					const isDefault = config.def || (config.defViewer && !OCA.Viewer)
+					if (!isDefault) return false
 
 					if (Permission.READ !== (files[0].permissions & Permission.READ)) { return false }
 
@@ -604,35 +608,22 @@ import { loadState } from '@nextcloud/initial-state'
 
 			registerFileAction({
 				id: 'eurooffice-open',
-				displayName: () => t(OCA.Eurooffice.AppName, 'Open in Nextcloud Office'),
+				displayName: ({ nodes: files }) => {
+					const config = getConfig(files[0])
+					return config?.defViewer
+						? t(OCA.Eurooffice.AppName, 'Edit in Nextcloud Office')
+						: t(OCA.Eurooffice.AppName, 'Open in Nextcloud Office')
+				},
 				iconSvgInline: () => AppDarkSvg,
 				enabled: ({ nodes: files }) => {
 					const config = getConfig(files[0])
 
 					if (!config) return false
 					if (config.def) return false
-					if (config.view) return false
 
-					if (Permission.READ !== (files[0].permissions & Permission.READ)) { return false }
-
-					return true
-				},
-				exec({ nodes, view }) {
-					OCA.Eurooffice.FileClickExec({ nodes, view, isDefault: false })
-				},
-			})
-
-			registerFileAction({
-				id: 'eurooffice-edit-pdf',
-				displayName: () => t(OCA.Eurooffice.AppName, 'Edit in Nextcloud Office'),
-				iconSvgInline: () => AppDarkSvg,
-				enabled: ({ nodes: files }) => {
-					const config = getConfig(files[0])
-
-					if (!config) return false
-					if (!config.view) return false
-
-					if (Permission.READ !== (files[0].permissions & Permission.READ)) { return false }
+					// defViewer formats require write access — the action opens the full editor
+					const required = config.defViewer ? Permission.UPDATE : Permission.READ
+					if (required !== (files[0].permissions & required)) { return false }
 
 					return true
 				},
@@ -860,7 +851,7 @@ import { loadState } from '@nextcloud/initial-state'
 				},
 			})
 
-			if ((config.def || config.view)
+			if ((config.def || config.defViewer)
 				&& !_oc_appswebroots.richdocuments
 				&& !(_oc_appswebroots.files_pdfviewer && extension === 'pdf')
 				&& !(_oc_appswebroots.text && extension === 'txt')) {
@@ -874,7 +865,7 @@ import { loadState } from '@nextcloud/initial-state'
 				iframe.nonce = btoa(OC.requestToken)
 				iframe.scrolling = 'no'
 				iframe.allowFullscreen = true
-				iframe.src = `${editorUrl}?inframe=true&parentOrigin=${encodeURIComponent(window.location.origin)}`
+				iframe.src = `${editorUrl}?inframe=true${config.defViewer ? '&inviewer=true' : ''}&parentOrigin=${encodeURIComponent(window.location.origin)}`
 				container.appendChild(iframe)
 				const appContent = document.querySelector('#app-content') || document.querySelector('#app-content-vue')
 				appContent.appendChild(container)
