@@ -541,8 +541,8 @@ import { loadState } from '@nextcloud/initial-state'
 						actionHandler: OCA.Eurooffice.FileClick,
 					})
 
-					if (config.def) {
-						OCA.Files.fileActions.setDefault(mime, config.defViewer ? 'euroofficeEdit' : 'euroofficeOpen')
+					if (config.def && !config.defViewer) {
+						OCA.Files.fileActions.setDefault(mime, 'euroofficeOpen')
 					}
 
 					if (config.conv) {
@@ -589,9 +589,10 @@ import { loadState } from '@nextcloud/initial-state'
 
 					if (!config) return false
 
-					// defViewer formats normally open via OCA.Viewer. Fall back to
-					// editor-default when the Viewer app is absent.
-					const isDefault = config.def || (config.defViewer && !OCA.Viewer)
+					// defViewer formats open via OCA.Viewer (registered in viewer.js).
+					// This action is the direct-open fallback when the Viewer app is absent.
+					// Non-defViewer formats use this as their primary default action.
+					const isDefault = (config.def && !config.defViewer) || (config.defViewer && !OCA.Viewer)
 					if (!isDefault) return false
 
 					if (Permission.READ !== (files[0].permissions & Permission.READ)) { return false }
@@ -616,7 +617,11 @@ import { loadState } from '@nextcloud/initial-state'
 					const config = getConfig(files[0])
 
 					if (!config) return false
-					if (config.def) return false
+					// For non-defViewer formats, hide when EO is already the default handler.
+					// For defViewer formats (e.g. PDF), always show "Edit in Nextcloud Office"
+					// regardless of whether EO is the default viewer, so the admin toggle
+					// only controls the default click behaviour, not menu availability.
+					if (config.def && !config.defViewer) return false
 
 					// defViewer formats require write access — the action opens the full editor
 					const required = config.defViewer ? Permission.UPDATE : Permission.READ
