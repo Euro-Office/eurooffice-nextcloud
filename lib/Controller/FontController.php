@@ -126,6 +126,24 @@ class FontController extends Controller {
     }
 
     /**
+     * Return true when the exception indicates the AdminPanel service is
+     * not reachable (502 Bad Gateway / 503 Service Unavailable / 504 Timeout).
+     * These codes are emitted by nginx when ds-adminpanel is not running.
+     *
+     * Contract: document-server-package/common/documentserver/nginx/includes/ds-adminpanel.conf.m4
+     * proxies /admin to the adminpanel upstream and maps 502/503/504 to an
+     * admin-disabled.html error page while preserving the original status code.
+     * If that rule is ever changed to "=200", this method will stop matching
+     * and the caller must fall back to content-type or body inspection.
+     */
+    private function isAdminPanelUnavailable(\Exception $e): bool {
+        if (!method_exists($e, 'getResponse') || $e->getResponse() === null) {
+            return false;
+        }
+        return in_array($e->getResponse()->getStatusCode(), [502, 503, 504], true);
+    }
+
+    /**
      * Forward an error from the AdminPanel API to the client.
      * Tries to decode the JSON body; falls back to a generic message.
      */
@@ -161,6 +179,10 @@ class FontController extends Controller {
             );
             return new DataResponse(json_decode($body, true));
         } catch (\Exception $e) {
+            if ($this->isAdminPanelUnavailable($e)) {
+                $this->logger->debug('FontController::index — AdminPanel unavailable', ['exception' => $e]);
+                return new DataResponse(['available' => false, 'fonts' => []], Http::STATUS_OK);
+            }
             $this->logger->error('FontController::index error', ['exception' => $e]);
             return new DataResponse(['error' => $e->getMessage()], Http::STATUS_INTERNAL_SERVER_ERROR);
         }
