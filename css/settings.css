@@ -80,6 +80,26 @@
     cursor: pointer;
 }
 
+/*
+ * Same problem as the legacy .checkbox rule above: core's .hidden-visually
+ * parks the control 10000px outside the page in both axes. Keep it invisible
+ * to sighted users and reachable for assistive tech, but clip it in place
+ * rather than offsetting it out of the layout.
+ */
+.section-eurooffice input.hidden-visually {
+    position: absolute;
+    inset-inline-start: auto;
+    top: auto;
+    width: 1px;
+    height: 1px;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+}
+
 .eurooffice-hide {
     display: none;
 }

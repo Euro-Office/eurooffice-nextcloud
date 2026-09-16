@@ -591,18 +591,12 @@ import axios from '@nextcloud/axios'
 			})
 		}
 
-		// Mount FontManager Vue component.
-		// Recent servers move the whole server-rendered settings markup into a
-		// Vue-managed container (see SettingsContentWrapper.vue in the settings
-		// app), so re-resolve the mount point on the next frame and mount into
-		// the node that actually ended up in the document.
-		requestAnimationFrame(function() {
-			const fontManagerEl = document.getElementById('eurooffice-font-manager')
-			if (fontManagerEl) {
-				const FontManager = defineAsyncComponent(() => import('./views/FontManager.vue'))
-				createApp(FontManager).mount(fontManagerEl)
-			}
-		})
+		// Mount FontManager Vue component
+		const fontManagerEl = document.getElementById('eurooffice-font-manager')
+		if (fontManagerEl) {
+			const FontManager = defineAsyncComponent(() => import('./views/FontManager.vue'))
+			createApp(FontManager).mount(fontManagerEl)
+		}
 	})
 
 })(OC)
