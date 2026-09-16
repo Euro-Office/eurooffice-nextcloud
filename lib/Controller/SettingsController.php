@@ -233,8 +233,8 @@ class SettingsController extends Controller {
         string $protection
     ): DataResponse {
 
-        if ($watermarks["enabled"] === "true") {
-            $watermarks["text"] = trim((string) $watermarks["text"]);
+        if (AppConfig::isTrue($watermarks["enabled"] ?? false)) {
+            $watermarks["text"] = trim((string) ($watermarks["text"] ?? ""));
             if (empty($watermarks["text"])) {
                 $watermarks["text"] = $this->trans->t("DO NOT SHARE THIS") . " {userId} {date}";
             }
