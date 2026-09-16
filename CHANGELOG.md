@@ -1,5 +1,17 @@
 # Change Log
 
+## 11.0.5
+## Added
+- PDF opens in viewer by default — clicking a PDF opens the EuroOffice viewer; an "Edit in Nextcloud Office" action provides access to the full editor
+- Admin setting to enable EuroOffice as the default PDF viewer, replacing the built-in files_pdfviewer when enabled
+
+## Fixed
+- Admin settings panel broken on Nextcloud 35
+- Inline editor: full-screen layout with correct sidebar visibility on Nextcloud 34
+- Corrupt cached format value in getFormats() causing a TypeError on subsequent requests
+- Font manager: graceful degradation when the AdminPanel service is unavailable
+- Callback: silent file overwrite on corrupted force-save
+
 ## 11.0.4
 ## Fixed
 - remove deprecated oc_defaults and explicitly import @nextcloud/moment
