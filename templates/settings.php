@@ -160,7 +160,7 @@
     <p class="eurooffice-header"><?php p($l->t("The default application for opening the format")) ?></p>
     <div class="eurooffice-exts">
         <?php foreach ($_["formats"] as $format => $setting) { ?>
-            <?php if (array_key_exists("mime", $setting) && empty($setting["defViewer"])) { ?>
+            <?php if (array_key_exists("mime", $setting)) { ?>
             <div>
                 <input type="checkbox" class="checkbox"
                     id="euroofficeDefFormat<?php p($format) ?>"

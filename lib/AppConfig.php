@@ -585,8 +585,6 @@ class AppConfig {
      */
     public function setDefaultFormats(array $formats): void {
         $value = json_encode($formats);
-        $this->logger->info("Set default formats: $value", ["app" => $this->appName]);
-
         $this->appConfig->setValueString($this->appName, $this->_defFormats, $value);
     }
 
@@ -1228,14 +1226,6 @@ class AppConfig {
             }
         }
 
-        // view=true is a product-level decision: the format opens in the NC Viewer
-        // by default. Admin-saved defFormats must not override this.
-        foreach ($result as $format => $attrs) {
-            if (!empty($attrs["defViewer"])) {
-                $result[$format]["def"] = false;
-            }
-        }
-
         $editFormats = $this->getEditableFormats();
         foreach ($editFormats as $format => $setting) {
             if (array_key_exists($format, $result)) {
@@ -1371,7 +1361,7 @@ class AppConfig {
                 "createForm" => true,
             ],
             "pdf" => [
-                "def" => false,
+                "def" => true,
                 "defViewer" => true,
             ],
             "pptx" => [
