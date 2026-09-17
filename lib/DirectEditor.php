@@ -185,6 +185,9 @@ class DirectEditor implements IEditor {
             } else {
                 $csp->addAllowedFrameDomain("'self'");
             }
+            // blob: URLs are needed for the "Save as picture" feature — the editor
+            // downloads chart images via URL.createObjectURL() to avoid data: URIs.
+            $csp->addAllowedFrameDomain("blob:");
             $response->setContentSecurityPolicy($csp);
 
             return $response;
