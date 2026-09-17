@@ -436,6 +436,10 @@ class EditorApiController extends OCSController {
         }
 
         $canGoBack = $folderLink !== null;
+        if ($canGoBack) {
+            $params["_folder_link"] = $folderLink;
+        }
+
         if ($inviewer) {
             if ($canGoBack) {
                 $params["editorConfig"]["customization"]["goback"] = [
@@ -453,6 +457,12 @@ class EditorApiController extends OCSController {
                 "url" => $folderLink
             ];
         } elseif ($inframe && !empty($shareToken)) {
+            $params["editorConfig"]["customization"]["close"]["visible"] = true;
+        }
+
+        // The editor renders this as its native close control in the header.
+        // Keep it available for standalone windows and viewer integrations too.
+        if (!$desktop) {
             $params["editorConfig"]["customization"]["close"]["visible"] = true;
         }
 
