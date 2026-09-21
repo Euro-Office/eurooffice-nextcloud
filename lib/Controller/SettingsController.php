@@ -25,11 +25,13 @@
 
 namespace OCA\Eurooffice\Controller;
 
+use OCA\Eurooffice\AdminSettingsSecurity;
 use OCA\Eurooffice\AppConfig;
 use OCA\Eurooffice\DocumentService;
 use OCA\Eurooffice\FileVersions;
 use OCA\Eurooffice\TemplateManager;
 use OCP\AppFramework\Controller;
+use OCP\AppFramework\Http\Attribute\AuthorizedAdminSetting;
 use OCP\AppFramework\Http\DataResponse;
 use OCP\AppFramework\Http\TemplateResponse;
 use OCP\IL10N;
@@ -300,6 +302,7 @@ class SettingsController extends Controller {
      * @param bool $macros - run document macros
      * @param string $protection - protection
      */
+    #[AuthorizedAdminSetting(settings: AdminSettingsSecurity::class)]
     public function saveSecurity(
         array $watermarks,
         bool $plugins,
