@@ -40,6 +40,7 @@ Whether you’re working with internal teams or external collaborators, the Next
     </dependencies>
     <settings>
         <admin>OCA\Eurooffice\AdminSettings</admin>
+        <admin>OCA\Eurooffice\AdminSettingsTemplates</admin>
         <admin-section>OCA\Eurooffice\AdminSection</admin-section>
     </settings>
     <commands>
