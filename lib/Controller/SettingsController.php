@@ -61,8 +61,7 @@ class SettingsController extends Controller {
         $data = array_merge(
             $this->getConnectionStateData(),
             $this->getAddressData(),
-            $this->getCommonData(),
-            $this->getSecurityData()
+            $this->getCommonData()
         );
         return new TemplateResponse($this->appName, "settings", $data, "blank");
     }
@@ -79,6 +78,20 @@ class SettingsController extends Controller {
             $this->getTemplatesData()
         );
         return new TemplateResponse($this->appName, "settings-templates", $data, "blank");
+    }
+
+    /**
+     * Print the "Security" config section
+     *
+     * Rendered as a separate admin settings form so that it can be delegated
+     * independently of the server and common settings.
+     */
+    public function indexSecurity(): TemplateResponse {
+        $data = array_merge(
+            $this->getConnectionStateData(),
+            $this->getSecurityData()
+        );
+        return new TemplateResponse($this->appName, "settings-security", $data, "blank");
     }
 
     /**
