@@ -1711,24 +1711,24 @@
             }
         },
         "node_modules/@nextcloud/vite-config": {
-            "version": "2.5.2",
-            "resolved": "https://registry.npmjs.org/@nextcloud/vite-config/-/vite-config-2.5.2.tgz",
-            "integrity": "sha512-RoYMsMNyryZ2LTyFWODuVLmVwII8J99KUCFdvnPVosXELZq8oxxWmwGdYPyCavKMZrZ6JRZ2tUvnJ8MCKk78Uw==",
+            "version": "2.5.4",
+            "resolved": "https://registry.npmjs.org/@nextcloud/vite-config/-/vite-config-2.5.4.tgz",
+            "integrity": "sha512-xRTRUsIyYmJEJq1zv+bbhPk81nZGlIsk+I9cVu5fhdK56IqHRPVyeMQY/EFOOf6R2yIqDhza6oG1WnJMV9+KsQ==",
             "dev": true,
             "license": "AGPL-3.0-or-later",
             "dependencies": {
-                "@rollup/plugin-replace": "^6.0.2",
-                "@vitejs/plugin-vue": "^6.0.1",
+                "@rollup/plugin-replace": "^6.0.3",
+                "@vitejs/plugin-vue": "^6.0.7",
                 "browserslist-to-esbuild": "^2.1.1",
-                "magic-string": "^0.30.19",
-                "rollup-plugin-corejs": "^1.0.1",
+                "magic-string": "^0.30.21",
+                "rollup-plugin-corejs": "^1.0.2",
                 "rollup-plugin-esbuild-minify": "^1.3.0",
-                "rollup-plugin-license": "^3.6.0",
-                "rollup-plugin-node-externals": "^8.1.1",
+                "rollup-plugin-license": "^3.7.1",
+                "rollup-plugin-node-externals": "^9.0.1",
                 "spdx-expression-parse": "^4.0.0",
-                "vite-plugin-css-injected-by-js": "^3.5.2",
+                "vite-plugin-css-injected-by-js": "^4.0.1",
                 "vite-plugin-dts": "^4.5.4",
-                "vite-plugin-node-polyfills": "^0.24.0"
+                "vite-plugin-node-polyfills": "^0.28.0"
             },
             "engines": {
                 "node": "^20 || ^22 || ^24"
@@ -1736,7 +1736,7 @@
             "peerDependencies": {
                 "browserslist": ">=4.0",
                 "sass": ">=1.60",
-                "vite": "^7.1.10"
+                "vite": "^7.3.6"
             }
         },
         "node_modules/@nextcloud/vue": {
@@ -1890,9 +1890,9 @@
             }
         },
         "node_modules/@rolldown/pluginutils": {
-            "version": "1.0.0-rc.2",
-            "resolved": "https://registry.npmjs.org/@rolldown/pluginutils/-/pluginutils-1.0.0-rc.2.tgz",
-            "integrity": "sha512-izyXV/v+cHiRfozX62W9htOAvwMo4/bXKDrQ+vom1L1qRuexPock/7VZDAhnpHCLNejd3NJ6hiab+tO0D44Rgw==",
+            "version": "1.0.1",
+            "resolved": "https://registry.npmjs.org/@rolldown/pluginutils/-/pluginutils-1.0.1.tgz",
+            "integrity": "sha512-2j9bGt5Jh8hj+vPtgzPtl72j0yRxHAyumoo6TNfAjsLB04UtpSvPbPcDcBMxz7n+9CYB0c1GxQFxYRg2jimqGw==",
             "dev": true,
             "license": "MIT"
         },
@@ -2824,19 +2824,19 @@
             "integrity": "sha512-zuVdFrMJiuCDQUMCzQaD6KL28MjnqqN8XnAqiEq9PNm/hCPTSGfrXCOfwj1ow4LFb/tNymJPwsNbVePc1xFqrQ=="
         },
         "node_modules/@vitejs/plugin-vue": {
-            "version": "6.0.4",
-            "resolved": "https://registry.npmjs.org/@vitejs/plugin-vue/-/plugin-vue-6.0.4.tgz",
-            "integrity": "sha512-uM5iXipgYIn13UUQCZNdWkYk+sysBeA97d5mHsAoAt1u/wpN3+zxOmsVJWosuzX+IMGRzeYUNytztrYznboIkQ==",
+            "version": "6.0.8",
+            "resolved": "https://registry.npmjs.org/@vitejs/plugin-vue/-/plugin-vue-6.0.8.tgz",
+            "integrity": "sha512-0ZjgOg7oO6farnNGup7yvoM/YXZV84OZxHAwtflItNa/6zzQyVb5LNxyea3FEKEX2XlagIKzrlH7wwxkKgtiew==",
             "dev": true,
             "license": "MIT",
             "dependencies": {
-                "@rolldown/pluginutils": "1.0.0-rc.2"
+                "@rolldown/pluginutils": "^1.0.1"
             },
             "engines": {
                 "node": "^20.19.0 || >=22.12.0"
             },
             "peerDependencies": {
-                "vite": "^5.0.0 || ^6.0.0 || ^7.0.0 || ^8.0.0-0",
+                "vite": "^5.0.0 || ^6.0.0 || ^7.0.0 || ^8.0.0",
                 "vue": "^3.2.25"
             }
         },
@@ -9969,9 +9969,9 @@
             }
         },
         "node_modules/rollup-plugin-license": {
-            "version": "3.7.0",
-            "resolved": "https://registry.npmjs.org/rollup-plugin-license/-/rollup-plugin-license-3.7.0.tgz",
-            "integrity": "sha512-RvvOIF+GH3fBR3wffgc/vmjQn6qOn72WjppWVDp/v+CLpT0BbcRBdSkPeeIOL6U5XccdYgSIMjUyXgxlKEEFcw==",
+            "version": "3.7.1",
+            "resolved": "https://registry.npmjs.org/rollup-plugin-license/-/rollup-plugin-license-3.7.1.tgz",
+            "integrity": "sha512-FcGXUbAmPvRSLxjVdjp/r/MUtKBlttVQd+ApUyvKfREnsoAfAZA6Ic2fE1Tz4RL0f9XqEQU9UIRNUMdtQtliDw==",
             "dev": true,
             "license": "MIT",
             "dependencies": {
@@ -10009,25 +10009,10 @@
                 }
             }
         },
-        "node_modules/rollup-plugin-license/node_modules/picomatch": {
-            "version": "4.0.5",
-            "resolved": "https://registry.npmjs.org/picomatch/-/picomatch-4.0.5.tgz",
-            "integrity": "sha512-RvwwcruNjI1ncT5xRakeyS9Lf8lcItv34KD+aif+VH9kduAyfYBipGh12274xtenIPZ119/R9BdTBa8gAwSh0A==",
-            "dev": true,
-            "license": "MIT",
-            "optional": true,
-            "peer": true,
-            "engines": {
-                "node": ">=12"
-            },
-            "funding": {
-                "url": "https://github.com/sponsors/jonschlinkert"
-            }
-        },
         "node_modules/rollup-plugin-node-externals": {
-            "version": "8.1.2",
-            "resolved": "https://registry.npmjs.org/rollup-plugin-node-externals/-/rollup-plugin-node-externals-8.1.2.tgz",
-            "integrity": "sha512-EuB6/lolkMLK16gvibUjikERq5fCRVIGwD2xue/CrM8D0pz5GXD2V6N8IrgxegwbcUoKkUFI8VYCEEv8MMvgpA==",
+            "version": "9.0.1",
+            "resolved": "https://registry.npmjs.org/rollup-plugin-node-externals/-/rollup-plugin-node-externals-9.0.1.tgz",
+            "integrity": "sha512-Yp91CX1ebDA8s4+BY7bOOdhF8VRR1XAKnSsHeVhYg4DW4MRXPsF4F2FnSsN9ghJgFhHl3L1uyK7A9NA/SF4Zgw==",
             "dev": true,
             "funding": [
                 {
@@ -10041,10 +10026,19 @@
             ],
             "license": "MIT",
             "engines": {
-                "node": ">= 21 || ^20.6.0 || ^18.19.0"
+                "node": ">= 24"
             },
             "peerDependencies": {
-                "rollup": "^4.0.0"
+                "rollup": "^4.0.0",
+                "vite": ">=5.0.0"
+            },
+            "peerDependenciesMeta": {
+                "rollup": {
+                    "optional": true
+                },
+                "vite": {
+                    "optional": true
+                }
             }
         },
         "node_modules/run-parallel": {
@@ -12048,13 +12042,13 @@
             }
         },
         "node_modules/vite": {
-            "version": "7.3.5",
-            "resolved": "https://registry.npmjs.org/vite/-/vite-7.3.5.tgz",
-            "integrity": "sha512-KuOaNhcnGFN2zIPGA7wRmzF+lJA1sea7rHq17aiJ++9lzY1WWG6Jpwqwe1KNbRVPIqHmr8GLYx7jbrQcN/7/ww==",
+            "version": "7.3.6",
+            "resolved": "https://registry.npmjs.org/vite/-/vite-7.3.6.tgz",
+            "integrity": "sha512-4XP60spRGjSZFf1qYH+dJIkK2znL3zQfl9KkOV9MkkRR/3Dls0dxaBsQPTloEc5BLXWPL9vsOxopxyKoMmDueg==",
             "dev": true,
             "license": "MIT",
             "dependencies": {
-                "esbuild": "^0.27.0",
+                "esbuild": "^0.27.0 || ^0.28.0",
                 "fdir": "^6.5.0",
                 "picomatch": "^4.0.3",
                 "postcss": "^8.5.6",
@@ -12123,9 +12117,9 @@
             }
         },
         "node_modules/vite-plugin-css-injected-by-js": {
-            "version": "3.5.2",
-            "resolved": "https://registry.npmjs.org/vite-plugin-css-injected-by-js/-/vite-plugin-css-injected-by-js-3.5.2.tgz",
-            "integrity": "sha512-2MpU/Y+SCZyWUB6ua3HbJCrgnF0KACAsmzOQt1UvRVJCGF6S8xdA3ZUhWcWdM9ivG4I5az8PnQmwwrkC2CAQrQ==",
+            "version": "4.0.1",
+            "resolved": "https://registry.npmjs.org/vite-plugin-css-injected-by-js/-/vite-plugin-css-injected-by-js-4.0.1.tgz",
+            "integrity": "sha512-WfyRojojQyAO/KzWf+efcXpTPv6zJPXaRmr9EYq5a4v5I3PWCR7kR01hiri2lW6+rHm3a57kpwsf+iahIJi1Qw==",
             "dev": true,
             "license": "MIT",
             "peerDependencies": {
@@ -12160,20 +12154,20 @@
             }
         },
         "node_modules/vite-plugin-node-polyfills": {
-            "version": "0.24.0",
-            "resolved": "https://registry.npmjs.org/vite-plugin-node-polyfills/-/vite-plugin-node-polyfills-0.24.0.tgz",
-            "integrity": "sha512-GA9QKLH+vIM8NPaGA+o2t8PDfFUl32J8rUp1zQfMKVJQiNkOX4unE51tR6ppl6iKw5yOrDAdSH7r/UIFLCVhLw==",
+            "version": "0.28.0",
+            "resolved": "https://registry.npmjs.org/vite-plugin-node-polyfills/-/vite-plugin-node-polyfills-0.28.0.tgz",
+            "integrity": "sha512-NXct/ci2ef4fRyCfTb8fk2HmR80Rv7icLd+cRH41TnUugDzdKMFKqFPpZYCFUInZMMem9bkLv5pkq02+7Xu7+w==",
             "dev": true,
             "license": "MIT",
             "dependencies": {
                 "@rollup/plugin-inject": "^5.0.5",
-                "node-stdlib-browser": "^1.2.0"
+                "node-stdlib-browser": "^1.3.1"
             },
             "funding": {
                 "url": "https://github.com/sponsors/davidmyersdev"
             },
             "peerDependencies": {
-                "vite": "^2.0.0 || ^3.0.0 || ^4.0.0 || ^5.0.0 || ^6.0.0 || ^7.0.0"
+                "vite": "^2.0.0 || ^3.0.0 || ^4.0.0 || ^5.0.0 || ^6.0.0 || ^7.0.0 || ^8.0.0"
             }
         },
         "node_modules/vite/node_modules/@esbuild/aix-ppc64": {
