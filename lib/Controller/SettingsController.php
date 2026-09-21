@@ -58,15 +58,49 @@ class SettingsController extends Controller {
      * Print config section
      */
     public function index(): TemplateResponse {
-        $data = [
+        $data = array_merge(
+            $this->getConnectionStateData(),
+            $this->getAddressData(),
+            $this->getCommonData(),
+            $this->getTemplatesData(),
+            $this->getSecurityData()
+        );
+        return new TemplateResponse($this->appName, "settings", $data, "blank");
+    }
+
+    /**
+     * Document server connection state shared by every settings form.
+     *
+     * Each form uses these to decide whether it renders visible or hidden,
+     * so they have to be present in every template fragment.
+     */
+    private function getConnectionStateData(): array {
+        return [
             "documentserver" => $this->appConfig->getDocumentServerUrl(true),
+            "demo" => $this->appConfig->getDemoData(),
+            "successful" => $this->appConfig->settingsAreSuccessful()
+        ];
+    }
+
+    /**
+     * Data of the "Server settings" form
+     */
+    private function getAddressData(): array {
+        return [
             "documentserverInternal" => $this->appConfig->getDocumentServerInternalUrl(true),
             "storageUrl" => $this->appConfig->getStorageUrl(),
             "verifyPeerOff" => $this->appConfig->getVerifyPeerOff(),
             "secret" => $this->appConfig->getDocumentServerSecret(true),
             "jwtHeader" => $this->appConfig->jwtHeader(true),
-            "demo" => $this->appConfig->getDemoData(),
-            "currentServer" => $this->urlGenerator->getAbsoluteURL("/"),
+            "currentServer" => $this->urlGenerator->getAbsoluteURL("/")
+        ];
+    }
+
+    /**
+     * Data of the "Common settings" form, including editor customization and custom fonts
+     */
+    private function getCommonData(): array {
+        return [
             "formats" => $this->appConfig->formatsSetting(),
             "sameTab" => $this->appConfig->getSameTab(),
             "enableSharing" => $this->appConfig->getEnableSharing(),
@@ -75,7 +109,6 @@ class SettingsController extends Controller {
             "cronChecker" => $this->appConfig->getCronChecker(),
             "emailNotifications" => $this->appConfig->getEmailNotifications(),
             "versionHistory" => $this->appConfig->getVersionHistory(),
-            "protection" => $this->appConfig->getProtection(),
             "limitGroups" => $this->appConfig->getLimitGroups(),
             "chat" => $this->appConfig->getCustomizationChat(),
             "compactHeader" => $this->appConfig->getCustomizationCompactHeader(),
@@ -83,18 +116,33 @@ class SettingsController extends Controller {
             "forcesave" => $this->appConfig->getCustomizationForcesave(),
             "liveViewOnShare" => $this->appConfig->getLiveViewOnShare(),
             "help" => $this->appConfig->getCustomizationHelp(),
-            "successful" => $this->appConfig->settingsAreSuccessful(),
+            "reviewDisplay" => $this->appConfig->getCustomizationReviewDisplay(),
+            "theme" => $this->appConfig->getCustomizationTheme(true),
+            "unknownAuthor" => $this->appConfig->getUnknownAuthor()
+        ];
+    }
+
+    /**
+     * Data of the "Common templates" form
+     */
+    private function getTemplatesData(): array {
+        return [
+            "templates" => $this->getGlobalTemplates()
+        ];
+    }
+
+    /**
+     * Data of the "Security" form
+     */
+    private function getSecurityData(): array {
+        return [
+            "protection" => $this->appConfig->getProtection(),
             "settingsError" => $this->appConfig->getSettingsError(),
             "watermark" => $this->appConfig->getWatermarkSettings(),
             "plugins" => $this->appConfig->getCustomizationPlugins(),
             "macros" => $this->appConfig->getCustomizationMacros(),
-            "tagsEnabled" => \OCP\Server::get(\OCP\App\IAppManager::class)->isEnabledForUser("systemtags"),
-            "reviewDisplay" => $this->appConfig->getCustomizationReviewDisplay(),
-            "theme" => $this->appConfig->getCustomizationTheme(true),
-            "templates" => $this->getGlobalTemplates(),
-            "unknownAuthor" => $this->appConfig->getUnknownAuthor()
+            "tagsEnabled" => \OCP\Server::get(\OCP\App\IAppManager::class)->isEnabledForUser("systemtags")
         ];
-        return new TemplateResponse($this->appName, "settings", $data, "blank");
     }
 
     /**
