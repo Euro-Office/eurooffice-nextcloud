@@ -41,6 +41,7 @@ Whether you’re working with internal teams or external collaborators, the Next
     <settings>
         <admin>OCA\Eurooffice\AdminSettings</admin>
         <admin>OCA\Eurooffice\AdminSettingsTemplates</admin>
+        <admin>OCA\Eurooffice\AdminSettingsSecurity</admin>
         <admin-section>OCA\Eurooffice\AdminSection</admin-section>
     </settings>
     <commands>
