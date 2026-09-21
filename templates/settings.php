@@ -24,9 +24,7 @@
  */
 
     style("eurooffice", "settings");
-    style("eurooffice", "template");
     \OCP\Util::addScript("eurooffice", "eurooffice-settings", 'core');
-    \OCP\Util::addScript("eurooffice", "eurooffice-template", 'core');
 ?>
 <div class="section section-eurooffice section-eurooffice-addr">
 
@@ -296,26 +294,6 @@
     <h2><?php p($l->t("Custom fonts")) ?></h2>
     <p class="settings-hint"><?php p($l->t("Upload custom fonts (TTF, OTF, TTC, WOFF, WOFF2) to make them available in the document editor. Click Regenerate after uploading or deleting fonts to apply changes.")) ?></p>
     <div id="eurooffice-font-manager"></div>
-</div>
-
-<div class="section section-eurooffice section-eurooffice-templates <?php if (empty($_["documentserver"]) && !$_["demo"]["enabled"] || !$_["successful"]) { ?>eurooffice-hide<?php } ?>">
-
-    <h2>
-        <?php p($l->t("Common templates")) ?>
-        <input id="euroofficeAddTemplate" type="file" class="hidden-visually" />
-        <label for="euroofficeAddTemplate" class="icon-add" title="<?php p($l->t("Add a new template")) ?>"></label>
-    </h2>
-    <ul class="eurooffice-template-container">
-        <?php foreach ($_["templates"] as $template) { ?>
-            <li data-id=<?php p($template["id"]) ?> class="eurooffice-template-item" >
-                <img src="<?php p($template["icon"]) ?>" />
-                <p><?php p($template["name"]) ?></p>
-                <span class="eurooffice-template-download"></span>
-                <span class="eurooffice-template-delete icon-delete"></span>
-            </li>
-        <?php } ?>
-    </ul>
-
 </div>
 
 <div class="section section-eurooffice section-eurooffice-watermark <?php if (empty($_["documentserver"]) && !$_["demo"]["enabled"] || !$_["successful"]) { ?>eurooffice-hide<?php } ?>">

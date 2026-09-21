@@ -62,10 +62,23 @@ class SettingsController extends Controller {
             $this->getConnectionStateData(),
             $this->getAddressData(),
             $this->getCommonData(),
-            $this->getTemplatesData(),
             $this->getSecurityData()
         );
         return new TemplateResponse($this->appName, "settings", $data, "blank");
+    }
+
+    /**
+     * Print the "Common templates" config section
+     *
+     * Rendered as a separate admin settings form so that it can be delegated
+     * independently of the server and common settings.
+     */
+    public function indexTemplates(): TemplateResponse {
+        $data = array_merge(
+            $this->getConnectionStateData(),
+            $this->getTemplatesData()
+        );
+        return new TemplateResponse($this->appName, "settings-templates", $data, "blank");
     }
 
     /**
