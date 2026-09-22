@@ -11,7 +11,19 @@
             "OCA\\Eurooffice\\": "./lib/"
         }
     },
+    "autoload-dev": {
+        "psr-4": {
+            "OCA\\Eurooffice\\Tests\\": "./tests/"
+        }
+    },
+    "scripts": {
+        "test:unit": "phpunit --configuration phpunit.xml"
+    },
     "require": {
         "firebase/php-jwt": "^7.0"
+    },
+    "require-dev": {
+        "nextcloud/ocp": "dev-stable33",
+        "phpunit/phpunit": "^10"
     }
 }
