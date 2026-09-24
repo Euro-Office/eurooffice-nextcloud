@@ -475,6 +475,8 @@ class CallbackController extends Controller {
                     return new JSONResponse(["message" => "Url not found"], Http::STATUS_BAD_REQUEST);
                 }
 
+                // Whether this request holds the key lock, so the catch below can release it.
+                $keyLocked = false;
                 try {
                     $url = $this->appConfig->replaceDocumentServerUrlToInternal($url);
 
@@ -515,8 +517,10 @@ class CallbackController extends Controller {
                             }
                             break;
                         }
+                        $keyLocked = $isForcesave;
                     } else {
                         $this->keyManager->lock($fileId, $isForcesave);
+                        $keyLocked = $isForcesave;
                     }
 
                     if ($isCorrupted) {
@@ -555,6 +559,7 @@ class CallbackController extends Controller {
                         $this->keyManager->lock($fileId, false);
                         $this->keyManager->setForcesave($fileId, $isForcesave && !$isCorrupted);
                     }
+                    $keyLocked = false;
 
                     if (!$isCorrupted
                         && !$isForcesave
@@ -592,16 +597,19 @@ class CallbackController extends Controller {
                     if ($isCorrupted) {
                         $result = self::CALLBACK_ERROR_UNKNOWN;
                         $this->notifyUnsaved($userId, $fileId, $file->getName());
+                    }
 
-                        if (!RemoteInstance::isRemoteFile($file)) {
-                            // Best-effort: the lock acquired above (line ~519) may not have been
-                            // released yet when the throw happened - don't leave the key-lock row
-                            // stuck at lock=1, which KeyManager::delete() otherwise never cleans up.
-                            try {
+                    if ($keyLocked) {
+                        // Best-effort: a stuck lock=1 stops KeyManager::delete() from rotating the
+                        // key on later writes until the next successful save clears it.
+                        try {
+                            if (RemoteInstance::isRemoteFile($file)) {
+                                RemoteInstance::lockRemoteKey($file, false, false);
+                            } else {
                                 $this->keyManager->lock($fileId, false);
-                            } catch (\Exception $lockException) {
-                                $this->logger->error("Track: $fileId failed to release key lock after error", ["exception" => $lockException]);
                             }
+                        } catch (\Exception $lockException) {
+                            $this->logger->error("Track: $fileId failed to release key lock after error", ["exception" => $lockException]);
                         }
                     }
                 }
