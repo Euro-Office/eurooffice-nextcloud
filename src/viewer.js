@@ -27,17 +27,17 @@
  * @param {object} OCA Nextcloud OCA object
  */
 (function(OCA) {
-	if (OCA.Eurooffice) {
-		return
+	if (!OCA.Eurooffice) {
+		OCA.Eurooffice = {
+			AppName: 'eurooffice',
+			frameSelector: null,
+			setting: {},
+		}
 	}
 
-	OCA.Eurooffice = {
-		AppName: 'eurooffice',
-		frameSelector: null,
-		setting: {},
+	if (!OCA.Eurooffice.setting || !OCA.Eurooffice.setting.formats) {
+		OCA.Eurooffice.setting = OCP.InitialState.loadState(OCA.Eurooffice.AppName, 'settings')
 	}
-
-	OCA.Eurooffice.setting = OCP.InitialState.loadState(OCA.Eurooffice.AppName, 'settings')
 
 	const EuroofficeViewerVue = {
 		name: 'EuroofficeViewerVue',
@@ -56,6 +56,9 @@
 					},
 				},
 			})
+		},
+		mounted() {
+			OCA.Eurooffice.frameSelector = '#euroofficeViewerFrame'
 		},
 		props: {
 			filename: {
@@ -79,7 +82,6 @@
 	}
 
 	if (OCA.Viewer) {
-		OCA.Eurooffice.frameSelector = '#euroofficeViewerFrame'
 
 		const mimes = Object.values(OCA.Eurooffice.setting.formats)
 			.filter(format => format.def)
