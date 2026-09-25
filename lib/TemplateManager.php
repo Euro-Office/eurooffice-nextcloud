@@ -39,6 +39,16 @@ use OCP\Server;
  * @package OCA\Eurooffice
  */
 class TemplateManager {
+    /**
+     * Directory holding the bundled empty-document templates, relative to the
+     * app root.
+     *
+     * The document-templates repository keeps the per-locale templates under
+     * new/, next to sample/. DocumentServer resolves the same layout through
+     * its newFileTemplate setting ("../../document-templates/new"); the app has
+     * no equivalent setting, so the segment is named here.
+     */
+    private const EMPTY_TEMPLATE_DIR = "assets" . DIRECTORY_SEPARATOR . "document-templates" . DIRECTORY_SEPARATOR . "new";
 
     /**
      * Application name
@@ -185,7 +195,7 @@ class TemplateManager {
             $lang = "default";
         }
 
-        return dirname(__DIR__) . DIRECTORY_SEPARATOR . "assets" . DIRECTORY_SEPARATOR . "document-templates" . DIRECTORY_SEPARATOR . self::$localPath[$lang] . DIRECTORY_SEPARATOR . "new" . $ext;
+        return dirname(__DIR__) . DIRECTORY_SEPARATOR . self::EMPTY_TEMPLATE_DIR . DIRECTORY_SEPARATOR . self::$localPath[$lang] . DIRECTORY_SEPARATOR . "new" . $ext;
     }
 
     /**

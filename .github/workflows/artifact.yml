@@ -34,6 +34,7 @@ jobs:
           rm -rf ./.github/
           rm -rf ./.git/
           rm -rf ./assets/document-templates/.git
+          rm -rf ./assets/document-templates/sample/
           rm -rf ./assets/document-formats/.git
           rm -rf ./node_modules/
           rm -rf ./src/
