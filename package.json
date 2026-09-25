@@ -39,7 +39,7 @@
     },
     "devDependencies": {
         "@nextcloud/browserslist-config": "^3.1.2",
-        "@nextcloud/eslint-config": "^8.4.1",
+        "@nextcloud/eslint-config": "^9.0.0",
         "@nextcloud/stylelint-config": "^3.2.2",
         "@nextcloud/vite-config": "^2.5.2",
         "stylelint": "^17.9.1",
