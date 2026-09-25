@@ -1,0 +1,93 @@
+# SPDX-FileCopyrightText: 2026 Nextcloud GmbH or a Nextcloud affiliate company and Euro-Office contributors
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+name: PHPUnit
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main, develop]
+    paths:
+      - 'lib/**'
+      - 'tests/**'
+      - 'assets/**'
+      - '.gitmodules'
+      - 'appinfo/info.xml'
+      - 'composer.json'
+      - 'phpunit.xml'
+      - '.github/workflows/phpunit.yml'
+  pull_request:
+    paths:
+      - 'lib/**'
+      - 'tests/**'
+      - 'assets/**'
+      - '.gitmodules'
+      - 'appinfo/info.xml'
+      - 'composer.json'
+      - 'phpunit.xml'
+      - '.github/workflows/phpunit.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  # info.xml declares min-version 33 / max-version 35. Deriving the server
+  # branches from it keeps the suite on versions the app claims to support,
+  # instead of whatever master happens to be.
+  matrix:
+    runs-on: ubuntu-latest
+    name: Supported server versions
+    outputs:
+      branches: ${{ steps.versions.outputs.branches }}
+    steps:
+      - name: Checkout app
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Read the supported versions from info.xml
+        id: versions
+        uses: icewind1991/nextcloud-version-matrix@cd0211ffcef1065e2020cd579e4843b8746e7a58 # v1.3.3
+
+  phpunit:
+    runs-on: ubuntu-latest
+    needs: matrix
+    name: Unit tests (server ${{ matrix.server-branch }})
+
+    strategy:
+      fail-fast: false
+      matrix:
+        server-branch: ${{ fromJson(needs.matrix.outputs.branches) }}
+
+    steps:
+      - name: Set up Nextcloud ${{ matrix.server-branch }}
+        uses: nextcloud/setup-server-action@34b73d5b0e3633f83a52227d00cc2a6c41d01d9a # v0.5.0
+        with:
+          nextcloud-version: ${{ matrix.server-branch }}
+          install: true
+          database: sqlite
+          node-version: false
+
+      # submodules: true is load-bearing. The suite asserts that the bundled
+      # templates resolve on disk, so without the document-templates checkout
+      # every path assertion fails.
+      - name: Check out the app
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+          submodules: true
+          path: nextcloud/apps/eurooffice
+
+      - name: Install PHPUnit
+        working-directory: nextcloud/vendor-bin/phpunit
+        run: composer install --no-interaction --no-progress
+
+      # No --force: the server branch comes from info.xml, so the app's declared
+      # range covers it. If this step fails, the range and the matrix disagree.
+      - name: Enable the app
+        working-directory: nextcloud
+        run: php occ app:enable eurooffice
+
+      - name: Run the unit tests
+        working-directory: nextcloud/apps/eurooffice
+        run: composer test

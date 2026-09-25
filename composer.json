@@ -11,6 +11,9 @@
             "OCA\\Eurooffice\\": "./lib/"
         }
     },
+    "scripts": {
+        "test": "../../vendor-bin/phpunit/vendor/bin/phpunit -c phpunit.xml"
+    },
     "require": {
         "firebase/php-jwt": "^7.0"
     }
