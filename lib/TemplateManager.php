@@ -32,6 +32,7 @@ use OCP\Files\NotFoundException;
 use OCP\IConfig;
 use OCP\L10N\IFactory;
 use OCP\Server;
+use Psr\Log\LoggerInterface;
 
 /**
  * Template manager
@@ -39,6 +40,16 @@ use OCP\Server;
  * @package OCA\Eurooffice
  */
 class TemplateManager {
+    /**
+     * Directory holding the bundled empty-document templates, relative to the
+     * app root.
+     *
+     * The document-templates repository keeps the per-locale templates under
+     * new/, next to sample/. DocumentServer resolves the same layout through
+     * its newFileTemplate setting ("../../document-templates/new"); the app has
+     * no equivalent setting, so the segment is named here.
+     */
+    private const EMPTY_TEMPLATE_DIR = "assets" . DIRECTORY_SEPARATOR . "document-templates" . DIRECTORY_SEPARATOR . "new";
 
     /**
      * Application name
@@ -169,6 +180,13 @@ class TemplateManager {
 
         $templatePath = self::getEmptyTemplatePath($lang, $ext);
         if (!file_exists($templatePath)) {
+            // Callers differ in how loudly they fail: CreateFromTemplateListener
+            // writes a 0-byte file and says nothing at all. Log it here so a
+            // broken document-templates checkout is diagnosable in production.
+            Server::get(LoggerInterface::class)->error(
+                "Empty template not found: " . $templatePath,
+                ["app" => self::$appName]
+            );
             return false;
         }
         return file_get_contents($templatePath);
@@ -185,7 +203,7 @@ class TemplateManager {
             $lang = "default";
         }
 
-        return dirname(__DIR__) . DIRECTORY_SEPARATOR . "assets" . DIRECTORY_SEPARATOR . "document-templates" . DIRECTORY_SEPARATOR . self::$localPath[$lang] . DIRECTORY_SEPARATOR . "new" . $ext;
+        return dirname(__DIR__) . DIRECTORY_SEPARATOR . self::EMPTY_TEMPLATE_DIR . DIRECTORY_SEPARATOR . self::$localPath[$lang] . DIRECTORY_SEPARATOR . "new" . $ext;
     }
 
     /**

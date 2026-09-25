@@ -34,9 +34,12 @@ jobs:
           rm -rf ./.github/
           rm -rf ./.git/
           rm -rf ./assets/document-templates/.git
+          rm -rf ./assets/document-templates/sample/
           rm -rf ./assets/document-formats/.git
           rm -rf ./node_modules/
           rm -rf ./src/
+          rm -rf ./tests/
+          rm ./phpunit.xml
           rm ./.eslintrc.js
           rm ./.gitignore
           rm ./.gitmodules
@@ -50,8 +53,64 @@ jobs:
           rm ./vite.config.mjs
           cd $cwd
           tar -czvf eurooffice.tar.gz eurooffice
+      - name: Verify what the artifact contains
+        run: |
+          set -eu
+          if tar tzf eurooffice.tar.gz | grep -q 'document-templates/sample/'; then
+            echo "::error::document-templates/sample/ leaked into the artifact"
+            exit 1
+          fi
+          if tar tzf eurooffice.tar.gz | grep -qE '/(tests/|phpunit\.xml)'; then
+            echo "::error::tests/ or phpunit.xml leaked into the artifact"
+            exit 1
+          fi
+          locales=$(tar tzf eurooffice.tar.gz | grep -c 'document-templates/new/.*/new\.docx' || true)
+          echo "bundled locales: $locales"
+          if [ "$locales" -lt 40 ]; then
+            echo "::error::empty-document templates are missing from the artifact ($locales locales)"
+            exit 1
+          fi
+
       - name: Upload Artifact
         uses: actions/upload-artifact@v7
         with:
           name: eurooffice
           path: eurooffice.tar.gz
+
+  # The artifact job prunes with an explicit rm list; the appstore tarball is
+  # filtered by .nextcloudignore via krankerl instead. Those are two different
+  # mechanisms, and appstore-build-publish.yml only runs on release, so without
+  # this job the production filter is never exercised before a tag.
+  package-filter:
+    runs-on: ubuntu-latest
+    name: Packaging filter
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 24
+      - name: Install krankerl
+        run: |
+          wget -q https://github.com/ChristophWurst/krankerl/releases/download/v0.14.0/krankerl_0.14.0_amd64.deb
+          sudo dpkg -i krankerl_0.14.0_amd64.deb
+      - name: Package with krankerl
+        run: krankerl package
+      - name: Verify what the appstore tarball contains
+        run: |
+          set -eu
+          tarball=build/artifacts/eurooffice.tar.gz
+          if tar tzf "$tarball" | grep -q 'document-templates/sample/'; then
+            echo "::error::document-templates/sample/ leaked into the appstore tarball; check .nextcloudignore"
+            exit 1
+          fi
+          if tar tzf "$tarball" | grep -qE '/(tests/|phpunit\.xml)'; then
+            echo "::error::tests/ or phpunit.xml leaked into the appstore tarball; check .nextcloudignore"
+            exit 1
+          fi
+          locales=$(tar tzf "$tarball" | grep -c 'document-templates/new/.*/new\.docx' || true)
+          echo "bundled locales: $locales"
+          if [ "$locales" -lt 40 ]; then
+            echo "::error::.nextcloudignore is excluding the templates themselves ($locales locales)"
+            exit 1
+          fi
