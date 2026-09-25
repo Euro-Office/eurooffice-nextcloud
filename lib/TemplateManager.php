@@ -32,6 +32,7 @@ use OCP\Files\NotFoundException;
 use OCP\IConfig;
 use OCP\L10N\IFactory;
 use OCP\Server;
+use Psr\Log\LoggerInterface;
 
 /**
  * Template manager
@@ -179,6 +180,13 @@ class TemplateManager {
 
         $templatePath = self::getEmptyTemplatePath($lang, $ext);
         if (!file_exists($templatePath)) {
+            // Callers differ in how loudly they fail: CreateFromTemplateListener
+            // writes a 0-byte file and says nothing at all. Log it here so a
+            // broken document-templates checkout is diagnosable in production.
+            Server::get(LoggerInterface::class)->error(
+                "Empty template not found: " . $templatePath,
+                ["app" => self::$appName]
+            );
             return false;
         }
         return file_get_contents($templatePath);
