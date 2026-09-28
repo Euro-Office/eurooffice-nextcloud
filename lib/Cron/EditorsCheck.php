@@ -35,13 +35,18 @@ use OCP\IGroup;
 use OCP\IGroupManager;
 use OCP\IL10N;
 use OCP\IURLGenerator;
+use OCP\Notification\IManager as INotificationManager;
 use Psr\Log\LoggerInterface;
 
-/**
- * Editors availability check background job
- *
- */
 class EditorsCheck extends TimedJob {
+
+    /**
+     * Stable object id used to correlate the failure notification with its
+     * later dismissal. Must not be a translated string, otherwise the id can
+     * drift between ticks (cron resolves the server default language) and
+     * markProcessed() would match nothing.
+     */
+    private const OBJECT_ID_UNAVAILABLE = "server_unavailable";
 
     public function __construct(
         ITimeFactory $time,
@@ -52,7 +57,8 @@ class EditorsCheck extends TimedJob {
         private readonly IGroupManager $groupManager,
         private readonly EmailManager $emailManager,
         private readonly LoggerInterface $logger,
-        private readonly DocumentService $documentService
+        private readonly DocumentService $documentService,
+        private readonly INotificationManager $notificationManager,
     ) {
         parent::__construct($time);
         $this->setInterval($this->appConfig->getEditorsCheckInterval());
@@ -67,10 +73,6 @@ class EditorsCheck extends TimedJob {
     protected function run($argument): void {
         if (empty($this->appConfig->getDocumentServerUrl())) {
             $this->logger->debug("Settings are empty");
-            return;
-        }
-        if (!$this->appConfig->settingsAreSuccessful()) {
-            $this->logger->debug("Settings are not correct");
             return;
         }
         $fileUrl = $this->urlGenerator->linkToRouteAbsolute($this->appName . ".callback.emptyfile");
@@ -89,10 +91,17 @@ class EditorsCheck extends TimedJob {
 
         if (!empty($error)) {
             $this->logger->info("Nextcloud Office server is not available");
+            $isNewFailure = $this->appConfig->settingsAreSuccessful();
             $this->appConfig->setSettingsError($error);
-            $this->notifyAdmins();
+            if ($isNewFailure) {
+                $this->notifyAdmins();
+            }
         } else {
             $this->logger->debug("Nextcloud Office server availability check is finished successfully");
+            if (!$this->appConfig->settingsAreSuccessful()) {
+                $this->appConfig->setSettingsError("");
+                $this->dismissAdminNotifications();
+            }
         }
     }
 
@@ -119,20 +128,33 @@ class EditorsCheck extends TimedJob {
     }
 
     /**
+     * Dismiss notifications for admins when the server becomes available again
+     */
+    private function dismissAdminNotifications(): void {
+        $notification = $this->notificationManager->createNotification();
+        $notification->setApp($this->appName)
+            ->setObject("editorsCheck", self::OBJECT_ID_UNAVAILABLE);
+        foreach ($this->getUsersToNotify() as $uid) {
+            $notification->setUser($uid);
+            $this->notificationManager->markProcessed($notification);
+        }
+    }
+
+    /**
      * Send notification to admins
      */
     private function notifyAdmins(): void {
-        $notificationManager = \OCP\Server::get(\OCP\Notification\IManager::class);
-        $notification = $notificationManager->createNotification();
+        $serverUrl = $this->appConfig->getDocumentServerUrl();
+        $notification = $this->notificationManager->createNotification();
         $notification->setApp($this->appName)
             ->setDateTime(new \DateTime())
-            ->setObject("editorsCheck", $this->trans->t("Nextcloud Office server is not available"))
-            ->setSubject("editorscheck_info");
+            ->setObject("editorsCheck", self::OBJECT_ID_UNAVAILABLE)
+            ->setSubject("editorscheck_info", ["serverUrl" => $serverUrl]);
         foreach ($this->getUsersToNotify() as $uid) {
             $notification->setUser($uid);
-            $notificationManager->notify($notification);
+            $this->notificationManager->notify($notification);
             if ($this->appConfig->getEmailNotifications()) {
-                $this->emailManager->notifyEditorsCheckEmail($uid);
+                $this->emailManager->notifyEditorsCheckEmail($uid, $serverUrl);
             }
         }
     }
