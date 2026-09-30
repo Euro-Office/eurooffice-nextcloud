@@ -59,6 +59,18 @@
 		},
 		mounted() {
 			OCA.Eurooffice.frameSelector = '#euroofficeViewerFrame'
+			// Enables the share and versions sidebar integration from main.js when loaded in Files
+			if (!OCA.Eurooffice.OpenShareDialog) {
+				return
+			}
+			const separator = this.filename.lastIndexOf('/')
+			OCA.Eurooffice.context = {
+				dir: this.filename.slice(0, separator) || '/',
+				fileName: this.filename.slice(separator + 1),
+			}
+		},
+		beforeDestroy() {
+			OCA.Eurooffice.context = null
 		},
 		props: {
 			filename: {
