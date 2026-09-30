@@ -4,62 +4,69 @@
 -->
 <template>
 	<div class="font-manager">
-		<!-- Upload area -->
-		<div class="font-manager__upload">
-			<label class="font-manager__upload-label button" :class="{ disabled: uploading }">
-				<span class="icon-upload" aria-hidden="true" />
-				{{ uploading ? t('eurooffice', 'Uploading…') : t('eurooffice', 'Add font') }}
-				<input
-					ref="fileInput"
-					type="file"
-					accept=".ttf,.otf,.ttc,.woff,.woff2"
-					class="hidden-visually"
-					:disabled="uploading"
-					@change="onFileSelected" />
-			</label>
-
-			<NcButton
-				:disabled="regenerating"
-				:aria-label="t('eurooffice', 'Regenerate font cache')"
-				@click="triggerRegenerate">
-				<template #icon>
-					<span class="icon-history" aria-hidden="true" />
-				</template>
-				{{ regenerating ? t('eurooffice', 'Regenerating…') : t('eurooffice', 'Regenerate') }}
-			</NcButton>
-		</div>
-
-		<!-- Status bar -->
-		<NcNoteCard v-if="statusMessage" :type="statusType" class="font-manager__status">
-			{{ statusMessage }}
+		<!-- AdminPanel unavailable -->
+		<NcNoteCard v-if="!available" type="warning" class="font-manager__status">
+			{{ t('eurooffice', 'Custom font management requires the AdminPanel service to be enabled on the document server.') }}
 		</NcNoteCard>
 
-		<!-- Font list -->
-		<div v-if="loading" class="font-manager__loading">
-			<NcLoadingIcon :size="24" />
-			<span>{{ t('eurooffice', 'Loading fonts…') }}</span>
-		</div>
+		<template v-if="available">
+			<!-- Upload area -->
+			<div class="font-manager__upload">
+				<label class="font-manager__upload-label button" :class="{ disabled: uploading }">
+					<span class="icon-upload" aria-hidden="true" />
+					{{ uploading ? t('eurooffice', 'Uploading…') : t('eurooffice', 'Add font') }}
+					<input
+						ref="fileInput"
+						type="file"
+						accept=".ttf,.otf,.ttc,.woff,.woff2"
+						class="hidden-visually"
+						:disabled="uploading"
+						@change="onFileSelected" />
+				</label>
 
-		<div v-else-if="fonts.length === 0" class="font-manager__empty">
-			{{ t('eurooffice', 'No custom fonts installed. Upload TTF, OTF, TTC, WOFF or WOFF2 files to add them.') }}
-		</div>
-
-		<ul v-else class="font-manager__list">
-			<li v-for="font in fonts" :key="font.name" class="font-manager__item">
-				<span class="font-manager__item-icon icon-font" aria-hidden="true" />
-				<span class="font-manager__item-name" :title="font.name">{{ font.name }}</span>
-				<span class="font-manager__item-size">{{ formatSize(font.size) }}</span>
 				<NcButton
-					type="tertiary-destructive"
-					:aria-label="t('eurooffice', 'Delete {name}', { name: font.name })"
-					:disabled="deletingName === font.name"
-					@click="deleteFont(font.name)">
+					:disabled="regenerating"
+					:aria-label="t('eurooffice', 'Regenerate font cache')"
+					@click="triggerRegenerate">
 					<template #icon>
-						<span :class="deletingName === font.name ? 'icon-loading-small' : 'icon-delete'" aria-hidden="true" />
+						<span class="icon-history" aria-hidden="true" />
 					</template>
+					{{ regenerating ? t('eurooffice', 'Regenerating…') : t('eurooffice', 'Regenerate') }}
 				</NcButton>
-			</li>
-		</ul>
+			</div>
+
+			<!-- Status bar -->
+			<NcNoteCard v-if="statusMessage" :type="statusType" class="font-manager__status">
+				{{ statusMessage }}
+			</NcNoteCard>
+
+			<!-- Font list -->
+			<div v-if="loading" class="font-manager__loading">
+				<NcLoadingIcon :size="24" />
+				<span>{{ t('eurooffice', 'Loading fonts…') }}</span>
+			</div>
+
+			<div v-else-if="fonts.length === 0" class="font-manager__empty">
+				{{ t('eurooffice', 'No custom fonts installed. Upload TTF, OTF, TTC, WOFF or WOFF2 files to add them.') }}
+			</div>
+
+			<ul v-else class="font-manager__list">
+				<li v-for="font in fonts" :key="font.name" class="font-manager__item">
+					<span class="font-manager__item-icon icon-font" aria-hidden="true" />
+					<span class="font-manager__item-name" :title="font.name">{{ font.name }}</span>
+					<span class="font-manager__item-size">{{ formatSize(font.size) }}</span>
+					<NcButton
+						type="tertiary-destructive"
+						:aria-label="t('eurooffice', 'Delete {name}', { name: font.name })"
+						:disabled="deletingName === font.name"
+						@click="deleteFont(font.name)">
+						<template #icon>
+							<span :class="deletingName === font.name ? 'icon-loading-small' : 'icon-delete'" aria-hidden="true" />
+						</template>
+					</NcButton>
+				</li>
+			</ul>
+		</template>
 	</div>
 </template>
 
@@ -83,6 +90,7 @@ export default {
 		return {
 			fonts: [],
 			loading: true,
+			available: true,
 			uploading: false,
 			regenerating: false,
 			deletingName: null,
@@ -111,7 +119,12 @@ export default {
 		async loadFonts() {
 			try {
 				const res = await axios.get(generateUrl('/apps/eurooffice/ajax/fonts'))
-				this.fonts = res.data.fonts || []
+				if (res.data.available === false) {
+					this.available = false
+				} else {
+					this.available = true
+					this.fonts = res.data.fonts || []
+				}
 			} catch (e) {
 				const msg = e.response?.data?.error || e.message
 				this.showStatus(t('eurooffice', 'Failed to load fonts: {error}', { error: msg }), 'error')

@@ -369,7 +369,7 @@ class EditorController extends Controller {
      * @param string $searchString - string for searching
      */
     private function filterUser(IUser $user, string $currentUserId, string $operationType, string $searchString): bool {
-        return $user->getUID() != $currentUserId
+        return $user->getUID() !== $currentUserId
             && (!empty($user->getEMailAddress()) || $operationType === "protect")
             && $this->searchInUser($user, $searchString);
     }
@@ -1367,7 +1367,9 @@ class EditorController extends Controller {
         } else {
             $csp->addAllowedFrameDomain("'self'");
         }
-        $csp->addAllowedFrameDomain("data:");
+        // blob: URLs are needed for the "Save as picture" feature — the editor
+        // downloads chart images via URL.createObjectURL() to avoid data: URIs.
+        $csp->addAllowedFrameDomain("blob:");
         $response->setContentSecurityPolicy($csp);
 
         return $response;

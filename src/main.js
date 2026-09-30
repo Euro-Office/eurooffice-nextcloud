@@ -217,21 +217,15 @@ import { loadState } from '@nextcloud/initial-state'
 			iframe.src = url + '&inframe=true&parentOrigin=' + encodeURIComponent(window.location.origin)
 			iframeContainer.appendChild(iframe)
 
-			const frameContainer = document.getElementById('app-content') || document.getElementById('app-content-vue')
-			if (frameContainer) {
-				frameContainer.appendChild(iframeContainer)
+			const mountEl = document.getElementById('content-vue') ?? document.getElementById('content') ?? document.body
+			mountEl.appendChild(iframeContainer)
+			if (mountEl.id === 'content-vue' || mountEl.id === 'content') {
+				iframeContainer.style.cssText = 'position:absolute!important;inset:0!important;z-index:1100!important;overflow:hidden!important'
 			}
 
 			document.body.classList.add('eurooffice-inline')
 
 			getSidebar()?.close()
-
-			const appContentElement = document.getElementById('app-content')
-			const scrollTop = appContentElement ? appContentElement.scrollTop : 0
-			const frameElement = document.querySelector(OCA.Eurooffice.frameSelector)
-			if (frameElement) {
-				frameElement.style.top = scrollTop + 'px'
-			}
 
 			const currentQuery = { ...OCP.Files.Router.query }
 			if (isDefault) {
@@ -262,6 +256,9 @@ import { loadState } from '@nextcloud/initial-state'
 	}
 
 	OCA.Eurooffice.SetDefaultUrl = function() {
+		if (isPublicShare()) {
+			return
+		}
 		// eslint-disable-next-line no-unused-vars
 		const { openfile, enableSharing, ...query } = OCP.Files.Router.query
 		window.OCP?.Files?.Router?.goToRoute(
@@ -534,15 +531,17 @@ import { loadState } from '@nextcloud/initial-state'
 				const mimeTypes = config.mime
 				mimeTypes.forEach((mime) => {
 					OCA.Files.fileActions.registerAction({
-						name: 'euroofficeOpen',
-						displayName: t(OCA.Eurooffice.AppName, 'Open in Nextcloud Office'),
+						name: config.defViewer ? 'euroofficeEdit' : 'euroofficeOpen',
+						displayName: config.defViewer
+							? t(OCA.Eurooffice.AppName, 'Edit in Nextcloud Office')
+							: t(OCA.Eurooffice.AppName, 'Open in Nextcloud Office'),
 						mime,
 						permissions: OC.PERMISSION_READ,
 						iconClass: 'icon-eurooffice-open',
 						actionHandler: OCA.Eurooffice.FileClick,
 					})
 
-					if (config.def) {
+					if (config.def && !config.defViewer) {
 						OCA.Files.fileActions.setDefault(mime, 'euroofficeOpen')
 					}
 
@@ -589,7 +588,12 @@ import { loadState } from '@nextcloud/initial-state'
 					const config = getConfig(files[0])
 
 					if (!config) return false
-					if (!config.def) return false
+
+					// defViewer formats open via OCA.Viewer (registered in viewer.js).
+					// This action is the direct-open fallback when the Viewer app is absent.
+					// Non-defViewer formats use this as their primary default action.
+					const isDefault = (config.def && !config.defViewer) || (config.defViewer && !OCA.Viewer)
+					if (!isDefault) return false
 
 					if (Permission.READ !== (files[0].permissions & Permission.READ)) { return false }
 
@@ -602,15 +606,26 @@ import { loadState } from '@nextcloud/initial-state'
 
 			registerFileAction({
 				id: 'eurooffice-open',
-				displayName: () => t(OCA.Eurooffice.AppName, 'Open in Nextcloud Office'),
+				displayName: ({ nodes: files }) => {
+					const config = getConfig(files[0])
+					return config?.defViewer
+						? t(OCA.Eurooffice.AppName, 'Edit in Nextcloud Office')
+						: t(OCA.Eurooffice.AppName, 'Open in Nextcloud Office')
+				},
 				iconSvgInline: () => AppDarkSvg,
 				enabled: ({ nodes: files }) => {
 					const config = getConfig(files[0])
 
 					if (!config) return false
-					if (config.def) return false
+					// For non-defViewer formats, hide when EO is already the default handler.
+					// For defViewer formats (e.g. PDF), always show "Edit in Nextcloud Office"
+					// regardless of whether EO is the default viewer, so the admin toggle
+					// only controls the default click behaviour, not menu availability.
+					if (config.def && !config.defViewer) return false
 
-					if (Permission.READ !== (files[0].permissions & Permission.READ)) { return false }
+					// defViewer formats require write access — the action opens the full editor
+					const required = config.defViewer ? Permission.UPDATE : Permission.READ
+					if (required !== (files[0].permissions & required)) { return false }
 
 					return true
 				},
@@ -838,7 +853,7 @@ import { loadState } from '@nextcloud/initial-state'
 				},
 			})
 
-			if (config.def
+			if ((config.def || config.defViewer)
 				&& !_oc_appswebroots.richdocuments
 				&& !(_oc_appswebroots.files_pdfviewer && extension === 'pdf')
 				&& !(_oc_appswebroots.text && extension === 'txt')) {
@@ -852,10 +867,9 @@ import { loadState } from '@nextcloud/initial-state'
 				iframe.nonce = btoa(OC.requestToken)
 				iframe.scrolling = 'no'
 				iframe.allowFullscreen = true
-				iframe.src = `${editorUrl}?inframe=true&parentOrigin=${encodeURIComponent(window.location.origin)}`
+				iframe.src = `${editorUrl}?inframe=true${config.defViewer ? '&inviewer=true' : ''}&parentOrigin=${encodeURIComponent(window.location.origin)}`
 				container.appendChild(iframe)
-				const appContent = document.querySelector('#app-content') || document.querySelector('#app-content-vue')
-				appContent.appendChild(container)
+				document.body.appendChild(container)
 				document.body.classList.add('eurooffice-inline')
 			}
 		} else {
