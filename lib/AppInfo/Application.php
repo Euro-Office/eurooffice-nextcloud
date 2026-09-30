@@ -84,7 +84,8 @@ class Application extends App implements IBootstrap {
         $context->registerEventListener(FileCreatedFromTemplateEvent::class, CreateFromTemplateListener::class);
         $context->registerEventListener(LoadAdditionalScriptsEvent::class, FilesListener::class);
         $context->registerEventListener(RegisterDirectEditorEvent::class, DirectEditorListener::class);
-        $context->registerEventListener(LoadViewer::class, ViewerListener::class);
+        // Register before files_pdfviewer: Viewer keeps the first handler per mime
+        $context->registerEventListener(LoadViewer::class, ViewerListener::class, 10);
         $context->registerEventListener(AddContentSecurityPolicyEvent::class, ContentSecurityPolicyListener::class);
         $context->registerEventListener(BeforeTemplateRenderedEvent::class, FileSharingListener::class);
         $context->registerEventListener(HttpBeforeTemplateRenderedEvent::class, WidgetListener::class);
