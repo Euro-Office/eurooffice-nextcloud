@@ -4,3 +4,8 @@
 
 # Vite chunk-CSS output for async-imported Vue components
 /css/*.chunk.css
+# ... and the entry-point files that @import them, emitted by the same
+# run. Their only content is contenthash-named @imports of the line above,
+# so tracking them just churns on every dependency bump. The hand-written
+# stylesheets in css/ are not affected.
+/css/eurooffice-*.css
