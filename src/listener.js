@@ -300,16 +300,18 @@ import { getLinkWithPicker } from '@nextcloud/vue/components/NcRichText'
 	})
 
 	const mutationObserver = new MutationObserver(mutationRecords => {
-		if (mutationRecords[0] && mutationRecords[0].removedNodes) {
-			mutationRecords[0].removedNodes.forEach((node) => {
-				if (node.id && '#' + node.id === OCA.Eurooffice.frameSelector) {
-					OCA.Eurooffice.changeFavicon(OCA.Eurooffice.favIconBase)
-					window.document.title = OCA.Eurooffice.titleBase
-					OCA.Eurooffice.frameSelector = null
-				}
-			  })
+		const selector = OCA.Eurooffice.frameSelector
+		if (!selector) {
+			return
 		}
-	  })
+		const frameRemoved = mutationRecords.some(record => Array.from(record.removedNodes)
+			.some(node => node.matches?.(selector) || node.querySelector?.(selector)))
+		if (frameRemoved) {
+			OCA.Eurooffice.changeFavicon(OCA.Eurooffice.favIconBase)
+			window.document.title = OCA.Eurooffice.titleBase
+			OCA.Eurooffice.frameSelector = null
+		}
+	})
 
 	mutationObserver.observe(document.querySelector('body'), {
 		childList: true,
