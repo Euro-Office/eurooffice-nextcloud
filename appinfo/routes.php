@@ -52,6 +52,7 @@ return [
        ["name" => "settings#save_address", "url" => "/ajax/settings/address", "verb" => "PUT"],
        ["name" => "settings#save_common", "url" => "/ajax/settings/common", "verb" => "PUT"],
        ["name" => "settings#save_security", "url" => "/ajax/settings/security", "verb" => "PUT"],
+       ["name" => "settings#search_groups", "url" => "/ajax/settings/groups", "verb" => "GET"],
        ["name" => "settings#clear_history", "url" => "/ajax/settings/history", "verb" => "DELETE"],
        ["name" => "template#add_template", "url" => "/ajax/template", "verb" => "POST"],
        ["name" => "template#delete_template", "url" => "/ajax/template", "verb" => "DELETE"],
