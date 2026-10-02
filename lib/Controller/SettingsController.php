@@ -34,6 +34,8 @@ use OCP\AppFramework\Controller;
 use OCP\AppFramework\Http\Attribute\AuthorizedAdminSetting;
 use OCP\AppFramework\Http\DataResponse;
 use OCP\AppFramework\Http\TemplateResponse;
+use OCP\IGroup;
+use OCP\IGroupManager;
 use OCP\IL10N;
 use OCP\IRequest;
 use OCP\IURLGenerator;
@@ -51,7 +53,8 @@ class SettingsController extends Controller {
         private readonly IL10N $trans,
         private readonly AppConfig $appConfig,
         private readonly IMimeIconProvider $mimeIconProvider,
-        private readonly DocumentService $documentService
+        private readonly DocumentService $documentService,
+        private readonly IGroupManager $groupManager
     ) {
         parent::__construct($appName, $request);
     }
@@ -323,6 +326,28 @@ class SettingsController extends Controller {
         $this->appConfig->setProtection($protection);
 
         return new DataResponse();
+    }
+
+    /**
+     * Search groups for the watermark group picker
+     *
+     * The core group details endpoint is restricted to delegates of the
+     * Sharing or Users settings, so a delegate of the security form needs
+     * its own lookup.
+     *
+     * @param string $search - text to search for
+     */
+    #[AuthorizedAdminSetting(settings: AdminSettingsSecurity::class)]
+    public function searchGroups(string $search = ""): DataResponse {
+        $groups = array_map(
+            static fn (IGroup $group): array => [
+                "id" => $group->getGID(),
+                "displayname" => $group->getDisplayName()
+            ],
+            $this->groupManager->search($search, 10)
+        );
+
+        return new DataResponse(array_values($groups));
     }
 
     /**
