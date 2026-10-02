@@ -295,7 +295,8 @@ class EditorApiController extends OCSController {
             }
             $params["document"]["permissions"]["protect"] = $canProtect;
 
-            if (isset($shareToken)) {
+            // disable chat and protection for access by share link
+            if (!empty($shareToken)) {
                 $params["document"]["permissions"]["chat"] = false;
                 $params["document"]["permissions"]["protect"] = false;
             }
@@ -316,7 +317,7 @@ class EditorApiController extends OCSController {
         } else {
             $params["editorConfig"]["mode"] = "view";
 
-            if (isset($shareToken) && empty($userId) && !$this->appConfig->getLiveViewOnShare()) {
+            if (!empty($shareToken) && empty($userId) && !$this->appConfig->getLiveViewOnShare()) {
                 $params["editorConfig"]["coEditing"] = [
                     "mode" => "strict",
                     "change" => false
