@@ -393,6 +393,11 @@ class DocumentService {
             return [$e->getMessage(), $version];
         }
 
+        $secret = $this->appConfig->getDocumentServerSecret();
+        if ($secret !== "" && strlen($secret) < 32) {
+            return [$this->trans->t("The secret key must be at least 32 characters long. Generate a new one, for example with \"openssl rand -hex 32\", and set the same key in the Euro-Office DocumentServer and in the Nextcloud Office settings."), $version];
+        }
+
         try {
             $healthcheckResponse = $this->healthcheckRequest();
             if (!$healthcheckResponse) {
