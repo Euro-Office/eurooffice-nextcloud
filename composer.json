@@ -12,9 +12,37 @@
         }
     },
     "scripts": {
+        "post-install-cmd": [
+            "@composer bin all install --ansi",
+            "\"vendor/bin/mozart\" compose",
+            "composer dump-autoload"
+        ],
+        "post-update-cmd": [
+            "@composer bin all install --ansi",
+            "\"vendor/bin/mozart\" compose",
+            "composer dump-autoload"
+        ],
         "test": "../../vendor-bin/phpunit/vendor/bin/phpunit -c phpunit.xml"
     },
     "require": {
+        "bamarni/composer-bin-plugin": "^1.8",
         "firebase/php-jwt": "^7.0"
+    },
+    "config": {
+        "allow-plugins": {
+            "bamarni/composer-bin-plugin": true
+        }
+    },
+    "extra": {
+        "mozart": {
+            "dep_namespace": "OCA\\Eurooffice\\Vendor\\",
+            "dep_directory": "/lib/Vendor/",
+            "classmap_directory": "/lib/autoload/",
+            "classmap_prefix": "NEXTCLOUD_EUROOFFICE_",
+            "packages": [
+                "firebase/php-jwt"
+            ],
+            "delete_vendor_directories": true
+        }
     }
 }

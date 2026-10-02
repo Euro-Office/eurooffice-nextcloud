@@ -10,6 +10,7 @@ namespace OCA\Eurooffice\Controller;
 
 use OCA\Eurooffice\AppConfig;
 use OCA\Eurooffice\DocumentService;
+use OCA\Eurooffice\Vendor\Firebase\JWT\JWT;
 use OCP\AppFramework\Controller;
 use OCP\AppFramework\Http;
 use OCP\AppFramework\Http\DataResponse;
@@ -107,7 +108,7 @@ class FontController extends Controller {
             'iat' => $now,
             'exp' => $now + self::JWT_TTL,
         ];
-        return \Firebase\JWT\JWT::encode($payload, $secret, 'HS256');
+        return JWT::encode($payload, $secret, 'HS256');
     }
 
     /**

@@ -32,6 +32,7 @@ use OCA\Eurooffice\DocumentService;
 use OCA\Eurooffice\ExtraPermissions;
 use OCA\Eurooffice\FileUtility;
 use OCA\Eurooffice\TemplateManager;
+use OCA\Eurooffice\Vendor\Firebase\JWT\JWT;
 use OCP\AppFramework\Http\JSONResponse;
 use OCP\AppFramework\Http\Attribute\NoAdminRequired;
 use OCP\AppFramework\Http\Attribute\PublicPage;
@@ -494,7 +495,7 @@ class EditorApiController extends OCSController {
             $exp = $now + $this->appConfig->getJwtExpiration() * 60;
             $params["iat"] = $iat;
             $params["exp"] = $exp;
-            $token = \Firebase\JWT\JWT::encode($params, $this->appConfig->getDocumentServerSecret(), "HS256");
+            $token = JWT::encode($params, $this->appConfig->getDocumentServerSecret(), "HS256");
             $params["token"] = $token;
         }
 

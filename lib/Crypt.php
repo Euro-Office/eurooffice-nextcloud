@@ -26,8 +26,8 @@
 namespace OCA\Eurooffice;
 
 use DomainException;
-use Firebase\JWT\JWT;
-use Firebase\JWT\Key;
+use OCA\Eurooffice\Vendor\Firebase\JWT\JWT;
+use OCA\Eurooffice\Vendor\Firebase\JWT\Key;
 use UnexpectedValueException;
 
 /**

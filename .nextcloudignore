@@ -14,5 +14,7 @@
 /stylelint.config.js
 /webpack.js
 /assets/document-templates/sample/
+/vendor/
+/vendor-bin/
 /tests/
 /phpunit.xml

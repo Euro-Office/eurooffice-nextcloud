@@ -38,6 +38,7 @@ use OCA\Eurooffice\FileUtility;
 use OCA\Eurooffice\FileVersions;
 use OCA\Eurooffice\KeyManager;
 use OCA\Eurooffice\TemplateManager;
+use OCA\Eurooffice\Vendor\Firebase\JWT\JWT;
 use OCP\App\IAppManager;
 use OCP\AppFramework\Controller;
 use OCP\AppFramework\Http\ContentSecurityPolicy;
@@ -639,7 +640,7 @@ class EditorController extends Controller {
             $exp = $now + $this->appConfig->getJwtExpiration() * 60;
             $response["iat"] = $iat;
             $response["exp"] = $exp;
-            $token = \Firebase\JWT\JWT::encode($response, $this->appConfig->getDocumentServerSecret(), "HS256");
+            $token = JWT::encode($response, $this->appConfig->getDocumentServerSecret(), "HS256");
             $response["token"] = $token;
         }
 
@@ -1042,7 +1043,7 @@ class EditorController extends Controller {
             $exp = $now + $this->appConfig->getJwtExpiration() * 60;
             $result["iat"] = $iat;
             $result["exp"] = $exp;
-            $token = \Firebase\JWT\JWT::encode($result, $this->appConfig->getDocumentServerSecret(), "HS256");
+            $token = JWT::encode($result, $this->appConfig->getDocumentServerSecret(), "HS256");
             $result["token"] = $token;
         }
 
@@ -1159,7 +1160,7 @@ class EditorController extends Controller {
             $exp = $now + $this->appConfig->getJwtExpiration() * 60;
             $result["iat"] = $iat;
             $result["exp"] = $exp;
-            $token = \Firebase\JWT\JWT::encode($result, $this->appConfig->getDocumentServerSecret(), "HS256");
+            $token = JWT::encode($result, $this->appConfig->getDocumentServerSecret(), "HS256");
             $result["token"] = $token;
         }
 

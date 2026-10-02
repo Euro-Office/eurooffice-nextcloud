@@ -51,6 +51,8 @@ jobs:
           rm ./ruleset.xml
           rm ./stylelint.config.js
           rm ./vite.config.mjs
+          rm -rf ./vendor/
+          rm -rf ./vendor-bin/
           cd $cwd
           tar -czvf eurooffice.tar.gz eurooffice
       - name: Verify what the artifact contains

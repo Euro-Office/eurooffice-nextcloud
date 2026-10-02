@@ -36,6 +36,8 @@ use OCA\Eurooffice\FileUtility;
 use OCA\Eurooffice\KeyManager;
 use OCA\Eurooffice\RemoteInstance;
 use OCA\Eurooffice\TemplateManager;
+use OCA\Eurooffice\Vendor\Firebase\JWT\JWT;
+use OCA\Eurooffice\Vendor\Firebase\JWT\Key;
 use OCP\AppFramework\Controller;
 use OCP\AppFramework\Http;
 use OCP\AppFramework\Http\DataDownloadResponse;
@@ -153,7 +155,7 @@ class CallbackController extends Controller {
             $header = substr((string) $header, strlen("Bearer "));
 
             try {
-                $decodedHeader = \Firebase\JWT\JWT::decode($header, new \Firebase\JWT\Key($this->appConfig->getDocumentServerSecret(), "HS256"));
+                $decodedHeader = JWT::decode($header, new Key($this->appConfig->getDocumentServerSecret(), "HS256"));
             } catch (\UnexpectedValueException $e) {
                 $this->logger->error("Download with invalid jwt", ["exception" => $e]);
                 return new JSONResponse(["message" => $this->trans->t("Access denied")], Http::STATUS_FORBIDDEN);
@@ -292,7 +294,7 @@ class CallbackController extends Controller {
             $header = substr((string) $header, strlen("Bearer "));
 
             try {
-                $decodedHeader = \Firebase\JWT\JWT::decode($header, new \Firebase\JWT\Key($this->appConfig->getDocumentServerSecret(), "HS256"));
+                $decodedHeader = JWT::decode($header, new Key($this->appConfig->getDocumentServerSecret(), "HS256"));
             } catch (\UnexpectedValueException $e) {
                 $this->logger->error("Download empty with invalid jwt", ["exception" => $e]);
                 return new JSONResponse(["message" => $this->trans->t("Access denied")], Http::STATUS_FORBIDDEN);
@@ -367,7 +369,7 @@ class CallbackController extends Controller {
         if (!empty($this->appConfig->getDocumentServerSecret())) {
             if (!empty($token)) {
                 try {
-                    $payload = \Firebase\JWT\JWT::decode($token, new \Firebase\JWT\Key($this->appConfig->getDocumentServerSecret(), "HS256"));
+                    $payload = JWT::decode($token, new Key($this->appConfig->getDocumentServerSecret(), "HS256"));
                 } catch (\UnexpectedValueException $e) {
                     $this->logger->error("Track with invalid jwt in body", ["exception" => $e]);
                     return new JSONResponse(["message" => $this->trans->t("Access denied")], Http::STATUS_FORBIDDEN);
@@ -382,7 +384,7 @@ class CallbackController extends Controller {
                 $header = substr((string) $header, strlen("Bearer "));
 
                 try {
-                    $decodedHeader = \Firebase\JWT\JWT::decode($header, new \Firebase\JWT\Key($this->appConfig->getDocumentServerSecret(), "HS256"));
+                    $decodedHeader = JWT::decode($header, new Key($this->appConfig->getDocumentServerSecret(), "HS256"));
 
                     $payload = $decodedHeader->payload;
                 } catch (\UnexpectedValueException $e) {

@@ -58,6 +58,7 @@ use OCA\Eurooffice\Listeners\UserListener;
 use OCA\Eurooffice\Notifier;
 use OCA\Eurooffice\Preview;
 use OCA\Eurooffice\TemplateProvider;
+use OCA\Eurooffice\Vendor\Firebase\JWT\JWT;
 use OCP\Files\Events\Node\NodeDeletedEvent;
 use OCP\Files\Events\Node\NodeWrittenEvent;
 use OCP\Share\Events\ShareDeletedEvent;
@@ -76,10 +77,8 @@ class Application extends App implements IBootstrap {
     }
 
     public function register(IRegistrationContext $context): void {
-        require_once __DIR__ . "/../../vendor/autoload.php";
-
         // Set the leeway for the JWT library in case the system clock is a second off
-        \Firebase\JWT\JWT::$leeway = $this->appConfig->getJwtLeeway();
+        JWT::$leeway = $this->appConfig->getJwtLeeway();
 
         $context->registerEventListener(FileCreatedFromTemplateEvent::class, CreateFromTemplateListener::class);
         $context->registerEventListener(LoadAdditionalScriptsEvent::class, FilesListener::class);
