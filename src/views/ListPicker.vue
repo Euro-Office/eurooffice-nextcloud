@@ -10,7 +10,7 @@
 			:limit="null"
 			:model-value="selection"
 			@update:model-value="update" />
-		<NcSettingsSelectGroup
+		<GroupPicker
 			v-else
 			:label="label"
 			:model-value="selection"
@@ -20,7 +20,7 @@
 
 <script>
 import NcSelectTags from '@nextcloud/vue/components/NcSelectTags'
-import NcSettingsSelectGroup from '@nextcloud/vue/components/NcSettingsSelectGroup'
+import GroupPicker from './GroupPicker.vue'
 
 /**
  * Group / system tag picker for the admin settings.
@@ -34,8 +34,8 @@ export default {
 	name: 'ListPicker',
 
 	components: {
+		GroupPicker,
 		NcSelectTags,
-		NcSettingsSelectGroup,
 	},
 
 	props: {
@@ -56,7 +56,7 @@ export default {
 		},
 
 		/**
-		 * Either 'groups' (provisioning API) or 'tags' (system tags)
+		 * Either 'groups' (app group search) or 'tags' (system tags)
 		 */
 		type: {
 			type: String,
