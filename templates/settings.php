@@ -34,8 +34,8 @@
         <h1><?php p($l->t("Welcome to Nextcloud Office!")) ?></h1>
         <p><?php p($l->t("Edit and collaborate on text documents, spreadsheets, presentations, and PDFs within Nextcloud using Nextcloud Office.")) ?></p>
         <div class="useful-links">
-            <a href="https://helpcenter.eurooffice.com/integration/nextcloud.aspx" target="_blank"><?php p($l->t("Learn more")) ?></a>
-            <a href="https://feedback.eurooffice.com/forums/966080-your-voice-matters?category_id=519288" target="_blank"><?php p($l->t("Suggest a feature")) ?></a>
+            <a href="https://nextcloud.com/office/" target="_blank" rel="noopener noreferrer"><?php p($l->t("Learn more")) ?></a>
+            <a href="https://github.com/Euro-Office/eurooffice-nextcloud/issues/new/choose" target="_blank" rel="noopener noreferrer"><?php p($l->t("Suggest a feature")) ?></a>
         </div>
     </div>
 
