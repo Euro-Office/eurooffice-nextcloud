@@ -287,6 +287,11 @@ class AppConfig {
     private string $_jwt_expiration = "jwt_expiration";
 
     /**
+     * The config key for the overall /converter polling deadline (seconds)
+     */
+    private string $_converter_poll_timeout = "converter_poll_timeout";
+
+    /**
      * The config key for store cache
      */
     private readonly ICache $cache;
@@ -1303,6 +1308,20 @@ class AppConfig {
             return 5;
         }
         return (integer)$jwtExp;
+    }
+
+    /**
+     * Get the overall deadline (seconds) for polling /converter for a
+     * synchronous conversion result, settable via config.php for
+     * deployments that need a longer or shorter budget than the default.
+     */
+    public function getConverterPollTimeout(): int {
+        $timeout = $this->getSystemValue($this->_converter_poll_timeout);
+
+        if (empty($timeout)) {
+            return 120;
+        }
+        return (integer)$timeout;
     }
 
     /**

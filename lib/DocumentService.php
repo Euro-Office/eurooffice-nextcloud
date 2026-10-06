@@ -44,13 +44,6 @@ class DocumentService {
     private static string $appName = "eurooffice";
 
     /**
-     * Max time (seconds) spent polling /converter for an async conversion
-     * to finish before giving up - matches the previous single blocking
-     * request's timeout budget so callers see a comparable worst-case wait.
-     */
-    private const CONVERT_POLL_TIMEOUT = 120;
-
-    /**
      * Delay (seconds) between /converter polls.
      */
     private const CONVERT_POLL_INTERVAL = 2;
@@ -218,13 +211,18 @@ class DocumentService {
             $opts["body"] = json_encode($data);
         }
 
+        // Established before the first request so the overall budget is a
+        // true end-to-end deadline, rather than starting only once the first
+        // request (which can itself take up to CONVERT_REQUEST_TIMEOUT) has
+        // already returned.
+        $deadline = time() + $this->appConfig->getConverterPollTimeout();
+
         $responseData = $this->pollConvertStatus($urlToConverter, $opts);
 
         if ($is_async) {
             return $responseData;
         }
 
-        $deadline = time() + self::CONVERT_POLL_TIMEOUT;
         while (empty($responseData["endConvert"]) && empty($responseData["error"]) && time() < $deadline) {
             sleep(self::CONVERT_POLL_INTERVAL);
             $responseData = $this->pollConvertStatus($urlToConverter, $opts);
@@ -243,12 +241,12 @@ class DocumentService {
 
     /**
      * Send one /converter request and return its current conversion status.
-     * A transient failure (502/503/504 from a reverse proxy in front of
-     * DocumentServer, or a connection-level error) is treated the same as
-     * "not finished yet" rather than aborting the whole conversion - the
-     * next poll a few seconds later just tries again, including for the
-     * very first request. Any other error (bad JWT, malformed response, ...)
-     * is not transient and is thrown immediately.
+     * A transient failure (a 502/503/504 response from a reverse proxy in
+     * front of DocumentServer) is treated the same as "not finished yet"
+     * rather than aborting the whole conversion - the next poll a few
+     * seconds later just tries again, including for the very first request.
+     * Any other error (connection failure, bad JWT, malformed response, ...)
+     * is not transient and is thrown immediately - see isTransientConvertError().
      *
      * @param string $url - /converter URL
      * @param array $opts - request options (body, headers, timeout)
@@ -277,18 +275,22 @@ class DocumentService {
 
     /**
      * Whether an exception from the HTTP client represents a transient
-     * failure worth retrying: a 502/503/504 from a reverse proxy in front of
-     * DocumentServer, or a connection-level failure with no response at all
-     * (e.g. a timeout or refused connection).
+     * failure worth retrying: specifically a 502/503/504 from a reverse
+     * proxy in front of DocumentServer. OCP\Http\Client\IClient does not
+     * guarantee a Guzzle-specific exception type across Nextcloud versions,
+     * so any exception without an HTTP response (bad config, DNS failure,
+     * connection refused, ...) is NOT assumed transient here - that would
+     * silently retry a permanent failure for the whole poll window and mask
+     * it behind a generic timeout. Matches FontController::isAdminPanelUnavailable().
      *
      * @param \Exception $e - exception thrown by DocumentService::request()
      */
     private function isTransientConvertError(\Exception $e): bool {
-        if (method_exists($e, 'getResponse') && $e->getResponse() !== null) {
-            return in_array($e->getResponse()->getStatusCode(), [502, 503, 504], true);
+        if (!method_exists($e, 'getResponse') || $e->getResponse() === null) {
+            return false;
         }
 
-        return true;
+        return in_array($e->getResponse()->getStatusCode(), [502, 503, 504], true);
     }
 
     /**
