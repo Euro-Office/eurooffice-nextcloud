@@ -212,6 +212,14 @@ class DocumentService {
             $opts["body"] = json_encode($data);
         }
 
+        if ($is_async) {
+            // A single request with the plain request timeout - there is no
+            // polling deadline concept for an async-mode caller, and it must
+            // not be shrunk by converter_poll_timeout, which only governs
+            // the synchronous polling loop below.
+            return $this->pollConvertStatus($urlToConverter, $opts);
+        }
+
         // Established before the first request so the overall budget is a
         // true end-to-end deadline, rather than starting only once the first
         // request (which can itself take up to CONVERT_REQUEST_TIMEOUT) has
@@ -224,10 +232,6 @@ class DocumentService {
 
         $opts["timeout"] = min(self::CONVERT_REQUEST_TIMEOUT, max(1, $deadline - time()));
         $responseData = $this->pollConvertStatus($urlToConverter, $opts);
-
-        if ($is_async) {
-            return $responseData;
-        }
 
         while (empty($responseData["endConvert"]) && empty($responseData["error"])) {
             $remaining = $deadline - time();
@@ -242,6 +246,10 @@ class DocumentService {
                 break;
             }
 
+            // Capped to whatever is left of the budget so a slow request
+            // can't by itself push the method past the deadline - without
+            // this, a request starting even one second before the deadline
+            // could still run for its full CONVERT_REQUEST_TIMEOUT.
             $opts["timeout"] = min(self::CONVERT_REQUEST_TIMEOUT, $remaining);
             $responseData = $this->pollConvertStatus($urlToConverter, $opts);
         }
