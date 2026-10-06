@@ -215,17 +215,34 @@ class DocumentService {
         // Established before the first request so the overall budget is a
         // true end-to-end deadline, rather than starting only once the first
         // request (which can itself take up to CONVERT_REQUEST_TIMEOUT) has
-        // already returned.
+        // already returned. Every request's own timeout is then capped to
+        // whatever is left of this budget (see below), so a slow request
+        // can't by itself push the method past the configured deadline -
+        // without that cap, a request starting even one second before the
+        // deadline could still run for its full CONVERT_REQUEST_TIMEOUT.
         $deadline = time() + $this->appConfig->getConverterPollTimeout();
 
+        $opts["timeout"] = min(self::CONVERT_REQUEST_TIMEOUT, max(1, $deadline - time()));
         $responseData = $this->pollConvertStatus($urlToConverter, $opts);
 
         if ($is_async) {
             return $responseData;
         }
 
-        while (empty($responseData["endConvert"]) && empty($responseData["error"]) && time() < $deadline) {
-            sleep(self::CONVERT_POLL_INTERVAL);
+        while (empty($responseData["endConvert"]) && empty($responseData["error"])) {
+            $remaining = $deadline - time();
+            if ($remaining <= 0) {
+                break;
+            }
+
+            sleep(min(self::CONVERT_POLL_INTERVAL, $remaining));
+
+            $remaining = $deadline - time();
+            if ($remaining <= 0) {
+                break;
+            }
+
+            $opts["timeout"] = min(self::CONVERT_REQUEST_TIMEOUT, $remaining);
             $responseData = $this->pollConvertStatus($urlToConverter, $opts);
         }
 
@@ -243,11 +260,11 @@ class DocumentService {
     /**
      * Send one /converter request and return its current conversion status.
      * A transient failure (a 502/503/504 response or a connection exception)
-     * is treated the same as "not finished yet"
-     * rather than aborting the whole conversion - the next poll a few
-     * seconds later just tries again, including for the very first request.
-     * Any other error (bad configuration, bad JWT, malformed response, ...)
-     * is not transient and is thrown immediately - see isTransientConvertError().
+     * is treated the same as "not finished yet" rather than aborting the
+     * whole conversion - the next poll a few seconds later just tries again,
+     * including for the very first request. Any other error (bad
+     * configuration, bad JWT, malformed response, ...) is not transient and
+     * is thrown immediately - see isTransientConvertError().
      *
      * @param string $url - /converter URL
      * @param array $opts - request options (body, headers, timeout)
@@ -276,9 +293,17 @@ class DocumentService {
 
     /**
      * Whether an exception from the HTTP client represents a transient
-     * failure worth retrying: a 502/503/504 response or Guzzle's connection
-     * exception used by Nextcloud's HTTP client. Other exceptions without
-     * an HTTP response are not assumed transient, so permanent failures
+     * failure worth retrying: a 502/503/504 response, or Guzzle's
+     * ConnectException (DNS/connect failure, connection timeout) - every
+     * supported Nextcloud version's OCP\Http\Client\IClient implementation
+     * is Guzzle-backed and throws this for a connection-level failure. That
+     * class isn't a guaranteed part of the IClient contract, but the
+     * `instanceof` check below degrades safely to false (not transient) if
+     * it's ever unavailable or a different exception type is thrown, rather
+     * than erroring - so a future implementation change narrows retry
+     * coverage instead of breaking. Other exceptions without an HTTP
+     * response are not assumed transient, so permanent failures (bad
+     * config, DNS failure surfaced as some other exception type, ...)
      * retain their original error instead of becoming a generic timeout.
      *
      * @param \Exception $e - exception thrown by DocumentService::request()
