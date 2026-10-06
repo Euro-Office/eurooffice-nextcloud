@@ -43,6 +43,27 @@ class DocumentService {
      */
     private static string $appName = "eurooffice";
 
+    /**
+     * Max time (seconds) spent polling /converter for an async conversion
+     * to finish before giving up - matches the previous single blocking
+     * request's timeout budget so callers see a comparable worst-case wait.
+     */
+    private const CONVERT_POLL_TIMEOUT = 120;
+
+    /**
+     * Delay (seconds) between /converter polls.
+     */
+    private const CONVERT_POLL_INTERVAL = 2;
+
+    /**
+     * Timeout (seconds) for a single /converter HTTP request. An async
+     * request returns immediately (converted or not), so this only needs
+     * to cover one quick round trip - keeping it well under typical
+     * reverse-proxy read timeouts means a slow conversion no longer holds
+     * one long connection open that a gateway can kill with a 504.
+     */
+    private const CONVERT_REQUEST_TIMEOUT = 30;
+
     public function __construct(
         private readonly IL10N $trans,
         private readonly AppConfig $appConfig,
@@ -95,11 +116,21 @@ class DocumentService {
     /**
      * Request for conversion to a service
      *
+     * DocumentServer's /converter is always called with async:true on the wire,
+     * regardless of $is_async, so a single HTTP request never blocks for the
+     * full conversion time - DocumentServer responds immediately (converted or
+     * not) and this method polls the same endpoint itself when the caller wants
+     * a fully-resolved result. This avoids holding one long connection open
+     * that a reverse proxy in front of DocumentServer can kill with a
+     * 502/503/504 while the conversion is still running fine server-side.
+     *
      * @param string $document_uri - Uri for the document to convert
      * @param string $from_extension - Document extension
      * @param string $to_extension - Extension to which to convert
      * @param string $document_revision_id - Key for caching on service
-     * @param bool $is_async - Perform conversions asynchronously
+     * @param bool $is_async - Return DocumentServer's first response as-is
+     *                          instead of polling until it completes or fails -
+     *                          for callers that poll this themselves.
      * @param string $region - Region
      * @param bool $toForm - Convert to form
      * @param array $thumbnail - Settings for the thumbnail
@@ -134,7 +165,7 @@ class DocumentService {
         $from_extension = empty($from_extension) ? pathinfo($document_uri)["extension"] : trim($from_extension, ".");
 
         $data = [
-            "async" => $is_async,
+            "async" => true,
             "url" => $document_uri,
             "outputtype" => trim($to_extension, "."),
             "filetype" => $from_extension,
@@ -161,7 +192,7 @@ class DocumentService {
         }
 
         $opts = [
-            "timeout" => "120",
+            "timeout" => self::CONVERT_REQUEST_TIMEOUT,
             "headers" => [
                 "Content-type" => "application/json"
             ],
@@ -187,7 +218,54 @@ class DocumentService {
             $opts["body"] = json_encode($data);
         }
 
-        $responseJsonData = $this->request($urlToConverter, "post", $opts);
+        $responseData = $this->pollConvertStatus($urlToConverter, $opts);
+
+        if ($is_async) {
+            return $responseData;
+        }
+
+        $deadline = time() + self::CONVERT_POLL_TIMEOUT;
+        while (empty($responseData["endConvert"]) && empty($responseData["error"]) && time() < $deadline) {
+            sleep(self::CONVERT_POLL_INTERVAL);
+            $responseData = $this->pollConvertStatus($urlToConverter, $opts);
+        }
+
+        if (empty($responseData["endConvert"]) && empty($responseData["error"])) {
+            // Polling window elapsed with DocumentServer never reporting
+            // completion or failure - reuse its own "-2 Timeout conversion
+            // error" code (see processConvServResponceError) so existing
+            // callers handle this the same way as a DocumentServer-side timeout.
+            $responseData["error"] = -2;
+        }
+
+        return $responseData;
+    }
+
+    /**
+     * Send one /converter request and return its current conversion status.
+     * A transient failure (502/503/504 from a reverse proxy in front of
+     * DocumentServer, or a connection-level error) is treated the same as
+     * "not finished yet" rather than aborting the whole conversion - the
+     * next poll a few seconds later just tries again, including for the
+     * very first request. Any other error (bad JWT, malformed response, ...)
+     * is not transient and is thrown immediately.
+     *
+     * @param string $url - /converter URL
+     * @param array $opts - request options (body, headers, timeout)
+     *
+     * @return array decoded JSON response, or empty array after a transient failure
+     */
+    private function pollConvertStatus(string $url, array $opts): array {
+        try {
+            $responseJsonData = $this->request($url, "post", $opts);
+        } catch (\Exception $e) {
+            if ($this->isTransientConvertError($e)) {
+                $this->logger->debug("Converter poll failed transiently, will retry", ["exception" => $e]);
+                return [];
+            }
+            throw $e;
+        }
+
         $responseData = json_decode($responseJsonData, true);
         if (json_last_error() !== 0) {
             $exc = $this->trans->t("Bad Response. JSON error: " . json_last_error_msg());
@@ -195,6 +273,22 @@ class DocumentService {
         }
 
         return $responseData;
+    }
+
+    /**
+     * Whether an exception from the HTTP client represents a transient
+     * failure worth retrying: a 502/503/504 from a reverse proxy in front of
+     * DocumentServer, or a connection-level failure with no response at all
+     * (e.g. a timeout or refused connection).
+     *
+     * @param \Exception $e - exception thrown by DocumentService::request()
+     */
+    private function isTransientConvertError(\Exception $e): bool {
+        if (method_exists($e, 'getResponse') && $e->getResponse() !== null) {
+            return in_array($e->getResponse()->getStatusCode(), [502, 503, 504], true);
+        }
+
+        return true;
     }
 
     /**
