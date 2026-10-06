@@ -25,6 +25,7 @@
 
 namespace OCA\Eurooffice;
 
+use GuzzleHttp\Exception\ConnectException;
 use OCA\Eurooffice\Vendor\Firebase\JWT\JWT;
 use OCP\Http\Client\IClientService;
 use OCP\IL10N;
@@ -241,11 +242,11 @@ class DocumentService {
 
     /**
      * Send one /converter request and return its current conversion status.
-     * A transient failure (a 502/503/504 response from a reverse proxy in
-     * front of DocumentServer) is treated the same as "not finished yet"
+     * A transient failure (a 502/503/504 response or a connection exception)
+     * is treated the same as "not finished yet"
      * rather than aborting the whole conversion - the next poll a few
      * seconds later just tries again, including for the very first request.
-     * Any other error (connection failure, bad JWT, malformed response, ...)
+     * Any other error (bad configuration, bad JWT, malformed response, ...)
      * is not transient and is thrown immediately - see isTransientConvertError().
      *
      * @param string $url - /converter URL
@@ -275,17 +276,18 @@ class DocumentService {
 
     /**
      * Whether an exception from the HTTP client represents a transient
-     * failure worth retrying: specifically a 502/503/504 from a reverse
-     * proxy in front of DocumentServer. OCP\Http\Client\IClient does not
-     * guarantee a Guzzle-specific exception type across Nextcloud versions,
-     * so any exception without an HTTP response (bad config, DNS failure,
-     * connection refused, ...) is NOT assumed transient here - that would
-     * silently retry a permanent failure for the whole poll window and mask
-     * it behind a generic timeout. Matches FontController::isAdminPanelUnavailable().
+     * failure worth retrying: a 502/503/504 response or Guzzle's connection
+     * exception used by Nextcloud's HTTP client. Other exceptions without
+     * an HTTP response are not assumed transient, so permanent failures
+     * retain their original error instead of becoming a generic timeout.
      *
      * @param \Exception $e - exception thrown by DocumentService::request()
      */
     private function isTransientConvertError(\Exception $e): bool {
+        if ($e instanceof ConnectException) {
+            return true;
+        }
+
         if (!method_exists($e, 'getResponse') || $e->getResponse() === null) {
             return false;
         }
