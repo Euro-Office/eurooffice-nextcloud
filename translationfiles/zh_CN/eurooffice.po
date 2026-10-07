@@ -1,0 +1,1022 @@
+msgid ""
+msgstr ""
+"Report-Msgid-Bugs-To: translations\\@example.com\n"
+"POT-Creation-Date: 2026-10-07 12:57+0200\n"
+"Language: zh_CN\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+#: lib/Controller/CallbackController.php:134
+#: lib/Controller/CallbackController.php:152
+#: lib/Controller/CallbackController.php:161
+#: lib/Controller/CallbackController.php:206
+#: lib/Controller/CallbackController.php:280
+#: lib/Controller/CallbackController.php:291
+#: lib/Controller/CallbackController.php:300
+#: lib/Controller/CallbackController.php:359
+#: lib/Controller/CallbackController.php:375
+#: lib/Controller/CallbackController.php:381
+#: lib/Controller/CallbackController.php:392
+#: lib/Controller/CallbackController.php:434
+msgid "Access denied"
+msgstr "禁止访问"
+
+#: lib/Controller/CallbackController.php:138
+#: lib/Controller/CallbackController.php:219
+#: lib/Controller/CallbackController.php:284
+#: lib/Controller/CallbackController.php:363
+#: lib/Controller/CallbackController.php:663
+#: lib/Controller/CallbackController.php:737
+#: lib/Controller/EditorApiController.php:134
+#: lib/Controller/EditorApiController.php:532
+#: lib/Controller/EditorController.php:1421
+#: lib/FileUtility.php:76
+#: lib/FileUtility.php:89
+msgid "Invalid request"
+msgstr "无效请求"
+
+#: lib/Controller/CallbackController.php:225
+#: lib/Controller/CallbackController.php:242
+#: lib/Controller/CallbackController.php:668
+msgid "Files not found"
+msgstr "文件未找到"
+
+#: lib/Controller/CallbackController.php:258
+#: lib/Controller/CallbackController.php:316
+#: lib/Controller/EditorApiController.php:130
+#: lib/Controller/EditorApiController.php:175
+#: lib/Controller/EditorController.php:125
+#: lib/Controller/EditorController.php:446
+#: lib/Controller/EditorController.php:578
+#: lib/Controller/EditorController.php:583
+#: lib/Controller/EditorController.php:664
+#: lib/Controller/EditorController.php:756
+#: lib/Controller/EditorController.php:827
+#: lib/Controller/EditorController.php:963
+#: lib/Controller/EditorController.php:1066
+#: lib/Controller/EditorController.php:1118
+#: lib/Controller/EditorController.php:1185
+#: lib/Controller/EditorController.php:1215
+#: lib/Controller/EditorController.php:1320
+#: lib/DirectEditor.php:146
+msgid "Not permitted"
+msgstr "没有权限"
+
+#: lib/Controller/CallbackController.php:260
+#: lib/Controller/CallbackController.php:318
+#: lib/Controller/EditorController.php:798
+msgid "Download failed"
+msgstr "下载失败"
+
+#: lib/Controller/CallbackController.php:309
+#: lib/Controller/CallbackController.php:685
+#: lib/Controller/CallbackController.php:729
+#: lib/Controller/CallbackController.php:742
+#: lib/Controller/EditorApiController.php:537
+#: lib/Controller/EditorController.php:618
+#: lib/Controller/EditorController.php:1129
+#: lib/Controller/EditorController.php:1192
+#: lib/Controller/EditorController.php:1426
+#: lib/FileUtility.php:81
+#: lib/FileUtility.php:117
+msgid "File not found"
+msgstr "文件未找到"
+
+#: lib/Controller/CallbackController.php:655
+#: lib/Controller/CallbackController.php:771
+#: lib/Controller/EditorApiController.php:524
+#: lib/Controller/EditorController.php:1413
+#: lib/FileUtility.php:130
+#: src/editor.js:67
+msgid "FileId is empty"
+msgstr "文件ID为空"
+
+#: lib/Controller/CallbackController.php:783
+#: lib/Controller/EditorApiController.php:553
+#: lib/Controller/EditorController.php:152
+#: lib/Controller/EditorController.php:682
+#: lib/Controller/EditorController.php:1145
+#: lib/Controller/EditorController.php:1442
+#: lib/FileUtility.php:110
+#: lib/FileUtility.php:141
+#: lib/FileUtility.php:150
+msgid "You do not have enough permissions to view the file"
+msgstr "您没有足够权限浏览该文件"
+
+#: lib/Controller/EditorApiController.php:183
+#: lib/Controller/EditorController.php:690
+msgid "Format is not supported"
+msgstr "格式不支持"
+
+#: lib/Controller/EditorApiController.php:405
+#: lib/FileCreator.php:63
+#: lib/Listeners/RegisterTemplateCreatorListener.php:60
+#: src/main.js:722
+#: src/main.js:729
+msgid "New document"
+msgstr "新建文档"
+
+#: lib/Controller/EditorApiController.php:406
+#: lib/FileCreator.php:61
+#: lib/Listeners/RegisterTemplateCreatorListener.php:68
+#: src/main.js:742
+#: src/main.js:749
+msgid "New spreadsheet"
+msgstr "新建表格"
+
+#: lib/Controller/EditorApiController.php:407
+#: lib/FileCreator.php:62
+#: lib/Listeners/RegisterTemplateCreatorListener.php:76
+#: src/main.js:762
+#: src/main.js:769
+msgid "New presentation"
+msgstr "新建幻灯片"
+
+#: lib/Controller/EditorApiController.php:408
+#: src/main.js:783
+#: src/main.js:790
+msgid "New PDF form"
+msgstr "新建 PDF 表单"
+
+#: lib/Controller/EditorApiController.php:520
+#: lib/Controller/EditorController.php:1409
+msgid "UserId is empty"
+msgstr ""
+
+#: lib/Controller/EditorApiController.php:726
+#: lib/Controller/EditorApiController.php:727
+#: lib/Controller/EditorApiController.php:728
+msgid "Anonymous"
+msgstr "匿名"
+
+#: lib/Controller/EditorController.php:130
+#: lib/Controller/EditorController.php:195
+msgid "Template not found"
+msgstr "模板未找到"
+
+#: lib/Controller/EditorController.php:147
+#: lib/Controller/EditorController.php:164
+#: lib/Controller/EditorController.php:774
+msgid "You don't have enough permission to create"
+msgstr "没有足够权限创建文档"
+
+#: lib/Controller/EditorController.php:160
+#: lib/Controller/EditorController.php:769
+msgid "The required folder was not found"
+msgstr "未找到所需文件夹"
+
+#: lib/Controller/EditorController.php:210
+#: lib/Controller/EditorController.php:736
+#: lib/Controller/EditorController.php:809
+msgid "Can't create file"
+msgstr "无法创建文件"
+
+#: lib/Controller/EditorController.php:450
+#: lib/Controller/EditorController.php:481
+msgid "Failed to send notification"
+msgstr "发送通知失败"
+
+#: lib/Controller/EditorController.php:560
+msgid "Notification sent successfully"
+msgstr "通知发送成功"
+
+#: lib/Controller/EditorController.php:695
+msgid "Conversion is not required"
+msgstr "无需转换"
+
+#: lib/Controller/EditorController.php:724
+#: lib/Controller/EditorController.php:1266
+msgid "Failed to download converted file"
+msgstr "无法下载转换后的文件"
+
+#: lib/Controller/EditorController.php:780
+#: lib/Controller/EditorController.php:1327
+#: lib/DirectEditor.php:153
+#: lib/DocumentService.php:122
+#: lib/DocumentService.php:253
+#: lib/DocumentService.php:273
+msgid "Nextcloud Office app is not configured. Please contact admin"
+msgstr "Nextcloud Office未配置，请联系管理员。"
+
+#: lib/Controller/EditorController.php:789
+msgid ""
+"The domain in the file url does not match the domain of the Document server"
+msgstr "文件 URL 中的域与文档服务器的域不匹配"
+
+#: lib/Controller/SettingsController.php:122
+#: templates/settings.php:94
+msgid ""
+"The 30-day test period is over, you can no longer connect to demo Nextcloud "
+"Office server."
+msgstr "30天试用期已结束，无法连接Nextcloud Office 演示服务器。"
+
+#: lib/Controller/SettingsController.php:239
+#: templates/settings.php:370
+msgid "DO NOT SHARE THIS"
+msgstr "请勿分享此文件"
+
+#: lib/Controller/TemplateController.php:99
+msgid "Template must be in OOXML format"
+msgstr "模板必须是OOXML格式"
+
+#: lib/Controller/TemplateController.php:106
+msgid "Template already exists"
+msgstr "模板已经存在"
+
+#: lib/Controller/TemplateController.php:123
+msgid "Invalid file provided"
+msgstr "提供了无效文件"
+
+#: lib/Controller/TemplateController.php:141
+#: lib/Controller/TemplateController.php:148
+msgid "Failed to delete template"
+msgstr "删除模板失败"
+
+#: lib/Cron/EditorsCheck.php:129
+msgid "Nextcloud Office server is not available"
+msgstr "Nextcloud Office 服务器不可用"
+
+#: lib/DocumentService.php:193
+msgid "Bad Response. JSON error: "
+msgstr ""
+
+#: lib/DocumentService.php:204
+#: lib/DocumentService.php:324
+#: lib/DocumentService.php:411
+msgid "Error occurred in the document service"
+msgstr "文档服务内部发生异常"
+
+#: lib/DocumentService.php:390
+msgid ""
+"Mixed Active Content is not allowed. HTTPS address for Nextcloud Office is "
+"required."
+msgstr "不允许混合活动内容，请使用HTTPS连接Nextcloud Office。"
+
+#: lib/DocumentService.php:400
+msgid "Bad healthcheck status"
+msgstr ""
+
+#: lib/DocumentService.php:416
+#: src/editor.js:112
+msgid "Not supported version"
+msgstr "不支持的版本"
+
+#: lib/EmailManager.php:94
+msgid "You were mentioned in the document"
+msgstr "您在文档中被提及"
+
+#: lib/EmailManager.php:95
+#, php-format
+msgid "%1$s mentioned you in the document comment"
+msgstr "%1$s 在文档的批注中提及了您"
+
+#: lib/EmailManager.php:97
+#, php-format
+msgid ""
+"This is a mail message to notify that you have been mentioned by <a "
+"href=\"%1$s\">%2$s</a> in the comment to the <a href=\"%3$s\">%4$s</a>:"
+"<br>\"%5$s\""
+msgstr ""
+"此邮件是为了通知您，<a href=\"%1$s\">%2$s</a> 在<a href=\"%3$s\">%4$s</a>:"
+"<br>\"%5$s\"的批注中提及了您"
+
+#: lib/EmailManager.php:101
+msgid "Open file"
+msgstr "打开文件"
+
+#: lib/EmailManager.php:131
+msgid "Nextcloud Office Document Server is unavailable"
+msgstr "Nextcloud Office 文档服务器不可用"
+
+#: lib/EmailManager.php:132
+msgid ""
+"This is a mail message to notify that the connection with the Nextcloud "
+"Office Document Server has been lost. Please check the connection settings:"
+msgstr ""
+"此邮件是为了通知您，您与 Nextcloud Office 文档服务器的连接已丢失。请检查连接"
+"设置"
+
+#: lib/EmailManager.php:134
+msgid "Go to Settings"
+msgstr "转到设置"
+
+#: lib/Notifier.php:74
+msgid "Please check the settings to resolve the problem."
+msgstr "请检查设置以解决问题。"
+
+#: lib/Notifier.php:78
+msgid "View settings"
+msgstr "查看设置"
+
+#: lib/Notifier.php:103
+#, php-format
+msgid "%1$s mentioned in the %2$s: \"%3$s\"."
+msgstr "%1$s 提到 %2$s: \"%3$s\"."
+
+#: lib/Notifier.php:104
+#, php-format
+msgid "{notifier} mentioned in the {file}: \"%1$s\"."
+msgstr "{notifier} 在 {file}: \"%1$s\"中提到了您."
+
+#: lib/Notifier.php:126
+#: lib/Notifier.php:127
+msgid "Open"
+msgstr "打开"
+
+#: lib/Notifier.php:131
+#, php-format
+msgid "%1$s could not be saved. Please open the file again."
+msgstr "%1$s 无法保存。请重新打开文件。"
+
+#: lib/Notifier.php:132
+msgid "{file} could not be saved. Please open the file again."
+msgstr "{file} 无法保存。请重新打开文件。"
+
+#: specialAppInfoFakeDummyForL10nScript.php:2
+msgid "Nextcloud Office"
+msgstr ""
+
+#: specialAppInfoFakeDummyForL10nScript.php:3
+msgid "Nextcloud Office app"
+msgstr ""
+
+#: specialAppInfoFakeDummyForL10nScript.php:4
+msgid ""
+"The Nextcloud Office app for Nextcloud brings powerful document editing and "
+"collaboration tools directly to your Nextcloud environment. With this "
+"integration, you can seamlessly create, edit, and co-author text documents, "
+"spreadsheets, presentations, and PDFs, as well as build and fill out PDF "
+"forms.\n"
+"\n"
+"Collaborate with your team in real time, make use of Track Changes, version "
+"history, comments, integrated chat, and more. Work together on files with "
+"federated cloud sharing. Flexible access permissions allow you to control "
+"who can view, edit, or comment, ensuring secure role-based collaboration "
+"tailored to your needs. Documents can also be protected with watermarks, "
+"password settings, and encryption for added security.\n"
+"\n"
+"The app offers support for over 50 file formats, including DOCX, XLSX, PPTX, "
+"PDF, RTF, TXT, CSV, ODT, ODS, ODP, EPUB, FB2, HTML, HWP, HWPX, Pages, "
+"Numbers, Keynote, etc. Seamless desktop and mobile app integration means "
+"you'll have access to your Nextcloud files wherever you go.\n"
+"\n"
+"Furthermore, you can seamlessly connect any AI assistant, including local "
+"ones, directly to the editors to work faster and more efficient. This allows "
+"you to leverage various AI models for tasks like chatbot interactions, "
+"translations, OCR, and more.\n"
+"\n"
+"Whether you’re working with internal teams or external collaborators, the "
+"Nextcloud Office app for Nextcloud enhances productivity, simplifies "
+"workflows, and ensures your files remain secure."
+msgstr ""
+
+#: specialVueFakeDummyForL10nScript.js:35
+#: src/main.js:573
+#: src/main.js:688
+msgid "Download as"
+msgstr "下载为"
+
+#: specialVueFakeDummyForL10nScript.js:41
+msgid "Choose a format to convert {fileName}"
+msgstr "转换 {fileName} 为选中的格式"
+
+#: specialVueFakeDummyForL10nScript.js:44
+msgid "Origin format"
+msgstr "原格式"
+
+#: specialVueFakeDummyForL10nScript.js:49
+#: specialVueFakeDummyForL10nScript.js:437
+msgid "Cancel"
+msgstr ""
+
+#: specialVueFakeDummyForL10nScript.js:53
+msgid "Download"
+msgstr "下载"
+
+#: specialVueFakeDummyForL10nScript.js:86
+#: src/settings.js:278
+msgid "Server settings have been successfully updated"
+msgstr "服务器设置已成功更新"
+
+#: specialVueFakeDummyForL10nScript.js:87
+msgid "Info"
+msgstr "信息"
+
+#: specialVueFakeDummyForL10nScript.js:90
+msgid "Ok"
+msgstr ""
+
+#: specialVueFakeDummyForL10nScript.js:103
+msgid ""
+"To ensure the security of important parameters in Nextcloud Office requests, "
+"please set a Secret Key on the Settings page. To learn more, <a href=\"{url}"
+"\" target=\"_blank\">click here</a>."
+msgstr ""
+"为确保 Nextcloud Office 文档请求中重要参数的安全，请在“设置”页面设置密钥。要"
+"了解更多信息，请<a href=\"{url}\" target=\"_blank\">点击此处</a>。"
+
+#: specialVueFakeDummyForL10nScript.js:168
+msgid "Failed to load fonts: {error}"
+msgstr ""
+
+#: specialVueFakeDummyForL10nScript.js:181
+msgid ""
+"Unsupported file type. Please upload TTF, OTF, TTC, WOFF or WOFF2 fonts."
+msgstr ""
+
+#: specialVueFakeDummyForL10nScript.js:201
+msgid "\"{name}\" uploaded successfully."
+msgstr ""
+
+#: specialVueFakeDummyForL10nScript.js:205
+msgid "Upload failed: {error}"
+msgstr ""
+
+#: specialVueFakeDummyForL10nScript.js:216
+msgid "\"{name}\" deleted."
+msgstr ""
+
+#: specialVueFakeDummyForL10nScript.js:220
+msgid "Delete failed: {error}"
+msgstr ""
+
+#: specialVueFakeDummyForL10nScript.js:232
+msgid "Font regeneration started. This may take a moment…"
+msgstr ""
+
+#: specialVueFakeDummyForL10nScript.js:236
+msgid "Regeneration failed: {error}"
+msgstr ""
+
+#: specialVueFakeDummyForL10nScript.js:261
+msgid "Font regeneration completed successfully."
+msgstr ""
+
+#: specialVueFakeDummyForL10nScript.js:265
+msgid "Regeneration error: {error}"
+msgstr ""
+
+#: specialVueFakeDummyForL10nScript.js:292
+msgid ""
+"Custom font management requires the AdminPanel service to be enabled on the "
+"document server."
+msgstr ""
+
+#: specialVueFakeDummyForL10nScript.js:294
+msgid "Uploading…"
+msgstr ""
+
+#: specialVueFakeDummyForL10nScript.js:294
+msgid "Add font"
+msgstr ""
+
+#: specialVueFakeDummyForL10nScript.js:296
+msgid "Regenerate font cache"
+msgstr ""
+
+#: specialVueFakeDummyForL10nScript.js:298
+msgid "Regenerating…"
+msgstr ""
+
+#: specialVueFakeDummyForL10nScript.js:298
+msgid "Regenerate"
+msgstr ""
+
+#: specialVueFakeDummyForL10nScript.js:300
+msgid "Loading fonts…"
+msgstr ""
+
+#: specialVueFakeDummyForL10nScript.js:302
+msgid ""
+"No custom fonts installed. Upload TTF, OTF, TTC, WOFF or WOFF2 files to add "
+"them."
+msgstr ""
+
+#: specialVueFakeDummyForL10nScript.js:304
+msgid "Delete {name}"
+msgstr ""
+
+#: specialVueFakeDummyForL10nScript.js:416
+msgid "Select template"
+msgstr "选择模板"
+
+#: specialVueFakeDummyForL10nScript.js:424
+msgid "Empty"
+msgstr "空"
+
+#: specialVueFakeDummyForL10nScript.js:441
+msgid "Create"
+msgstr "创建"
+
+#: src/editor.js:101
+#: src/editor.js:105
+msgid "Nextcloud Office cannot be reached. Please contact admin"
+msgstr "Nextcloud Office 服务器无法连接，请联系管理员。"
+
+#: src/editor.js:147
+msgid ""
+"You are using public demo Nextcloud Office server. Please do not store "
+"private sensitive data."
+msgstr "您正在使用 Nextcloud Office 公开的演示服务器，请勿存储隐私数据。"
+
+#: src/editor.js:233
+msgid "Failed to load configuration"
+msgstr ""
+
+#: src/editor.js:324
+#: src/listener.js:66
+msgid "Save as"
+msgstr "另存为"
+
+#: src/editor.js:346
+msgid "File saved"
+msgstr "文件已保存"
+
+#: src/editor.js:370
+#: src/listener.js:84
+msgid "Insert image"
+msgstr "插入图片"
+
+#: src/editor.js:422
+#: src/listener.js:147
+msgid "Select recipients"
+msgstr "选择接收者"
+
+#: src/editor.js:448
+msgid "The data source must not be the current document"
+msgstr "数据源不应该是当前文档"
+
+#: src/editor.js:502
+#: src/listener.js:159
+msgid "Select file to combine"
+msgstr "选择要合并的文件"
+
+#: src/editor.js:505
+#: src/listener.js:162
+msgid "Select file to compare"
+msgstr "选择文件比较"
+
+#: src/editor.js:508
+#: src/listener.js:165
+msgid "Select file to insert text"
+msgstr "选择文件以插入文本"
+
+#: src/editor.js:511
+#: src/listener.js:168
+msgid "Select file"
+msgstr "选择文件"
+
+#: src/editor.js:670
+#: src/listener.js:183
+msgid "Select data source"
+msgstr "选择数据源"
+
+#: src/main.js:155
+msgid "File created"
+msgstr "文件已创建"
+
+#: src/main.js:161
+msgid "Failed to create file"
+msgstr ""
+
+#: src/main.js:384
+msgid "File has been converted. Its content might look different."
+msgstr "文件已被转换。其内容可能看起来有所不同。"
+
+#: src/main.js:387
+msgid "Failed to convert file"
+msgstr ""
+
+#: src/main.js:427
+msgid "Blank"
+msgstr "空白"
+
+#: src/main.js:431
+msgid "From text document"
+msgstr "从文本文件"
+
+#: src/main.js:437
+msgid "Create new PDF form"
+msgstr "创建新的 PDF 表单"
+
+#: src/main.js:536
+#: src/main.js:612
+msgid "Edit in Nextcloud Office"
+msgstr ""
+
+#: src/main.js:537
+#: src/main.js:585
+#: src/main.js:613
+#: src/main.js:844
+msgid "Open in Nextcloud Office"
+msgstr "用 Nextcloud Office 打开"
+
+#: src/main.js:551
+#: src/main.js:639
+msgid "Convert with Nextcloud Office"
+msgstr "用 Nextcloud Office 转换"
+
+#: src/main.js:562
+#: src/main.js:663
+msgid "Create form"
+msgstr "创建表单"
+
+#: src/settings.js:105
+#: templates/settings.php:107
+msgid "Allow the following groups to access the editors"
+msgstr "让以下用户组访问编辑器"
+
+#: src/settings.js:211
+#: src/settings.js:275
+msgid "Error when trying to connect"
+msgstr "连接时发生异常"
+
+#: src/settings.js:272
+msgid "version"
+msgstr "版本"
+
+#: src/settings.js:291
+#: src/settings.js:367
+#: src/settings.js:428
+msgid "Failed to save settings"
+msgstr ""
+
+#: src/settings.js:361
+msgid "Common settings have been successfully updated"
+msgstr "常用设置已成功更新"
+
+#: src/settings.js:422
+msgid "Security settings have been successfully updated"
+msgstr "安全设置已成功更新"
+
+#: src/settings.js:461
+msgid "Are you sure you want to clear metadata?"
+msgstr "您确定要清除元数据吗？"
+
+#: src/settings.js:462
+msgid "Confirm metadata removal"
+msgstr "确认删除元数据"
+
+#: src/settings.js:476
+msgid "All history successfully deleted"
+msgstr "所有历史记录成功删除"
+
+#: src/settings.js:482
+msgid "Failed to clear history"
+msgstr ""
+
+#: src/settings.js:504
+#: src/settings.js:534
+#: templates/directeditorerror.php:29
+msgid "Error"
+msgstr "错误"
+
+#: src/settings.js:505
+msgid "Template successfully added"
+msgstr "模板成功添加"
+
+#: src/settings.js:535
+msgid "Template successfully deleted"
+msgstr "模板成功删除"
+
+#: src/share.js:50
+msgid "Advanced"
+msgstr "进阶"
+
+#: src/share.js:108
+#: templates/settings.php:133
+msgid "Provide advanced document permissions using Nextcloud Office"
+msgstr "使用Nextcloud Office 提供高级文档权限"
+
+#: src/share.js:140
+msgid "group"
+msgstr "分组"
+
+#: src/share.js:144
+msgid "conversation"
+msgstr "会话"
+
+#: src/share.js:148
+msgid "Share link"
+msgstr "共享链接"
+
+#: src/share.js:288
+msgid "Review only"
+msgstr "仅审阅"
+
+#: src/share.js:297
+msgid "Comment only"
+msgstr "仅评论"
+
+#: src/share.js:306
+msgid "Form filling"
+msgstr "表单填报"
+
+#: src/share.js:316
+msgid "Global filter"
+msgstr "全局过滤器"
+
+#: templates/settings.php:34
+msgid "Welcome to Nextcloud Office!"
+msgstr "欢迎使用 Nextcloud Office 文档！"
+
+#: templates/settings.php:35
+msgid ""
+"Edit and collaborate on text documents, spreadsheets, presentations, and "
+"PDFs within Nextcloud using Nextcloud Office."
+msgstr ""
+"在 Nextcloud 中使用 Nextcloud Office 文档编辑和协作处理文本文档、电子表格、演"
+"示文稿和 PDF 文件。"
+
+#: templates/settings.php:37
+msgid "Learn more"
+msgstr "了解更多"
+
+#: templates/settings.php:38
+msgid "Suggest a feature"
+msgstr "建议功能"
+
+#: templates/settings.php:43
+msgid "Server settings"
+msgstr "服务器设置"
+
+#: templates/settings.php:44
+msgid ""
+"Nextcloud Office Location specifies the address of the server with the "
+"document services installed. Please change the '<documentserver>' for the "
+"server address in the below line."
+msgstr ""
+"Nextcloud Office 位置指定了安装了文档服务的服务器的地址，请"
+"将'<documentserver>'改为下面一行中的服务器地址。"
+
+#: templates/settings.php:46
+msgid "Nextcloud Office address"
+msgstr "Nextcloud Office地址"
+
+#: templates/settings.php:52
+msgid "Disable certificate verification (insecure)"
+msgstr "关闭证书校验(不安全)"
+
+#: templates/settings.php:55
+msgid "Secret key (leave blank to disable)"
+msgstr "秘钥(留空为关闭)"
+
+#: templates/settings.php:64
+msgid "Advanced server settings"
+msgstr "更多设置"
+
+#: templates/settings.php:69
+msgid "Authorization header (leave blank to use default header)"
+msgstr "授权标头 (留空以使用默认的标头)"
+
+#: templates/settings.php:72
+msgid "Nextcloud Office address for internal requests from the server"
+msgstr "服务器内部请求 Nextcloud Office 的地址"
+
+#: templates/settings.php:75
+msgid "Server address for internal requests from Nextcloud Office"
+msgstr "Nextcloud Office 内部请求服务器的地址"
+
+#: templates/settings.php:82
+#: templates/settings.php:292
+#: templates/settings.php:437
+msgid "Save"
+msgstr "保存"
+
+#: templates/settings.php:88
+msgid "Connect to demo Nextcloud Office server"
+msgstr "连接到 Nextcloud Office 演示服务器"
+
+#: templates/settings.php:92
+msgid ""
+"This is a public test server, please do not use it for private sensitive "
+"data. The server will be available during a 30-day period."
+msgstr "这是公开的测试服务器，请勿存储隐私数据。服务器试用期限为30天。"
+
+#: templates/settings.php:102
+msgid "Common settings"
+msgstr "常用设置"
+
+#: templates/settings.php:115
+msgid ""
+"Use Nextcloud Office to generate a document preview (it will take up disk "
+"space)"
+msgstr "使用Nextcloud Office生成文档预览（将占用磁盘空间）"
+
+#: templates/settings.php:121
+msgid "Open file in the same tab"
+msgstr "在相同的标签页中打开"
+
+#: templates/settings.php:127
+msgid "Enable sharing (might increase editors loading time)"
+msgstr "启用共享功能(可能会延长编辑器加载时间）"
+
+#: templates/settings.php:139
+msgid ""
+"Keep metadata for each version once the document is edited (it will take up "
+"disk space)"
+msgstr "编辑文档后保留每个版本的元数据（它将占用磁盘空间）"
+
+#: templates/settings.php:140
+msgid "Clear"
+msgstr "清除"
+
+#: templates/settings.php:146
+msgid "Enable background connection check to the editors"
+msgstr "启用编辑器后台连接检查"
+
+#: templates/settings.php:152
+msgid "Enable e-mail notifications"
+msgstr "启用电子邮件通知"
+
+#: templates/settings.php:156
+msgid "Unknown author display name"
+msgstr "未知作者显示名称"
+
+#: templates/settings.php:160
+msgid "The default application for opening the format"
+msgstr "默认关联的文件格式"
+
+#: templates/settings.php:176
+msgid ""
+"Open the file for editing (due to format restrictions, the data might be "
+"lost when saving to the formats from the list below)"
+msgstr "默认的文件编辑器 (由于文件格式限制，保存为下列格式时，数据可能会缺失)"
+
+#: templates/settings.php:194
+msgid "Editor customization settings"
+msgstr "编辑器自定义设置"
+
+#: templates/settings.php:200
+msgid "Keep intermediate versions when editing (forcesave)"
+msgstr "编辑时保留中间版本 (强制保存)"
+
+#: templates/settings.php:206
+msgid "Enable live-viewing mode when accessing file by public link"
+msgstr "启用公共链接实时查看"
+
+#: templates/settings.php:210
+msgid "The customization section allows personalizing the editor interface"
+msgstr "自定义设置区允许对编辑器界面进行个性化设置"
+
+#: templates/settings.php:216
+msgid "Display Chat menu button"
+msgstr "显示交流菜单按钮"
+
+#: templates/settings.php:222
+msgid "Display the header more compact"
+msgstr "更紧致的显示菜单栏"
+
+#: templates/settings.php:228
+msgid "Display Feedback & Support menu button"
+msgstr "显示反馈&支持菜单按钮"
+
+#: templates/settings.php:234
+msgid "Display Help menu button"
+msgstr "显示帮助菜单按钮"
+
+#: templates/settings.php:238
+msgid "REVIEW mode for viewing"
+msgstr ""
+
+#: templates/settings.php:246
+msgid "Markup"
+msgstr "修订"
+
+#: templates/settings.php:253
+msgid "Final"
+msgstr "最终版"
+
+#: templates/settings.php:260
+msgid "Original"
+msgstr "原始版本"
+
+#: templates/settings.php:265
+msgid "Default editor theme"
+msgstr "编辑器默认的主题"
+
+#: templates/settings.php:273
+msgid "Same as system"
+msgstr "和系統一致"
+
+#: templates/settings.php:280
+msgid "Light"
+msgstr "光"
+
+#: templates/settings.php:287
+msgid "Dark"
+msgstr "黑暗的"
+
+#: templates/settings.php:296
+msgid "Custom fonts"
+msgstr ""
+
+#: templates/settings.php:297
+msgid ""
+"Upload custom fonts (TTF, OTF, TTC, WOFF, WOFF2) to make them available in "
+"the document editor. Click Regenerate after uploading or deleting fonts to "
+"apply changes."
+msgstr ""
+
+#: templates/settings.php:304
+msgid "Common templates"
+msgstr "通用模板"
+
+#: templates/settings.php:306
+msgid "Add a new template"
+msgstr "添加一个新的模板"
+
+#: templates/settings.php:322
+msgid "Security"
+msgstr "安全"
+
+#: templates/settings.php:327
+msgid "Enable plugins"
+msgstr "启用插件"
+
+#: templates/settings.php:333
+msgid "Run document macros"
+msgstr "运行文档宏"
+
+#: templates/settings.php:337
+msgid "Enable document protection for"
+msgstr "为以下用户启用文档保护"
+
+#: templates/settings.php:345
+msgid "All users"
+msgstr "所有用户"
+
+#: templates/settings.php:352
+msgid "Owner only"
+msgstr "仅限所有者"
+
+#: templates/settings.php:357
+msgid "Secure view enables you to secure documents by embedding a watermark"
+msgstr "启用安全视图以通过水印来保障文档安全"
+
+#: templates/settings.php:362
+msgid "Enable watermarking"
+msgstr "启用水印"
+
+#: templates/settings.php:367
+msgid "Watermark text"
+msgstr "水印文本"
+
+#: templates/settings.php:369
+msgid "Supported placeholders"
+msgstr "支持的占位符"
+
+#: templates/settings.php:377
+msgid "Show watermark on tagged files"
+msgstr "在标记的文件上展示水印"
+
+#: templates/settings.php:386
+msgid "Show watermark for users of groups"
+msgstr "在组内用户中展示水印"
+
+#: templates/settings.php:394
+msgid "Show watermark for all shares"
+msgstr "在所有的分享中展示水印"
+
+#: templates/settings.php:400
+msgid "Show watermark for read only shares"
+msgstr "在只读分享中展示水印"
+
+#: templates/settings.php:404
+msgid "Link shares"
+msgstr "分享链接"
+
+#: templates/settings.php:408
+msgid "Show watermark for all link shares"
+msgstr "在分享链接中展示水印"
+
+#: templates/settings.php:415
+msgid "Show watermark for download hidden shares"
+msgstr "在下载的隐藏分享文件中展示水印"
+
+#: templates/settings.php:421
+msgid "Show watermark for read only link shares"
+msgstr "在只读的分享链接中展示水印"
+
+#: templates/settings.php:428
+msgid "Show watermark on link shares with specific system tags"
+msgstr "在有特定系统标签的分享链接中展示水印"
+
+#~ msgid "Loading, please wait."
+#~ msgstr "载入中，请稍后..."
+
+#~ msgid "Server can't read xml"
+#~ msgstr "服务器无法读取XML"
+
+#~ msgid "Bad Response. Errors: "
+#~ msgstr "错误的返回: "
+
+#~ msgid "Documentation"
+#~ msgstr "文档集"
+
+#~ msgid "Select tag"
+#~ msgstr "选择标签"
+
+#~ msgid "Review mode for viewing"
+#~ msgstr "审阅模式浏览"

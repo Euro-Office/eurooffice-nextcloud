@@ -1,0 +1,1051 @@
+msgid ""
+msgstr ""
+"Report-Msgid-Bugs-To: translations\\@example.com\n"
+"POT-Creation-Date: 2026-10-07 12:57+0200\n"
+"Language: da\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: lib/Controller/CallbackController.php:134
+#: lib/Controller/CallbackController.php:152
+#: lib/Controller/CallbackController.php:161
+#: lib/Controller/CallbackController.php:206
+#: lib/Controller/CallbackController.php:280
+#: lib/Controller/CallbackController.php:291
+#: lib/Controller/CallbackController.php:300
+#: lib/Controller/CallbackController.php:359
+#: lib/Controller/CallbackController.php:375
+#: lib/Controller/CallbackController.php:381
+#: lib/Controller/CallbackController.php:392
+#: lib/Controller/CallbackController.php:434
+msgid "Access denied"
+msgstr "Adgang nægtet"
+
+#: lib/Controller/CallbackController.php:138
+#: lib/Controller/CallbackController.php:219
+#: lib/Controller/CallbackController.php:284
+#: lib/Controller/CallbackController.php:363
+#: lib/Controller/CallbackController.php:663
+#: lib/Controller/CallbackController.php:737
+#: lib/Controller/EditorApiController.php:134
+#: lib/Controller/EditorApiController.php:532
+#: lib/Controller/EditorController.php:1421
+#: lib/FileUtility.php:76
+#: lib/FileUtility.php:89
+msgid "Invalid request"
+msgstr "Ugyldig anmodning"
+
+#: lib/Controller/CallbackController.php:225
+#: lib/Controller/CallbackController.php:242
+#: lib/Controller/CallbackController.php:668
+msgid "Files not found"
+msgstr "Filer ikke fundet"
+
+#: lib/Controller/CallbackController.php:258
+#: lib/Controller/CallbackController.php:316
+#: lib/Controller/EditorApiController.php:130
+#: lib/Controller/EditorApiController.php:175
+#: lib/Controller/EditorController.php:125
+#: lib/Controller/EditorController.php:446
+#: lib/Controller/EditorController.php:578
+#: lib/Controller/EditorController.php:583
+#: lib/Controller/EditorController.php:664
+#: lib/Controller/EditorController.php:756
+#: lib/Controller/EditorController.php:827
+#: lib/Controller/EditorController.php:963
+#: lib/Controller/EditorController.php:1066
+#: lib/Controller/EditorController.php:1118
+#: lib/Controller/EditorController.php:1185
+#: lib/Controller/EditorController.php:1215
+#: lib/Controller/EditorController.php:1320
+#: lib/DirectEditor.php:146
+msgid "Not permitted"
+msgstr "Ikke tilladt"
+
+#: lib/Controller/CallbackController.php:260
+#: lib/Controller/CallbackController.php:318
+#: lib/Controller/EditorController.php:798
+msgid "Download failed"
+msgstr "Hentning mislykkedes"
+
+#: lib/Controller/CallbackController.php:309
+#: lib/Controller/CallbackController.php:685
+#: lib/Controller/CallbackController.php:729
+#: lib/Controller/CallbackController.php:742
+#: lib/Controller/EditorApiController.php:537
+#: lib/Controller/EditorController.php:618
+#: lib/Controller/EditorController.php:1129
+#: lib/Controller/EditorController.php:1192
+#: lib/Controller/EditorController.php:1426
+#: lib/FileUtility.php:81
+#: lib/FileUtility.php:117
+msgid "File not found"
+msgstr "Fil ikke fundet"
+
+#: lib/Controller/CallbackController.php:655
+#: lib/Controller/CallbackController.php:771
+#: lib/Controller/EditorApiController.php:524
+#: lib/Controller/EditorController.php:1413
+#: lib/FileUtility.php:130
+#: src/editor.js:67
+msgid "FileId is empty"
+msgstr "Fil-ID er tom"
+
+#: lib/Controller/CallbackController.php:783
+#: lib/Controller/EditorApiController.php:553
+#: lib/Controller/EditorController.php:152
+#: lib/Controller/EditorController.php:682
+#: lib/Controller/EditorController.php:1145
+#: lib/Controller/EditorController.php:1442
+#: lib/FileUtility.php:110
+#: lib/FileUtility.php:141
+#: lib/FileUtility.php:150
+msgid "You do not have enough permissions to view the file"
+msgstr "Du har ikke tilstrækkelige tilladelser til at se filen"
+
+#: lib/Controller/EditorApiController.php:183
+#: lib/Controller/EditorController.php:690
+msgid "Format is not supported"
+msgstr "Format er ikke understøttet"
+
+#: lib/Controller/EditorApiController.php:405
+#: lib/FileCreator.php:63
+#: lib/Listeners/RegisterTemplateCreatorListener.php:60
+#: src/main.js:722
+#: src/main.js:729
+msgid "New document"
+msgstr "Nyt dokument"
+
+#: lib/Controller/EditorApiController.php:406
+#: lib/FileCreator.php:61
+#: lib/Listeners/RegisterTemplateCreatorListener.php:68
+#: src/main.js:742
+#: src/main.js:749
+msgid "New spreadsheet"
+msgstr "Nyt regneark"
+
+#: lib/Controller/EditorApiController.php:407
+#: lib/FileCreator.php:62
+#: lib/Listeners/RegisterTemplateCreatorListener.php:76
+#: src/main.js:762
+#: src/main.js:769
+msgid "New presentation"
+msgstr "Ny præsentation"
+
+#: lib/Controller/EditorApiController.php:408
+#: src/main.js:783
+#: src/main.js:790
+msgid "New PDF form"
+msgstr "Ny PDF-formular"
+
+#: lib/Controller/EditorApiController.php:520
+#: lib/Controller/EditorController.php:1409
+msgid "UserId is empty"
+msgstr "Bruger-id er tomt"
+
+#: lib/Controller/EditorApiController.php:726
+#: lib/Controller/EditorApiController.php:727
+#: lib/Controller/EditorApiController.php:728
+msgid "Anonymous"
+msgstr "Anonym"
+
+#: lib/Controller/EditorController.php:130
+#: lib/Controller/EditorController.php:195
+msgid "Template not found"
+msgstr "Skabelonen blev ikke fundet"
+
+#: lib/Controller/EditorController.php:147
+#: lib/Controller/EditorController.php:164
+#: lib/Controller/EditorController.php:774
+msgid "You don't have enough permission to create"
+msgstr "Du har ikke tilladelse nok til at oprette"
+
+#: lib/Controller/EditorController.php:160
+#: lib/Controller/EditorController.php:769
+msgid "The required folder was not found"
+msgstr "Den nødvendige mappe blev ikke fundet"
+
+#: lib/Controller/EditorController.php:210
+#: lib/Controller/EditorController.php:736
+#: lib/Controller/EditorController.php:809
+msgid "Can't create file"
+msgstr "Filen kan ikke oprettes"
+
+#: lib/Controller/EditorController.php:450
+#: lib/Controller/EditorController.php:481
+msgid "Failed to send notification"
+msgstr "Kunne ikke sende notifikation"
+
+#: lib/Controller/EditorController.php:560
+msgid "Notification sent successfully"
+msgstr "Meddelelse sendt"
+
+#: lib/Controller/EditorController.php:695
+msgid "Conversion is not required"
+msgstr "Konvertering er ikke påkrævet"
+
+#: lib/Controller/EditorController.php:724
+#: lib/Controller/EditorController.php:1266
+msgid "Failed to download converted file"
+msgstr "Kunne ikke downloade den konverterede fil"
+
+#: lib/Controller/EditorController.php:780
+#: lib/Controller/EditorController.php:1327
+#: lib/DirectEditor.php:153
+#: lib/DocumentService.php:122
+#: lib/DocumentService.php:253
+#: lib/DocumentService.php:273
+msgid "Nextcloud Office app is not configured. Please contact admin"
+msgstr "Nextcloud Office-appen er ikke konfigureret. Kontakt en administrator."
+
+#: lib/Controller/EditorController.php:789
+msgid ""
+"The domain in the file url does not match the domain of the Document server"
+msgstr "Domænet i filens URL matcher ikke domænet for dokumentserveren"
+
+#: lib/Controller/SettingsController.php:122
+#: templates/settings.php:94
+msgid ""
+"The 30-day test period is over, you can no longer connect to demo Nextcloud "
+"Office server."
+msgstr ""
+"30-dages testperioden er forbi, du kan ikke længere oprette forbindelse til "
+"demo Nextcloud Office-server."
+
+#: lib/Controller/SettingsController.php:239
+#: templates/settings.php:370
+msgid "DO NOT SHARE THIS"
+msgstr "DEL IKKE DETTE"
+
+#: lib/Controller/TemplateController.php:99
+msgid "Template must be in OOXML format"
+msgstr "Skabelonen skal være i OOXML-format"
+
+#: lib/Controller/TemplateController.php:106
+msgid "Template already exists"
+msgstr "Skabelonen findes allerede"
+
+#: lib/Controller/TemplateController.php:123
+msgid "Invalid file provided"
+msgstr "Ugyldig fil angivet"
+
+#: lib/Controller/TemplateController.php:141
+#: lib/Controller/TemplateController.php:148
+msgid "Failed to delete template"
+msgstr "Skabelonen kunne ikke slettes"
+
+#: lib/Cron/EditorsCheck.php:129
+msgid "Nextcloud Office server is not available"
+msgstr "Nextcloud Office-serveren er ikke tilgængelig"
+
+#: lib/DocumentService.php:193
+msgid "Bad Response. JSON error: "
+msgstr "Svaret er ugyldigt. JSON-fejl: "
+
+#: lib/DocumentService.php:204
+#: lib/DocumentService.php:324
+#: lib/DocumentService.php:411
+msgid "Error occurred in the document service"
+msgstr "Der opstod en fejl i dokumenttjenesten"
+
+#: lib/DocumentService.php:390
+msgid ""
+"Mixed Active Content is not allowed. HTTPS address for Nextcloud Office is "
+"required."
+msgstr ""
+"Blandet aktivt indhold er ikke tilladt. HTTPS-adresse for Nextcloud Office "
+"er påkrævet."
+
+#: lib/DocumentService.php:400
+msgid "Bad healthcheck status"
+msgstr "Helbredstjekket gav en ugyldig status."
+
+#: lib/DocumentService.php:416
+#: src/editor.js:112
+msgid "Not supported version"
+msgstr "Ikke understøttet version"
+
+#: lib/EmailManager.php:94
+msgid "You were mentioned in the document"
+msgstr "Du blev nævnt i dokumentet"
+
+#: lib/EmailManager.php:95
+#, php-format
+msgid "%1$s mentioned you in the document comment"
+msgstr "%1$s nævnte dig i dokumentkommentaren"
+
+#: lib/EmailManager.php:97
+#, php-format
+msgid ""
+"This is a mail message to notify that you have been mentioned by <a "
+"href=\"%1$s\">%2$s</a> in the comment to the <a href=\"%3$s\">%4$s</a>:"
+"<br>\"%5$s\""
+msgstr ""
+"Dette er en e-mailbesked for at underrette dig om, at du er blevet nævnt af "
+"<a href=\"%1$s\">%2$s</a> i kommentaren til <a href=\"%3$s\">%4$s</a>:"
+"<br>\"%5$s\""
+
+#: lib/EmailManager.php:101
+msgid "Open file"
+msgstr "Åbn fil"
+
+#: lib/EmailManager.php:131
+msgid "Nextcloud Office Document Server is unavailable"
+msgstr "Nextcloud Office-dokumentserveren er ikke tilgængelig"
+
+#: lib/EmailManager.php:132
+msgid ""
+"This is a mail message to notify that the connection with the Nextcloud "
+"Office Document Server has been lost. Please check the connection settings:"
+msgstr ""
+"Dette er en e-mail om, at forbindelsen til Nextcloud Office-dokumentserveren "
+"er afbrudt. Kontrollér forbindelsesindstillingerne:"
+
+#: lib/EmailManager.php:134
+msgid "Go to Settings"
+msgstr "Gå til Indstillinger"
+
+#: lib/Notifier.php:74
+msgid "Please check the settings to resolve the problem."
+msgstr "Kontrollér indstillingerne for at løse problemet."
+
+#: lib/Notifier.php:78
+msgid "View settings"
+msgstr "Vis indstillinger"
+
+#: lib/Notifier.php:103
+#, php-format
+msgid "%1$s mentioned in the %2$s: \"%3$s\"."
+msgstr "%1$s nævnt i %2$s: \"%3$s\"."
+
+#: lib/Notifier.php:104
+#, php-format
+msgid "{notifier} mentioned in the {file}: \"%1$s\"."
+msgstr "{notifier} nævnt i {file}: \"%1$s\"."
+
+#: lib/Notifier.php:126
+#: lib/Notifier.php:127
+msgid "Open"
+msgstr "Åbn"
+
+#: lib/Notifier.php:131
+#, php-format
+msgid "%1$s could not be saved. Please open the file again."
+msgstr "%1$s kunne ikke gemmes. Åbn filen igen."
+
+#: lib/Notifier.php:132
+msgid "{file} could not be saved. Please open the file again."
+msgstr "{file} kunne ikke gemmes. Åbn filen igen."
+
+#: specialAppInfoFakeDummyForL10nScript.php:2
+msgid "Nextcloud Office"
+msgstr ""
+
+#: specialAppInfoFakeDummyForL10nScript.php:3
+msgid "Nextcloud Office app"
+msgstr ""
+
+#: specialAppInfoFakeDummyForL10nScript.php:4
+msgid ""
+"The Nextcloud Office app for Nextcloud brings powerful document editing and "
+"collaboration tools directly to your Nextcloud environment. With this "
+"integration, you can seamlessly create, edit, and co-author text documents, "
+"spreadsheets, presentations, and PDFs, as well as build and fill out PDF "
+"forms.\n"
+"\n"
+"Collaborate with your team in real time, make use of Track Changes, version "
+"history, comments, integrated chat, and more. Work together on files with "
+"federated cloud sharing. Flexible access permissions allow you to control "
+"who can view, edit, or comment, ensuring secure role-based collaboration "
+"tailored to your needs. Documents can also be protected with watermarks, "
+"password settings, and encryption for added security.\n"
+"\n"
+"The app offers support for over 50 file formats, including DOCX, XLSX, PPTX, "
+"PDF, RTF, TXT, CSV, ODT, ODS, ODP, EPUB, FB2, HTML, HWP, HWPX, Pages, "
+"Numbers, Keynote, etc. Seamless desktop and mobile app integration means "
+"you'll have access to your Nextcloud files wherever you go.\n"
+"\n"
+"Furthermore, you can seamlessly connect any AI assistant, including local "
+"ones, directly to the editors to work faster and more efficient. This allows "
+"you to leverage various AI models for tasks like chatbot interactions, "
+"translations, OCR, and more.\n"
+"\n"
+"Whether you’re working with internal teams or external collaborators, the "
+"Nextcloud Office app for Nextcloud enhances productivity, simplifies "
+"workflows, and ensures your files remain secure."
+msgstr ""
+
+#: specialVueFakeDummyForL10nScript.js:35
+#: src/main.js:573
+#: src/main.js:688
+msgid "Download as"
+msgstr "Hent som"
+
+#: specialVueFakeDummyForL10nScript.js:41
+msgid "Choose a format to convert {fileName}"
+msgstr "Vælg et format til at konvertere {fileName}"
+
+#: specialVueFakeDummyForL10nScript.js:44
+msgid "Origin format"
+msgstr "Oprindelsesformat"
+
+#: specialVueFakeDummyForL10nScript.js:49
+#: specialVueFakeDummyForL10nScript.js:437
+msgid "Cancel"
+msgstr "Annuller"
+
+#: specialVueFakeDummyForL10nScript.js:53
+msgid "Download"
+msgstr "Hent"
+
+#: specialVueFakeDummyForL10nScript.js:86
+#: src/settings.js:278
+msgid "Server settings have been successfully updated"
+msgstr "Serverindstillingerne er opdateret"
+
+#: specialVueFakeDummyForL10nScript.js:87
+msgid "Info"
+msgstr "Info"
+
+#: specialVueFakeDummyForL10nScript.js:90
+msgid "Ok"
+msgstr "OK"
+
+#: specialVueFakeDummyForL10nScript.js:103
+msgid ""
+"To ensure the security of important parameters in Nextcloud Office requests, "
+"please set a Secret Key on the Settings page. To learn more, <a href=\"{url}"
+"\" target=\"_blank\">click here</a>."
+msgstr ""
+"For at sikre vigtige parametre i Nextcloud Office-anmodninger skal du angive "
+"en hemmelig nøgle på indstillingssiden. Læs mere <a href=\"{url}\" "
+"target=\"_blank\">her</a>."
+
+#: specialVueFakeDummyForL10nScript.js:168
+msgid "Failed to load fonts: {error}"
+msgstr "Skrifttyperne kunne ikke indlæses: {error}"
+
+#: specialVueFakeDummyForL10nScript.js:181
+msgid ""
+"Unsupported file type. Please upload TTF, OTF, TTC, WOFF or WOFF2 fonts."
+msgstr ""
+"Filtypen understøttes ikke. Upload TTF-, OTF-, TTC-, WOFF- eller WOFF2-"
+"skrifttyper."
+
+#: specialVueFakeDummyForL10nScript.js:201
+msgid "\"{name}\" uploaded successfully."
+msgstr ""
+
+#: specialVueFakeDummyForL10nScript.js:205
+msgid "Upload failed: {error}"
+msgstr "Skrifttypen kunne ikke uploades: {error}"
+
+#: specialVueFakeDummyForL10nScript.js:216
+msgid "\"{name}\" deleted."
+msgstr ""
+
+#: specialVueFakeDummyForL10nScript.js:220
+msgid "Delete failed: {error}"
+msgstr "Skrifttypen kunne ikke slettes: {error}"
+
+#: specialVueFakeDummyForL10nScript.js:232
+msgid "Font regeneration started. This may take a moment…"
+msgstr "Genereringen af skrifttyper er gået i gang. Det kan tage et øjeblik…"
+
+#: specialVueFakeDummyForL10nScript.js:236
+msgid "Regeneration failed: {error}"
+msgstr "Genereringen mislykkedes: {error}"
+
+#: specialVueFakeDummyForL10nScript.js:261
+msgid "Font regeneration completed successfully."
+msgstr "Skrifttyperne blev genereret."
+
+#: specialVueFakeDummyForL10nScript.js:265
+msgid "Regeneration error: {error}"
+msgstr "Der opstod en fejl under genereringen: {error}"
+
+#: specialVueFakeDummyForL10nScript.js:292
+msgid ""
+"Custom font management requires the AdminPanel service to be enabled on the "
+"document server."
+msgstr ""
+"Håndtering af brugerdefinerede skrifttyper kræver, at tjenesten AdminPanel "
+"er slået til på dokumentserveren."
+
+#: specialVueFakeDummyForL10nScript.js:294
+msgid "Uploading…"
+msgstr "Uploader…"
+
+#: specialVueFakeDummyForL10nScript.js:294
+msgid "Add font"
+msgstr "Tilføj skrifttype"
+
+#: specialVueFakeDummyForL10nScript.js:296
+msgid "Regenerate font cache"
+msgstr "Generer skrifttypecachen igen"
+
+#: specialVueFakeDummyForL10nScript.js:298
+msgid "Regenerating…"
+msgstr "Genererer…"
+
+#: specialVueFakeDummyForL10nScript.js:298
+msgid "Regenerate"
+msgstr "Generer igen"
+
+#: specialVueFakeDummyForL10nScript.js:300
+msgid "Loading fonts…"
+msgstr "Indlæser skrifttyper…"
+
+#: specialVueFakeDummyForL10nScript.js:302
+msgid ""
+"No custom fonts installed. Upload TTF, OTF, TTC, WOFF or WOFF2 files to add "
+"them."
+msgstr ""
+"Der er ikke installeret nogen brugerdefinerede skrifttyper. Upload TTF-, "
+"OTF-, TTC-, WOFF- eller WOFF2-filer for at tilføje dem."
+
+#: specialVueFakeDummyForL10nScript.js:304
+msgid "Delete {name}"
+msgstr "Slet {name}"
+
+#: specialVueFakeDummyForL10nScript.js:416
+msgid "Select template"
+msgstr "Vælg skabelon"
+
+#: specialVueFakeDummyForL10nScript.js:424
+msgid "Empty"
+msgstr "Tom"
+
+#: specialVueFakeDummyForL10nScript.js:441
+msgid "Create"
+msgstr "Opret"
+
+#: src/editor.js:101
+#: src/editor.js:105
+msgid "Nextcloud Office cannot be reached. Please contact admin"
+msgstr "Nextcloud Office kan ikke nås. Kontakt en administrator."
+
+#: src/editor.js:147
+msgid ""
+"You are using public demo Nextcloud Office server. Please do not store "
+"private sensitive data."
+msgstr ""
+"Du bruger den offentlige demoserver til Nextcloud Office. Gem ikke private, "
+"følsomme data på den."
+
+#: src/editor.js:233
+msgid "Failed to load configuration"
+msgstr ""
+
+#: src/editor.js:324
+#: src/listener.js:66
+msgid "Save as"
+msgstr "Gem som"
+
+#: src/editor.js:346
+msgid "File saved"
+msgstr "Filen er gemt"
+
+#: src/editor.js:370
+#: src/listener.js:84
+msgid "Insert image"
+msgstr "Indsæt billede"
+
+#: src/editor.js:422
+#: src/listener.js:147
+msgid "Select recipients"
+msgstr "Vælg modtagere"
+
+#: src/editor.js:448
+msgid "The data source must not be the current document"
+msgstr "Datakilden må ikke være det aktuelle dokument"
+
+#: src/editor.js:502
+#: src/listener.js:159
+msgid "Select file to combine"
+msgstr "Vælg fil til at kombinere"
+
+#: src/editor.js:505
+#: src/listener.js:162
+msgid "Select file to compare"
+msgstr "Vælg fil for at sammenligne"
+
+#: src/editor.js:508
+#: src/listener.js:165
+msgid "Select file to insert text"
+msgstr "Vælg fil for at indsætte tekst"
+
+#: src/editor.js:511
+#: src/listener.js:168
+msgid "Select file"
+msgstr "Vælg fil"
+
+#: src/editor.js:670
+#: src/listener.js:183
+msgid "Select data source"
+msgstr "Vælg datakilde"
+
+#: src/main.js:155
+msgid "File created"
+msgstr "Fil oprettet"
+
+#: src/main.js:161
+msgid "Failed to create file"
+msgstr ""
+
+#: src/main.js:384
+msgid "File has been converted. Its content might look different."
+msgstr "Filen er blevet konverteret. Dens indhold kan se anderledes ud."
+
+#: src/main.js:387
+msgid "Failed to convert file"
+msgstr ""
+
+#: src/main.js:427
+msgid "Blank"
+msgstr "Tom"
+
+#: src/main.js:431
+msgid "From text document"
+msgstr "Fra tekstdokument"
+
+#: src/main.js:437
+msgid "Create new PDF form"
+msgstr "Opret ny PDF-formular"
+
+#: src/main.js:536
+#: src/main.js:612
+msgid "Edit in Nextcloud Office"
+msgstr ""
+
+#: src/main.js:537
+#: src/main.js:585
+#: src/main.js:613
+#: src/main.js:844
+msgid "Open in Nextcloud Office"
+msgstr "Åbn i Nextcloud Office"
+
+#: src/main.js:551
+#: src/main.js:639
+msgid "Convert with Nextcloud Office"
+msgstr "Konverter med Nextcloud Office"
+
+#: src/main.js:562
+#: src/main.js:663
+msgid "Create form"
+msgstr "Opret formular"
+
+#: src/settings.js:105
+#: templates/settings.php:107
+msgid "Allow the following groups to access the editors"
+msgstr "Giv følgende grupper adgang til editorerne"
+
+#: src/settings.js:211
+#: src/settings.js:275
+msgid "Error when trying to connect"
+msgstr "Fejl under forsøg på at oprette forbindelse"
+
+#: src/settings.js:272
+msgid "version"
+msgstr "version"
+
+#: src/settings.js:291
+#: src/settings.js:367
+#: src/settings.js:428
+msgid "Failed to save settings"
+msgstr ""
+
+#: src/settings.js:361
+msgid "Common settings have been successfully updated"
+msgstr "De fælles indstillinger er opdateret"
+
+#: src/settings.js:422
+msgid "Security settings have been successfully updated"
+msgstr "Sikkerhedsindstillingerne er opdateret"
+
+#: src/settings.js:461
+msgid "Are you sure you want to clear metadata?"
+msgstr "Er du sikker på, at du vil rydde metadata?"
+
+#: src/settings.js:462
+msgid "Confirm metadata removal"
+msgstr "Bekræft rydning af metadata"
+
+#: src/settings.js:476
+msgid "All history successfully deleted"
+msgstr "Al historik blev slettet"
+
+#: src/settings.js:482
+msgid "Failed to clear history"
+msgstr ""
+
+#: src/settings.js:504
+#: src/settings.js:534
+#: templates/directeditorerror.php:29
+msgid "Error"
+msgstr "Fejl"
+
+#: src/settings.js:505
+msgid "Template successfully added"
+msgstr "Skabelon blev tilføjet"
+
+#: src/settings.js:535
+msgid "Template successfully deleted"
+msgstr "Skabelonen blev slettet"
+
+#: src/share.js:50
+msgid "Advanced"
+msgstr "Avanceret"
+
+#: src/share.js:108
+#: templates/settings.php:133
+msgid "Provide advanced document permissions using Nextcloud Office"
+msgstr "Giv avancerede dokumenttilladelser ved brug af Nextcloud Office"
+
+#: src/share.js:140
+msgid "group"
+msgstr "gruppe"
+
+#: src/share.js:144
+msgid "conversation"
+msgstr "samtale"
+
+#: src/share.js:148
+msgid "Share link"
+msgstr "Del link"
+
+#: src/share.js:288
+msgid "Review only"
+msgstr "Kun anmeldelse"
+
+#: src/share.js:297
+msgid "Comment only"
+msgstr "Kun kommentar"
+
+#: src/share.js:306
+msgid "Form filling"
+msgstr "Formular udfyldning"
+
+#: src/share.js:316
+msgid "Global filter"
+msgstr "Globalt filter"
+
+#: templates/settings.php:34
+msgid "Welcome to Nextcloud Office!"
+msgstr "Velkommen til Nextcloud Office!"
+
+#: templates/settings.php:35
+msgid ""
+"Edit and collaborate on text documents, spreadsheets, presentations, and "
+"PDFs within Nextcloud using Nextcloud Office."
+msgstr ""
+"Rediger og samarbejd om tekstdokumenter, regneark, præsentationer og PDF-"
+"filer i Nextcloud med Nextcloud Office."
+
+#: templates/settings.php:37
+msgid "Learn more"
+msgstr "Læs mere"
+
+#: templates/settings.php:38
+msgid "Suggest a feature"
+msgstr "Foreslå en funktion"
+
+#: templates/settings.php:43
+msgid "Server settings"
+msgstr "Serverindstillinger"
+
+#: templates/settings.php:44
+msgid ""
+"Nextcloud Office Location specifies the address of the server with the "
+"document services installed. Please change the '<documentserver>' for the "
+"server address in the below line."
+msgstr ""
+"Nextcloud Office-placeringen angiver adressen på den server, "
+"dokumenttjenesterne er installeret på. Erstat '<dokumentserver>' med "
+"serveradressen i linjen nedenfor."
+
+#: templates/settings.php:46
+msgid "Nextcloud Office address"
+msgstr "Nextcloud Office-adresse"
+
+#: templates/settings.php:52
+msgid "Disable certificate verification (insecure)"
+msgstr "Deaktiver certifikatbekræftelse (usikker)"
+
+#: templates/settings.php:55
+msgid "Secret key (leave blank to disable)"
+msgstr "Hemmelig nøgle (lad være tom for at deaktivere)"
+
+#: templates/settings.php:64
+msgid "Advanced server settings"
+msgstr "Avancerede serverindstillinger"
+
+#: templates/settings.php:69
+msgid "Authorization header (leave blank to use default header)"
+msgstr ""
+"Autorisationsheader (lad feltet stå tomt for at bruge standardheaderen)"
+
+#: templates/settings.php:72
+msgid "Nextcloud Office address for internal requests from the server"
+msgstr "Nextcloud Office-adresse for interne anmodninger fra serveren"
+
+#: templates/settings.php:75
+msgid "Server address for internal requests from Nextcloud Office"
+msgstr "Serveradresse for interne anmodninger fra Nextcloud Office"
+
+#: templates/settings.php:82
+#: templates/settings.php:292
+#: templates/settings.php:437
+msgid "Save"
+msgstr "Gem"
+
+#: templates/settings.php:88
+msgid "Connect to demo Nextcloud Office server"
+msgstr "Opret forbindelse til demo Nextcloud Office-server"
+
+#: templates/settings.php:92
+msgid ""
+"This is a public test server, please do not use it for private sensitive "
+"data. The server will be available during a 30-day period."
+msgstr ""
+"Dette er en offentlig testserver. Brug den ikke til private, følsomme data. "
+"Serveren er tilgængelig i 30 dage."
+
+#: templates/settings.php:102
+msgid "Common settings"
+msgstr "Fælles indstillinger"
+
+#: templates/settings.php:115
+msgid ""
+"Use Nextcloud Office to generate a document preview (it will take up disk "
+"space)"
+msgstr ""
+"Brug Nextcloud Office til at generere et dokumenteksempel (dette vil optage "
+"diskplads)"
+
+#: templates/settings.php:121
+msgid "Open file in the same tab"
+msgstr "Åbn filen i samme fane"
+
+#: templates/settings.php:127
+msgid "Enable sharing (might increase editors loading time)"
+msgstr "Aktivér deling (kan øge editorernes indlæsningstid)"
+
+#: templates/settings.php:139
+msgid ""
+"Keep metadata for each version once the document is edited (it will take up "
+"disk space)"
+msgstr ""
+"Gem metadata for hver version, når dokumentet er redigeret (dette vil optage "
+"diskplads)"
+
+#: templates/settings.php:140
+msgid "Clear"
+msgstr "Klar"
+
+#: templates/settings.php:146
+msgid "Enable background connection check to the editors"
+msgstr "Aktivér baggrundstjek af forbindelsen til editorerne"
+
+#: templates/settings.php:152
+msgid "Enable e-mail notifications"
+msgstr "Aktivér e-mail-notifikationer"
+
+#: templates/settings.php:156
+msgid "Unknown author display name"
+msgstr "Ukendt forfatter vist navn"
+
+#: templates/settings.php:160
+msgid "The default application for opening the format"
+msgstr "Standardapplikationen til at åbne formatet"
+
+#: templates/settings.php:176
+msgid ""
+"Open the file for editing (due to format restrictions, the data might be "
+"lost when saving to the formats from the list below)"
+msgstr ""
+"Åbn filen til redigering (på grund af formatbegrænsninger kan data gå tabt, "
+"når du gemmer i formaterne fra listen nedenfor)"
+
+#: templates/settings.php:194
+msgid "Editor customization settings"
+msgstr "Indstillinger for editortilpasning"
+
+#: templates/settings.php:200
+msgid "Keep intermediate versions when editing (forcesave)"
+msgstr "Behold mellemversioner under redigering (tvangsgem)"
+
+#: templates/settings.php:206
+msgid "Enable live-viewing mode when accessing file by public link"
+msgstr "Aktivér livevisningstilstand ved adgang til fil via et offentligt link"
+
+#: templates/settings.php:210
+msgid "The customization section allows personalizing the editor interface"
+msgstr "Tilpasningssektionen gør det muligt at tilpasse editorgrænsefladen"
+
+#: templates/settings.php:216
+msgid "Display Chat menu button"
+msgstr "Vis chatmenuknap"
+
+#: templates/settings.php:222
+msgid "Display the header more compact"
+msgstr "Vis værktøjslinjen mere kompakt"
+
+#: templates/settings.php:228
+msgid "Display Feedback & Support menu button"
+msgstr "Vis feedback- og supportmenuknap"
+
+#: templates/settings.php:234
+msgid "Display Help menu button"
+msgstr "Vis menuknappen Hjælp"
+
+#: templates/settings.php:238
+msgid "REVIEW mode for viewing"
+msgstr "Gennemgangstilstand for visning"
+
+#: templates/settings.php:246
+msgid "Markup"
+msgstr "Kladde"
+
+#: templates/settings.php:253
+msgid "Final"
+msgstr "Endelig"
+
+#: templates/settings.php:260
+msgid "Original"
+msgstr "Original"
+
+#: templates/settings.php:265
+msgid "Default editor theme"
+msgstr "Standardeditortema"
+
+#: templates/settings.php:273
+msgid "Same as system"
+msgstr "Samme som system"
+
+#: templates/settings.php:280
+msgid "Light"
+msgstr "Lys"
+
+#: templates/settings.php:287
+msgid "Dark"
+msgstr "Mørk"
+
+#: templates/settings.php:296
+msgid "Custom fonts"
+msgstr "Brugerdefinerede skrifttyper"
+
+#: templates/settings.php:297
+msgid ""
+"Upload custom fonts (TTF, OTF, TTC, WOFF, WOFF2) to make them available in "
+"the document editor. Click Regenerate after uploading or deleting fonts to "
+"apply changes."
+msgstr ""
+"Upload brugerdefinerede skrifttyper (TTF, OTF, TTC, WOFF, WOFF2), så de "
+"bliver tilgængelige i dokumenteditoren. Klik på Generer igen efter upload "
+"eller sletning for at anvende ændringerne."
+
+#: templates/settings.php:304
+msgid "Common templates"
+msgstr "Fælles skabeloner"
+
+#: templates/settings.php:306
+msgid "Add a new template"
+msgstr "Tilføj en ny skabelon"
+
+#: templates/settings.php:322
+msgid "Security"
+msgstr "Sikkerhed"
+
+#: templates/settings.php:327
+msgid "Enable plugins"
+msgstr "Aktivér plugins"
+
+#: templates/settings.php:333
+msgid "Run document macros"
+msgstr "Kør dokumentmakroer"
+
+#: templates/settings.php:337
+msgid "Enable document protection for"
+msgstr "Aktivér dokumentbeskyttelse for"
+
+#: templates/settings.php:345
+msgid "All users"
+msgstr "Alle brugere"
+
+#: templates/settings.php:352
+msgid "Owner only"
+msgstr "Kun ejer"
+
+#: templates/settings.php:357
+msgid "Secure view enables you to secure documents by embedding a watermark"
+msgstr ""
+"Sikker visning giver dig mulighed for at sikre dokumenter ved at indlejre et "
+"vandmærke"
+
+#: templates/settings.php:362
+msgid "Enable watermarking"
+msgstr "Aktivér vandmærkning"
+
+#: templates/settings.php:367
+msgid "Watermark text"
+msgstr "Vandmærke tekst"
+
+#: templates/settings.php:369
+msgid "Supported placeholders"
+msgstr "Understøttede pladsholdere"
+
+#: templates/settings.php:377
+msgid "Show watermark on tagged files"
+msgstr "Vis vandmærke på mærkede filer"
+
+#: templates/settings.php:386
+msgid "Show watermark for users of groups"
+msgstr "Vis vandmærke for brugere af grupper"
+
+#: templates/settings.php:394
+msgid "Show watermark for all shares"
+msgstr "Vis vandmærke for alle delinger"
+
+#: templates/settings.php:400
+msgid "Show watermark for read only shares"
+msgstr "Vis vandmærke for skrivebeskyttede delinger"
+
+#: templates/settings.php:404
+msgid "Link shares"
+msgstr "Link delinger"
+
+#: templates/settings.php:408
+msgid "Show watermark for all link shares"
+msgstr "Vis vandmærke for alle linkdelinger"
+
+#: templates/settings.php:415
+msgid "Show watermark for download hidden shares"
+msgstr "Vis vandmærke for download af skjulte delinger"
+
+#: templates/settings.php:421
+msgid "Show watermark for read only link shares"
+msgstr "Vis vandmærke for skrivebeskyttede linkdelinger"
+
+#: templates/settings.php:428
+msgid "Show watermark on link shares with specific system tags"
+msgstr "Vis vandmærke på linkshares med specifikke systemmærker"
+
+#~ msgid "Loading, please wait."
+#~ msgstr "Indlæser, vent et øjeblik."
+
+#~ msgid "Server can't read xml"
+#~ msgstr "Serveren kan ikke læse xml"
+
+#~ msgid "Bad Response. Errors: "
+#~ msgstr "Ingen respons. Fejl:"
+
+#~ msgid "Documentation"
+#~ msgstr "Dokumentation"
+
+#~ msgid "Select tag"
+#~ msgstr "Vælg mærke"
+
+#~ msgid "Review mode for viewing"
+#~ msgstr "Gennemgangstilstand for visning"
