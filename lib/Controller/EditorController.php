@@ -1237,7 +1237,6 @@ class EditorController extends Controller {
                 $ext,
                 $toExtension,
                 $key,
-                false,
                 "",
                 false,
                 $thumbnail,

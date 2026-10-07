@@ -97,7 +97,7 @@ class DocumentService {
         string $region = "",
         bool $toForm = false
     ): string {
-        $response = $this->sendRequestToConvertService($document_uri, $from_extension, $to_extension, $document_revision_id, false, $region, $toForm);
+        $response = $this->sendRequestToConvertService($document_uri, $from_extension, $to_extension, $document_revision_id, $region, $toForm);
         $error = $response["error"] ?? null;
 
         if ($error !== null) {
@@ -110,21 +110,18 @@ class DocumentService {
     /**
      * Request for conversion to a service
      *
-     * DocumentServer's /converter is always called with async:true on the wire,
-     * regardless of $is_async, so a single HTTP request never blocks for the
-     * full conversion time - DocumentServer responds immediately (converted or
-     * not) and this method polls the same endpoint itself when the caller wants
-     * a fully-resolved result. This avoids holding one long connection open
-     * that a reverse proxy in front of DocumentServer can kill with a
-     * 502/503/504 while the conversion is still running fine server-side.
+     * DocumentServer's /converter is always called with async:true on the
+     * wire, so a single HTTP request never blocks for the full conversion
+     * time - DocumentServer responds immediately (converted or not) and this
+     * method polls the same endpoint itself until the conversion completes
+     * or fails. This avoids holding one long connection open that a reverse
+     * proxy in front of DocumentServer can kill with a 502/503/504 while the
+     * conversion is still running fine server-side.
      *
      * @param string $document_uri - Uri for the document to convert
      * @param string $from_extension - Document extension
      * @param string $to_extension - Extension to which to convert
      * @param string $document_revision_id - Key for caching on service
-     * @param bool $is_async - Return DocumentServer's first response as-is
-     *                          instead of polling until it completes or fails -
-     *                          for callers that poll this themselves.
      * @param string $region - Region
      * @param bool $toForm - Convert to form
      * @param array $thumbnail - Settings for the thumbnail
@@ -136,7 +133,6 @@ class DocumentService {
         string $from_extension,
         string $to_extension,
         string $document_revision_id,
-        bool $is_async,
         string $region = "",
         bool $toForm = false,
         array $thumbnail = [],
@@ -212,14 +208,6 @@ class DocumentService {
             $opts["body"] = json_encode($data);
         }
 
-        if ($is_async) {
-            // A single request with the plain request timeout - there is no
-            // polling deadline concept for an async-mode caller, and it must
-            // not be shrunk by converter_poll_timeout, which only governs
-            // the synchronous polling loop below.
-            return $this->pollConvertStatus($urlToConverter, $opts);
-        }
-
         // Established before the first request so the overall budget is a
         // true end-to-end deadline, rather than starting only once the first
         // request (which can itself take up to CONVERT_REQUEST_TIMEOUT) has
@@ -230,8 +218,14 @@ class DocumentService {
         // deadline could still run for its full CONVERT_REQUEST_TIMEOUT.
         $deadline = time() + $this->appConfig->getConverterPollTimeout();
 
+        // Set by pollConvertStatus() to the exception behind the most recent
+        // transient failure, and cleared on any successful response. If the
+        // deadline is reached without DocumentServer ever answering, this is
+        // rethrown instead of reporting a generic timeout - see below.
+        $lastException = null;
+
         $opts["timeout"] = min(self::CONVERT_REQUEST_TIMEOUT, max(1, $deadline - time()));
-        $responseData = $this->pollConvertStatus($urlToConverter, $opts);
+        $responseData = $this->pollConvertStatus($urlToConverter, $opts, $lastException);
 
         while (empty($responseData["endConvert"]) && empty($responseData["error"])) {
             $remaining = $deadline - time();
@@ -251,14 +245,27 @@ class DocumentService {
             // this, a request starting even one second before the deadline
             // could still run for its full CONVERT_REQUEST_TIMEOUT.
             $opts["timeout"] = min(self::CONVERT_REQUEST_TIMEOUT, $remaining);
-            $responseData = $this->pollConvertStatus($urlToConverter, $opts);
+            $responseData = $this->pollConvertStatus($urlToConverter, $opts, $lastException);
         }
 
         if (empty($responseData["endConvert"]) && empty($responseData["error"])) {
-            // Polling window elapsed with DocumentServer never reporting
-            // completion or failure - reuse its own "-2 Timeout conversion
-            // error" code (see processConvServResponceError) so existing
-            // callers handle this the same way as a DocumentServer-side timeout.
+            if ($lastException !== null) {
+                // The deadline elapsed while every poll since the last
+                // success (or since the start) failed transiently - most
+                // commonly a wrong or unreachable DocumentServerInternalUrl,
+                // which also surfaces as a connection exception (see
+                // isTransientConvertError()). Reporting the generic -2
+                // timeout here would read as "DocumentServer is slow" and
+                // hide that the real cause is a connection failure, so the
+                // underlying exception is rethrown instead.
+                throw $lastException;
+            }
+
+            // Polling window elapsed with DocumentServer answering normally
+            // but never reporting completion or failure - reuse its own "-2
+            // Timeout conversion error" code (see processConvServResponceError)
+            // so existing callers handle this the same way as a
+            // DocumentServer-side timeout.
             $responseData["error"] = -2;
         }
 
@@ -276,15 +283,22 @@ class DocumentService {
      *
      * @param string $url - /converter URL
      * @param array $opts - request options (body, headers, timeout)
+     * @param ?\Exception $lastException - set to the triggering exception on
+     *                                     a transient failure, cleared to
+     *                                     null on any successful response, so
+     *                                     the caller can surface the real
+     *                                     cause if DocumentServer never
+     *                                     answers before the poll deadline
      *
      * @return array decoded JSON response, or empty array after a transient failure
      */
-    private function pollConvertStatus(string $url, array $opts): array {
+    private function pollConvertStatus(string $url, array $opts, ?\Exception &$lastException): array {
         try {
             $responseJsonData = $this->request($url, "post", $opts);
         } catch (\Exception $e) {
             if ($this->isTransientConvertError($e)) {
                 $this->logger->debug("Converter poll failed transiently, will retry", ["exception" => $e]);
+                $lastException = $e;
                 return [];
             }
             throw $e;
@@ -296,6 +310,7 @@ class DocumentService {
             throw new \Exception($exc);
         }
 
+        $lastException = null;
         return $responseData;
     }
 
