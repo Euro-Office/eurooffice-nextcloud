@@ -287,6 +287,11 @@ class AppConfig {
     private string $_jwt_expiration = "jwt_expiration";
 
     /**
+     * The config key for the overall /converter polling deadline (seconds)
+     */
+    private string $_converter_poll_timeout = "converter_poll_timeout";
+
+    /**
      * The config key for store cache
      */
     private readonly ICache $cache;
@@ -1303,6 +1308,30 @@ class AppConfig {
             return 5;
         }
         return (integer)$jwtExp;
+    }
+
+    /**
+     * Get the overall deadline (seconds) for polling /converter for a
+     * synchronous conversion result, settable via config.php for
+     * deployments that need a longer or shorter budget than the default.
+     *
+     * DocumentService::sendRequestToConvertService() signs its JWT once
+     * before the poll loop and reuses it for every poll, so a value set
+     * here much larger than getJwtExpiration() * 60 risks the token
+     * expiring before polling ends, which DocumentServer would reject.
+     * Not a concern with the defaults (120s poll vs. a 5 minute token).
+     */
+    public function getConverterPollTimeout(): int {
+        $timeout = $this->getSystemValue($this->_converter_poll_timeout);
+
+        if (is_string($timeout) && ctype_digit($timeout)) {
+            $timeout = (int)$timeout;
+        }
+
+        if (!is_int($timeout) || $timeout <= 0) {
+            return 120;
+        }
+        return $timeout;
     }
 
     /**

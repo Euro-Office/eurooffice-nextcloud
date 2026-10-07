@@ -145,6 +145,7 @@ The tables below list all available Nextcloud settings along with the supported 
 | `disable_download`          | Specifies whether to disable file downloads or not.                                                                                                                                                                                  | true                                                                      | -  | -   | +          |
 | `editors_check_interval`    | Defines the interval for checking the availability of editors using cron (measured in seconds).                                                                                                                                      | 86400                                                                     | -  | -   | +          |
 | `jwt_expiration`            | Defines the JWT expiration (measured in seconds).                                                                                                                                                                                    | 5                                                                         | -  | -   | +          |
+| `converter_poll_timeout`    | Defines the overall deadline for polling the document server for a document conversion result (measured in seconds).                                                                                                                | 120                                                                       | -  | -   | +          |
 
 ### Customization settings
 

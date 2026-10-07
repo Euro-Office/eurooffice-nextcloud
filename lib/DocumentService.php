@@ -25,6 +25,7 @@
 
 namespace OCA\Eurooffice;
 
+use GuzzleHttp\Exception\ConnectException;
 use OCA\Eurooffice\Vendor\Firebase\JWT\JWT;
 use OCP\Http\Client\IClientService;
 use OCP\IL10N;
@@ -42,6 +43,20 @@ class DocumentService {
      * Application name
      */
     private static string $appName = "eurooffice";
+
+    /**
+     * Delay (seconds) between /converter polls.
+     */
+    private const CONVERT_POLL_INTERVAL = 2;
+
+    /**
+     * Timeout (seconds) for a single /converter HTTP request. An async
+     * request returns immediately (converted or not), so this only needs
+     * to cover one quick round trip - keeping it well under typical
+     * reverse-proxy read timeouts means a slow conversion no longer holds
+     * one long connection open that a gateway can kill with a 504.
+     */
+    private const CONVERT_REQUEST_TIMEOUT = 30;
 
     public function __construct(
         private readonly IL10N $trans,
@@ -82,7 +97,7 @@ class DocumentService {
         string $region = "",
         bool $toForm = false
     ): string {
-        $response = $this->sendRequestToConvertService($document_uri, $from_extension, $to_extension, $document_revision_id, false, $region, $toForm);
+        $response = $this->sendRequestToConvertService($document_uri, $from_extension, $to_extension, $document_revision_id, $region, $toForm);
         $error = $response["error"] ?? null;
 
         if ($error !== null) {
@@ -95,11 +110,18 @@ class DocumentService {
     /**
      * Request for conversion to a service
      *
+     * DocumentServer's /converter is always called with async:true on the
+     * wire, so a single HTTP request never blocks for the full conversion
+     * time - DocumentServer responds immediately (converted or not) and this
+     * method polls the same endpoint itself until the conversion completes
+     * or fails. This avoids holding one long connection open that a reverse
+     * proxy in front of DocumentServer can kill with a 502/503/504 while the
+     * conversion is still running fine server-side.
+     *
      * @param string $document_uri - Uri for the document to convert
      * @param string $from_extension - Document extension
      * @param string $to_extension - Extension to which to convert
      * @param string $document_revision_id - Key for caching on service
-     * @param bool $is_async - Perform conversions asynchronously
      * @param string $region - Region
      * @param bool $toForm - Convert to form
      * @param array $thumbnail - Settings for the thumbnail
@@ -111,7 +133,6 @@ class DocumentService {
         string $from_extension,
         string $to_extension,
         string $document_revision_id,
-        bool $is_async,
         string $region = "",
         bool $toForm = false,
         array $thumbnail = [],
@@ -134,7 +155,7 @@ class DocumentService {
         $from_extension = empty($from_extension) ? pathinfo($document_uri)["extension"] : trim($from_extension, ".");
 
         $data = [
-            "async" => $is_async,
+            "async" => true,
             "url" => $document_uri,
             "outputtype" => trim($to_extension, "."),
             "filetype" => $from_extension,
@@ -161,7 +182,7 @@ class DocumentService {
         }
 
         $opts = [
-            "timeout" => "120",
+            "timeout" => self::CONVERT_REQUEST_TIMEOUT,
             "headers" => [
                 "Content-type" => "application/json"
             ],
@@ -187,14 +208,139 @@ class DocumentService {
             $opts["body"] = json_encode($data);
         }
 
-        $responseJsonData = $this->request($urlToConverter, "post", $opts);
+        // Established before the first request so the overall budget is a
+        // true end-to-end deadline, rather than starting only once the first
+        // request (which can itself take up to CONVERT_REQUEST_TIMEOUT) has
+        // already returned. Every request's own timeout is then capped to
+        // whatever is left of this budget (see below), so a slow request
+        // can't by itself push the method past the configured deadline -
+        // without that cap, a request starting even one second before the
+        // deadline could still run for its full CONVERT_REQUEST_TIMEOUT.
+        $deadline = time() + $this->appConfig->getConverterPollTimeout();
+
+        // Set by pollConvertStatus() to the exception behind the most recent
+        // transient failure, and cleared on any successful response. If the
+        // deadline is reached without DocumentServer ever answering, this is
+        // rethrown instead of reporting a generic timeout - see below.
+        $lastException = null;
+
+        $opts["timeout"] = min(self::CONVERT_REQUEST_TIMEOUT, max(1, $deadline - time()));
+        $responseData = $this->pollConvertStatus($urlToConverter, $opts, $lastException);
+
+        while (empty($responseData["endConvert"]) && empty($responseData["error"])) {
+            $remaining = $deadline - time();
+            if ($remaining <= 0) {
+                break;
+            }
+
+            sleep(min(self::CONVERT_POLL_INTERVAL, $remaining));
+
+            $remaining = $deadline - time();
+            if ($remaining <= 0) {
+                break;
+            }
+
+            // Capped to whatever is left of the budget so a slow request
+            // can't by itself push the method past the deadline - without
+            // this, a request starting even one second before the deadline
+            // could still run for its full CONVERT_REQUEST_TIMEOUT.
+            $opts["timeout"] = min(self::CONVERT_REQUEST_TIMEOUT, $remaining);
+            $responseData = $this->pollConvertStatus($urlToConverter, $opts, $lastException);
+        }
+
+        if (empty($responseData["endConvert"]) && empty($responseData["error"])) {
+            if ($lastException !== null) {
+                // The deadline elapsed while every poll since the last
+                // success (or since the start) failed transiently - most
+                // commonly a wrong or unreachable DocumentServerInternalUrl,
+                // which also surfaces as a connection exception (see
+                // isTransientConvertError()). Reporting the generic -2
+                // timeout here would read as "DocumentServer is slow" and
+                // hide that the real cause is a connection failure, so the
+                // underlying exception is rethrown instead.
+                throw $lastException;
+            }
+
+            // Polling window elapsed with DocumentServer answering normally
+            // but never reporting completion or failure - reuse its own "-2
+            // Timeout conversion error" code (see processConvServResponceError)
+            // so existing callers handle this the same way as a
+            // DocumentServer-side timeout.
+            $responseData["error"] = -2;
+        }
+
+        return $responseData;
+    }
+
+    /**
+     * Send one /converter request and return its current conversion status.
+     * A transient failure (a 502/503/504 response or a connection exception)
+     * is treated the same as "not finished yet" rather than aborting the
+     * whole conversion - the next poll a few seconds later just tries again,
+     * including for the very first request. Any other error (bad
+     * configuration, bad JWT, malformed response, ...) is not transient and
+     * is thrown immediately - see isTransientConvertError().
+     *
+     * @param string $url - /converter URL
+     * @param array $opts - request options (body, headers, timeout)
+     * @param ?\Exception $lastException - set to the triggering exception on
+     *                                     a transient failure, cleared to
+     *                                     null on any successful response, so
+     *                                     the caller can surface the real
+     *                                     cause if DocumentServer never
+     *                                     answers before the poll deadline
+     *
+     * @return array decoded JSON response, or empty array after a transient failure
+     */
+    private function pollConvertStatus(string $url, array $opts, ?\Exception &$lastException): array {
+        try {
+            $responseJsonData = $this->request($url, "post", $opts);
+        } catch (\Exception $e) {
+            if ($this->isTransientConvertError($e)) {
+                $this->logger->debug("Converter poll failed transiently, will retry", ["exception" => $e]);
+                $lastException = $e;
+                return [];
+            }
+            throw $e;
+        }
+
         $responseData = json_decode($responseJsonData, true);
         if (json_last_error() !== 0) {
             $exc = $this->trans->t("Bad Response. JSON error: " . json_last_error_msg());
             throw new \Exception($exc);
         }
 
+        $lastException = null;
         return $responseData;
+    }
+
+    /**
+     * Whether an exception from the HTTP client represents a transient
+     * failure worth retrying: a 502/503/504 response, or Guzzle's
+     * ConnectException (DNS/connect failure, connection timeout) - every
+     * supported Nextcloud version's OCP\Http\Client\IClient implementation
+     * is Guzzle-backed and throws this for a connection-level failure. That
+     * class isn't a guaranteed part of the IClient contract, but the
+     * `instanceof` check below degrades safely to false (not transient) if
+     * it's ever unavailable or a different exception type is thrown, rather
+     * than erroring - so a future implementation change narrows retry
+     * coverage instead of breaking. Other exceptions without an HTTP
+     * response are not assumed transient, so permanent failures (bad
+     * config, DNS failure surfaced as some other exception type, ...)
+     * retain their original error instead of becoming a generic timeout.
+     *
+     * @param \Exception $e - exception thrown by DocumentService::request()
+     */
+    private function isTransientConvertError(\Exception $e): bool {
+        if ($e instanceof ConnectException) {
+            return true;
+        }
+
+        if (!method_exists($e, 'getResponse') || $e->getResponse() === null) {
+            return false;
+        }
+
+        return in_array($e->getResponse()->getStatusCode(), [502, 503, 504], true);
     }
 
     /**
