@@ -12,11 +12,11 @@ Development and tagging happen in [Euro-Office/eurooffice-nextcloud](https://git
    ```
 
    `release.yml` checks that the tag, `CHANGELOG.md` and `info.xml` agree and creates the GitHub release with the `CHANGELOG.md` section as body.
-3. Push the branch and tag to nextcloud-releases:
+3. Push only the tag to nextcloud-releases. Its `main` branch is a separate history and is not updated.
 
    ```sh
    git remote add nextcloud-releases git@github.com:nextcloud-releases/eurooffice.git
-   git push nextcloud-releases main vX.Y.Z
+   git push nextcloud-releases vX.Y.Z
    ```
 
 4. In nextcloud-releases/eurooffice, create and publish a GitHub release for `vX.Y.Z` in the UI. This triggers `appstore-build-publish.yml`, which builds and signs the app, attaches the tarball to the release and uploads it to the Nextcloud app store.
