@@ -20,7 +20,7 @@ jobs:
     runs-on: ubuntu-latest
 
     # Only allowed to be run on nextcloud-releases repositories
-    if: ${{ github.repository_owner == 'nextcloud-releases' }}
+    if: ${{ github.repository_owner == 'Euro-Office' }}
 
     steps:
       - name: Check actor permission
