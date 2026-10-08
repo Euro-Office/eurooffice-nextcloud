@@ -69,10 +69,6 @@ class EditorsCheck extends TimedJob {
             $this->logger->debug("Settings are empty");
             return;
         }
-        if (!$this->appConfig->settingsAreSuccessful()) {
-            $this->logger->debug("Settings are not correct");
-            return;
-        }
         $fileUrl = $this->urlGenerator->linkToRouteAbsolute($this->appName . ".callback.emptyfile");
         if (!$this->appConfig->useDemo() && !empty($this->appConfig->getStorageUrl())) {
             $fileUrl = str_replace($this->urlGenerator->getAbsoluteURL("/"), $this->appConfig->getStorageUrl(), $fileUrl);
@@ -85,14 +81,27 @@ class EditorsCheck extends TimedJob {
 
         $this->logger->debug("Nextcloud Office check started by cron");
 
+        // Checked before overwriting settingsError below, so a transient
+        // failure doesn't repeatedly re-notify admins on every run while
+        // still down - only on the transition into a failed state. This was
+        // previously done by skipping the whole check once settingsError was
+        // set, which also meant the check never ran again and the error
+        // could never clear itself once the document server recovered.
+        $wasSuccessful = $this->appConfig->settingsAreSuccessful();
+
         [$error, $version] = $this->documentService->checkDocServiceUrl();
 
         if (!empty($error)) {
             $this->logger->info("Nextcloud Office server is not available");
             $this->appConfig->setSettingsError($error);
-            $this->notifyAdmins();
+            if ($wasSuccessful) {
+                $this->notifyAdmins();
+            }
         } else {
             $this->logger->debug("Nextcloud Office server availability check is finished successfully");
+            if (!$wasSuccessful) {
+                $this->appConfig->setSettingsError("");
+            }
         }
     }
 
