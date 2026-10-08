@@ -55,7 +55,20 @@ class EditorsCheck extends TimedJob {
         private readonly DocumentService $documentService
     ) {
         parent::__construct($time);
-        $this->setInterval($this->appConfig->getEditorsCheckInterval());
+
+        $interval = $this->appConfig->getEditorsCheckInterval();
+        if ($interval > 0 && !$this->appConfig->settingsAreSuccessful()) {
+            // Recheck more often while down, so recovery is detected soon
+            // after the document server actually comes back rather than
+            // waiting for the next regularly scheduled check - but never
+            // overriding an admin who disabled the check entirely (interval
+            // of 0). Nextcloud reconstructs background jobs on every cron.php
+            // run, so this is re-evaluated on each run rather than fixed at
+            // registration time.
+            $interval = min($interval, $this->appConfig->getEditorsCheckFailedInterval());
+        }
+        $this->setInterval($interval);
+
         $this->setTimeSensitivity(IJob::TIME_SENSITIVE);
     }
 
@@ -81,12 +94,6 @@ class EditorsCheck extends TimedJob {
 
         $this->logger->debug("Nextcloud Office check started by cron");
 
-        // Checked before overwriting settingsError below, so a transient
-        // failure doesn't repeatedly re-notify admins on every run while
-        // still down - only on the transition into a failed state. This was
-        // previously done by skipping the whole check once settingsError was
-        // set, which also meant the check never ran again and the error
-        // could never clear itself once the document server recovered.
         $wasSuccessful = $this->appConfig->settingsAreSuccessful();
 
         [$error, $version] = $this->documentService->checkDocServiceUrl();
@@ -100,7 +107,9 @@ class EditorsCheck extends TimedJob {
         } else {
             $this->logger->debug("Nextcloud Office server availability check is finished successfully");
             if (!$wasSuccessful) {
+                $this->logger->info("Nextcloud Office server is available again, error state cleared");
                 $this->appConfig->setSettingsError("");
+                $this->dismissAdminNotifications();
             }
         }
     }
@@ -128,15 +137,34 @@ class EditorsCheck extends TimedJob {
     }
 
     /**
-     * Send notification to admins
+     * Fetch the notification manager - overridable in tests, since it's
+     * otherwise only reachable via the static service locator.
      */
-    private function notifyAdmins(): void {
-        $notificationManager = \OCP\Server::get(\OCP\Notification\IManager::class);
+    protected function getNotificationManager(): \OCP\Notification\IManager {
+        return \OCP\Server::get(\OCP\Notification\IManager::class);
+    }
+
+    /**
+     * Build an unsent notification identifying the "server is not
+     * available" alert, without a user set - shared by notifyAdmins() and
+     * dismissAdminNotifications() so both always refer to the exact same
+     * notification identity.
+     */
+    private function buildUnavailableNotification(\OCP\Notification\IManager $notificationManager): \OCP\Notification\INotification {
         $notification = $notificationManager->createNotification();
         $notification->setApp($this->appName)
             ->setDateTime(new \DateTime())
             ->setObject("editorsCheck", $this->trans->t("Nextcloud Office server is not available"))
             ->setSubject("editorscheck_info");
+        return $notification;
+    }
+
+    /**
+     * Send notification to admins
+     */
+    private function notifyAdmins(): void {
+        $notificationManager = $this->getNotificationManager();
+        $notification = $this->buildUnavailableNotification($notificationManager);
         foreach ($this->getUsersToNotify() as $uid) {
             $notification->setUser($uid);
             $notificationManager->notify($notification);
@@ -144,5 +172,18 @@ class EditorsCheck extends TimedJob {
                 $this->emailManager->notifyEditorsCheckEmail($uid);
             }
         }
+    }
+
+    /**
+     * Dismiss the "server is not available" notification for every admin
+     * who received it, once the document server is reachable again - so a
+     * recovered connection doesn't leave a stale alert behind. Omitting the
+     * user on the notification (unlike notifyAdmins()) marks it processed
+     * for all users that have it, not just one.
+     */
+    private function dismissAdminNotifications(): void {
+        $notificationManager = $this->getNotificationManager();
+        $notification = $this->buildUnavailableNotification($notificationManager);
+        $notificationManager->markProcessed($notification);
     }
 }

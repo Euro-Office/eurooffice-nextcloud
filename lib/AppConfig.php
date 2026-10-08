@@ -282,6 +282,12 @@ class AppConfig {
     private string $_editors_check_interval = "editors_check_interval";
 
     /**
+     * The config key for the interval of editors availability check by cron
+     * while the document server is known to be unavailable
+     */
+    private string $_editors_check_failed_interval = "editors_check_failed_interval";
+
+    /**
      * The config key for the JWT expiration
      */
     private string $_jwt_expiration = "jwt_expiration";
@@ -1289,6 +1295,24 @@ class AppConfig {
 
         if (empty($interval) && $interval !== 0) {
             $interval = 60 * 60 * 24;
+        }
+        return (int)$interval;
+    }
+
+    /**
+     * Get the editors check interval used while the document server is
+     * known to be unavailable, so recovery is detected soon after the
+     * document server actually comes back instead of waiting for the next
+     * regularly scheduled check (which defaults to once a day).
+     */
+    public function getEditorsCheckFailedInterval(): int {
+        $interval = $this->getSystemValue($this->_editors_check_failed_interval);
+        if ($interval !== null && !is_int($interval)) {
+            $interval = is_string($interval) && !ctype_digit($interval) ? null : (integer)$interval;
+        }
+
+        if (empty($interval) && $interval !== 0) {
+            $interval = 60 * 5;
         }
         return (int)$interval;
     }
