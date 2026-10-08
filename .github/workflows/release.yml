@@ -6,11 +6,13 @@ on:
       - 'v*'
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   release:
     runs-on: ubuntu-latest
+    # Only creates the GitHub release here. The app store release happens in
+    # nextcloud-releases/eurooffice, see RELEASING.md.
     if: ${{ github.repository_owner == 'Euro-Office' }}
     steps:
       - name: Checkout Repository
@@ -30,5 +32,3 @@ jobs:
         with:
           bodyFile: RELEASE.md
           tag: ${{ github.ref_name }}
-          # A release created with GITHUB_TOKEN does not trigger appstore-build-publish.yml
-          token: ${{ secrets.RELEASE_TOKEN }}

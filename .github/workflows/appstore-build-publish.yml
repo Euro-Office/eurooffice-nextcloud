@@ -19,7 +19,8 @@ jobs:
   build_and_publish:
     runs-on: ubuntu-latest
 
-    if: ${{ github.repository_owner == 'Euro-Office' }}
+    # Only allowed to be run on nextcloud-releases repositories
+    if: ${{ github.repository_owner == 'nextcloud-releases' }}
 
     steps:
       - name: Check actor permission
@@ -29,8 +30,8 @@ jobs:
 
       - name: Set app env
         run: |
-          # The repository name differs from the app id
-          echo "APP_NAME=eurooffice" >> $GITHUB_ENV
+          # Split and keep last
+          echo "APP_NAME=${GITHUB_REPOSITORY##*/}" >> $GITHUB_ENV
           echo "APP_VERSION=${GITHUB_REF##*/}" >> $GITHUB_ENV
 
       - name: Checkout
