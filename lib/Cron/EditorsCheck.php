@@ -69,10 +69,6 @@ class EditorsCheck extends TimedJob {
             $this->logger->debug("Settings are empty");
             return;
         }
-        if (!$this->appConfig->settingsAreSuccessful()) {
-            $this->logger->debug("Settings are not correct");
-            return;
-        }
         $fileUrl = $this->urlGenerator->linkToRouteAbsolute($this->appName . ".callback.emptyfile");
         if (!$this->appConfig->useDemo() && !empty($this->appConfig->getStorageUrl())) {
             $fileUrl = str_replace($this->urlGenerator->getAbsoluteURL("/"), $this->appConfig->getStorageUrl(), $fileUrl);
@@ -85,14 +81,23 @@ class EditorsCheck extends TimedJob {
 
         $this->logger->debug("Nextcloud Office check started by cron");
 
+        $wasSuccessful = $this->appConfig->settingsAreSuccessful();
+
         [$error, $version] = $this->documentService->checkDocServiceUrl();
 
         if (!empty($error)) {
             $this->logger->info("Nextcloud Office server is not available");
             $this->appConfig->setSettingsError($error);
-            $this->notifyAdmins();
+            if ($wasSuccessful) {
+                $this->notifyAdmins();
+            }
         } else {
             $this->logger->debug("Nextcloud Office server availability check is finished successfully");
+            if (!$wasSuccessful) {
+                $this->logger->info("Nextcloud Office server is available again, error state cleared");
+                $this->appConfig->setSettingsError("");
+                $this->dismissAdminNotifications();
+            }
         }
     }
 
@@ -119,15 +124,42 @@ class EditorsCheck extends TimedJob {
     }
 
     /**
+     * Fetch the notification manager - overridable in tests, since it's
+     * otherwise only reachable via the static service locator.
+     */
+    protected function getNotificationManager(): \OCP\Notification\IManager {
+        return \OCP\Server::get(\OCP\Notification\IManager::class);
+    }
+
+    /**
+     * Build an unsent notification identifying the "server is not
+     * available" alert, without a user or date set - shared by
+     * notifyAdmins() and dismissAdminNotifications() so both always refer
+     * to the exact same notification identity (app/object/subject).
+     *
+     * Deliberately leaves the date unset: Nextcloud's notification backend
+     * matches markProcessed() on an exact timestamp whenever one is set
+     * (see notifications app Handler::sqlWhere()), so if this built a fresh
+     * "now" timestamp here, dismissAdminNotifications() could never match
+     * the original notification's stored timestamp from whenever it was
+     * sent, and would silently delete nothing. notifyAdmins() sets its own
+     * timestamp right before sending instead.
+     */
+    private function buildUnavailableNotification(\OCP\Notification\IManager $notificationManager): \OCP\Notification\INotification {
+        $notification = $notificationManager->createNotification();
+        $notification->setApp($this->appName)
+            ->setObject("editorsCheck", $this->trans->t("Nextcloud Office server is not available"))
+            ->setSubject("editorscheck_info");
+        return $notification;
+    }
+
+    /**
      * Send notification to admins
      */
     private function notifyAdmins(): void {
-        $notificationManager = \OCP\Server::get(\OCP\Notification\IManager::class);
-        $notification = $notificationManager->createNotification();
-        $notification->setApp($this->appName)
-            ->setDateTime(new \DateTime())
-            ->setObject("editorsCheck", $this->trans->t("Nextcloud Office server is not available"))
-            ->setSubject("editorscheck_info");
+        $notificationManager = $this->getNotificationManager();
+        $notification = $this->buildUnavailableNotification($notificationManager);
+        $notification->setDateTime(new \DateTime());
         foreach ($this->getUsersToNotify() as $uid) {
             $notification->setUser($uid);
             $notificationManager->notify($notification);
@@ -135,5 +167,19 @@ class EditorsCheck extends TimedJob {
                 $this->emailManager->notifyEditorsCheckEmail($uid);
             }
         }
+    }
+
+    /**
+     * Dismiss the "server is not available" notification for every admin
+     * who received it, once the document server is reachable again - so a
+     * recovered connection doesn't leave a stale alert behind. Omitting the
+     * user on the notification (unlike notifyAdmins()) marks it processed
+     * for all users that have it, not just one; omitting the date (see
+     * buildUnavailableNotification()) matches regardless of when it was sent.
+     */
+    private function dismissAdminNotifications(): void {
+        $notificationManager = $this->getNotificationManager();
+        $notification = $this->buildUnavailableNotification($notificationManager);
+        $notificationManager->markProcessed($notification);
     }
 }

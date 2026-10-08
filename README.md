@@ -143,7 +143,7 @@ The tables below list all available Nextcloud settings along with the supported 
 | `jwt_leeway`                | Defines the allowable leeway in JWT checks (measured in seconds).                                                                                                                                                                    | 60                                                                        | -  | -   | +          |
 | `limit_thumb_size`          | Defines the maximum size of a thumbnail (measured in bytes).                                                                                                                                                                         | 104857600                                                                 | -  | -   | +          |
 | `disable_download`          | Specifies whether to disable file downloads or not.                                                                                                                                                                                  | true                                                                      | -  | -   | +          |
-| `editors_check_interval`    | Defines the interval for checking the availability of editors using cron (measured in seconds).                                                                                                                                      | 86400                                                                     | -  | -   | +          |
+| `editors_check_interval`    | Defines the interval for checking the availability of editors using cron (measured in seconds).                                                                                                                                      | 300                                                                       | -  | -   | +          |
 | `jwt_expiration`            | Defines the JWT expiration (measured in seconds).                                                                                                                                                                                    | 5                                                                         | -  | -   | +          |
 | `converter_poll_timeout`    | Defines the overall deadline for polling the document server for a document conversion result (measured in seconds).                                                                                                                | 120                                                                       | -  | -   | +          |
 
@@ -255,11 +255,11 @@ When the _Log-in credentials, save in session_ authentication type is used, the 
 
     This option allows you to avoid issues when the server settings become incorrect and require changes.
 
-    By default, this background task runs once a day. If necessary, you can change the frequency. To do so, open the Nextcloud config file (_/nextcloud/config/config.php_). Insert the following section and enter the required value in minutes:
+    By default, this background task runs every 5 minutes. If necessary, you can change the frequency. To do so, open the Nextcloud config file (_/nextcloud/config/config.php_). Insert the following section and enter the required value in seconds:
 
     ```php
     'eurooffice' => array (
-        'editors_check_interval' => 3624
+        'editors_check_interval' => 3600
     )
     ```
     To disable this check running, enter 0 value.
