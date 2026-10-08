@@ -2,7 +2,7 @@
 
 Development and tagging happen in [Euro-Office/eurooffice-nextcloud](https://github.com/Euro-Office/eurooffice-nextcloud). The app store release is built from [nextcloud-releases/eurooffice](https://github.com/nextcloud-releases/eurooffice), which holds the signing and app store secrets.
 
-1. Open a `release/X.Y.Z` pull request against `main` that bumps `<version>` in `appinfo/info.xml` and adds a `## X.Y.Z` section on top of `CHANGELOG.md`.
+1. Run the [Prepare release](../../actions/workflows/prepare-release.yml) workflow. It bumps the version in `appinfo/info.xml` and `package.json`, adds a `CHANGELOG.md` section built from the titles of pull requests merged since the last tag, and opens a `release/X.Y.Z` pull request. Review and edit the changelog before merging.
 2. After merging, tag the merge commit and push the tag:
 
    ```sh
