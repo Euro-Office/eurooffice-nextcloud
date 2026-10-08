@@ -25,10 +25,12 @@ jobs:
 
       - name: Bump version
         id: version
+        env:
+          BUMP: ${{ inputs.bump }}
         run: |
           current=$(grep -oP '(?<=<version>)[^<]+' appinfo/info.xml)
           IFS=. read -r major minor patch <<< "$current"
-          case '${{ inputs.bump }}' in
+          case "$BUMP" in
             major) version="$((major + 1)).0.0" ;;
             minor) version="$major.$((minor + 1)).0" ;;
             patch) version="$major.$minor.$((patch + 1))" ;;
