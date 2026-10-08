@@ -1,0 +1,77 @@
+name: Prepare release
+
+on:
+  workflow_dispatch:
+    inputs:
+      bump:
+        description: Version part to bump
+        type: choice
+        options: [patch, minor, major]
+        default: patch
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    if: ${{ github.repository_owner == 'Euro-Office' }}
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+
+      - name: Bump version
+        id: version
+        env:
+          BUMP: ${{ inputs.bump }}
+        run: |
+          current=$(grep -oP '(?<=<version>)[^<]+' appinfo/info.xml)
+          IFS=. read -r major minor patch <<< "$current"
+          case "$BUMP" in
+            major) version="$((major + 1)).0.0" ;;
+            minor) version="$major.$((minor + 1)).0" ;;
+            patch) version="$major.$minor.$((patch + 1))" ;;
+          esac
+          sed -i "s|<version>$current</version>|<version>$version</version>|" appinfo/info.xml
+          npm version "$version" --no-git-tag-version
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+
+      - name: Generate changelog
+        env:
+          GH_TOKEN: ${{ github.token }}
+          VERSION: ${{ steps.version.outputs.version }}
+        run: |
+          since=$(git log -1 --format=%cI "$(git describe --tags --abbrev=0)")
+          gh pr list --state merged --base main --limit 500 --search "merged:>$since" \
+            --json number,title,author,url,headRefName > prs.json
+          section() {
+            lines=$(jq -r --arg re "$2" '.[]
+              | select(.headRefName | startswith("release/") | not)
+              | select(.title | test($re))
+              | "- \(.title) @\(.author.login | sub("^app/(?<bot>.+)"; "\(.bot)[bot]")) [#\(.number)](\(.url))"' prs.json)
+            if [ -n "$lines" ]; then printf '### %s\n\n%s\n\n' "$1" "$lines"; fi
+          }
+          {
+            printf '## %s\n\n' "$VERSION"
+            section Added '^feat(\(.+\))?!?:'
+            section Fixed '^fix(\(.+\))?!?:'
+            section Other '^(?!(feat|fix)(\(.+\))?!?:)'
+          } > section.md
+          {
+            head -n 2 CHANGELOG.md
+            cat section.md
+            tail -n +3 CHANGELOG.md
+          } > CHANGELOG.new && mv CHANGELOG.new CHANGELOG.md
+          rm prs.json section.md
+
+      - name: Open pull request
+        uses: peter-evans/create-pull-request@22a9089034f40e5a961c8808d113e2c98fb63676 # v7.0.11
+        with:
+          branch: release/${{ steps.version.outputs.version }}
+          commit-message: 'chore(release): Bump version to ${{ steps.version.outputs.version }}'
+          title: 'chore(release): ${{ steps.version.outputs.version }}'
+          body: Review and edit `CHANGELOG.md` before merging. After merging, tag the merge commit as described in `RELEASING.md`.
+          signoff: true
