@@ -1,5 +1,33 @@
 # Change Log
 
+## 11.0.6
+
+### Fixed
+
+- fix(callback): 🐛 release the key lock when a force-save throws @moodyjmz [#203](https://github.com/Euro-Office/eurooffice-nextcloud/pull/203)
+- fix(editor): pass the user's Nextcloud language to the editor @juliusknorr [#222](https://github.com/Euro-Office/eurooffice-nextcloud/pull/222)
+- fix: scope firebase/php-jwt vendor to avoid class colli… @bromiesTM [#213](https://github.com/Euro-Office/eurooffice-nextcloud/pull/213)
+- fix(viewer): register viewer handler regardless of load order @DmySyz [#201](https://github.com/Euro-Office/eurooffice-nextcloud/pull/201)
+- fix(templates): point the assets submodules at the Euro-Office forks @chrip [#204](https://github.com/Euro-Office/eurooffice-nextcloud/pull/204)
+- fix(config): use !empty($shareToken) for chat/protect permissions @watermelon0339 [#192](https://github.com/Euro-Office/eurooffice-nextcloud/pull/192)
+- fix: replace broken admin support links @vansh-nagar [#220](https://github.com/Euro-Office/eurooffice-nextcloud/pull/220)
+
+### Other
+
+- chore(deps): update actions/setup-node action to v7 @renovate[bot] [#124](https://github.com/Euro-Office/eurooffice-nextcloud/pull/124)
+- chore(deps): update icewind1991/nextcloud-version-matrix action to v1.3.3 @renovate[bot] [#194](https://github.com/Euro-Office/eurooffice-nextcloud/pull/194)
+- chore(deps): update actions/checkout action to v7 @renovate[bot] [#69](https://github.com/Euro-Office/eurooffice-nextcloud/pull/69)
+- l10n(da): translate the font manager and clean up the older strings @bargib [#189](https://github.com/Euro-Office/eurooffice-nextcloud/pull/189)
+- chore(deps): update actions/checkout action to v6.1.0 @renovate[bot] [#123](https://github.com/Euro-Office/eurooffice-nextcloud/pull/123)
+- chore(deps): update skjnldsv/read-package-engines-version-actions action to v4 @renovate[bot] [#214](https://github.com/Euro-Office/eurooffice-nextcloud/pull/214)
+- chore(deps): update dependency firebase/php-jwt to v7.2.1 @renovate[bot] [#57](https://github.com/Euro-Office/eurooffice-nextcloud/pull/57)
+- Use npm ci in artifact workflow @Copilot [#217](https://github.com/Euro-Office/eurooffice-nextcloud/pull/217)
+- chore: support Nextcloud 36 @juliusknorr [#216](https://github.com/Euro-Office/eurooffice-nextcloud/pull/216)
+- chore(deps): update dependency @nextcloud/vite-config to v2.5.4 @renovate[bot] [#115](https://github.com/Euro-Office/eurooffice-nextcloud/pull/115)
+- chore(deps): update actions/setup-node action to v7.1.0 @renovate[bot] [#228](https://github.com/Euro-Office/eurooffice-nextcloud/pull/228)
+- l10n(da): four ellipses Danish had invented @bargib [#219](https://github.com/Euro-Office/eurooffice-nextcloud/pull/219)
+- feat: Add English localization files @bromiesTM [#207](https://github.com/Euro-Office/eurooffice-nextcloud/pull/207)
+
 ## 11.0.5
 ## Added
 - PDF opens in viewer by default — clicking a PDF opens the EuroOffice viewer; an "Edit in Nextcloud Office" action provides access to the full editor
