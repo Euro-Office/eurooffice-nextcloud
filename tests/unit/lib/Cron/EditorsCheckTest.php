@@ -37,7 +37,7 @@ require_once __DIR__ . "/RecordingEditorsCheck.php";
 #[CoversClass(EditorsCheck::class)]
 class EditorsCheckTest extends TestCase {
 
-    /** @return array{RecordingEditorsCheck, MockObject&IManager} */
+    /** @return array{RecordingEditorsCheck, MockObject&IManager, MockObject&INotification} */
     private function makeJob(AppConfig $appConfig, DocumentService $documentService, IGroupManager $groupManager): array {
         $urlGenerator = $this->createStub(IURLGenerator::class);
         $urlGenerator->method("linkToRouteAbsolute")->willReturn("https://nextcloud.example/apps/eurooffice/ajax/empty");
@@ -55,11 +55,22 @@ class EditorsCheckTest extends TestCase {
             $documentService
         );
 
+        // A single shared mock stands in for every notification built during
+        // the test (buildUnavailableNotification() is called at most once per
+        // run()), so setDateTime()'s call count reflects exactly what the
+        // production code did with it.
+        $notification = $this->createMock(INotification::class);
+        $notification->method("setApp")->willReturnSelf();
+        $notification->method("setObject")->willReturnSelf();
+        $notification->method("setSubject")->willReturnSelf();
+        $notification->method("setUser")->willReturnSelf();
+        $notification->method("setDateTime")->willReturnSelf();
+
         $notificationManager = $this->createMock(IManager::class);
-        $notificationManager->method("createNotification")->willReturn($this->createStub(INotification::class));
+        $notificationManager->method("createNotification")->willReturn($notification);
         $job->injectedNotificationManager = $notificationManager;
 
-        return [$job, $notificationManager];
+        return [$job, $notificationManager, $notification];
     }
 
     private function runJob(RecordingEditorsCheck $job): void {
@@ -116,9 +127,15 @@ class EditorsCheckTest extends TestCase {
         $documentService = $this->createStub(DocumentService::class);
         $documentService->method("checkDocServiceUrl")->willReturn(["", "9.3.4"]);
 
-        [$job, $notificationManager] = $this->makeJob($appConfig, $documentService, $this->emptyGroupManager());
+        [$job, $notificationManager, $notification] = $this->makeJob($appConfig, $documentService, $this->emptyGroupManager());
         $notificationManager->expects($this->never())->method("notify");
         $notificationManager->expects($this->once())->method("markProcessed");
+        // Regression guard: Nextcloud's notification backend matches
+        // markProcessed() on an exact timestamp whenever one is set, so a
+        // freshly-built "now" timestamp here would never match the original
+        // notification's stored send time and the dismissal would silently
+        // match nothing.
+        $notification->expects($this->never())->method("setDateTime");
 
         $this->runJob($job);
     }
@@ -155,43 +172,20 @@ class EditorsCheckTest extends TestCase {
         $documentService = $this->createStub(DocumentService::class);
         $documentService->method("checkDocServiceUrl")->willReturn(["down", null]);
 
-        [$job, $notificationManager] = $this->makeJob($appConfig, $documentService, $this->groupManagerWithOneAdmin());
+        [$job, $notificationManager, $notification] = $this->makeJob($appConfig, $documentService, $this->groupManagerWithOneAdmin());
         $notificationManager->expects($this->once())->method("notify");
         $notificationManager->expects($this->never())->method("markProcessed");
+        $notification->expects($this->once())->method("setDateTime");
 
         $this->runJob($job);
     }
 
-    public function testConstructorUsesFailedIntervalWhenCurrentlyUnsuccessful(): void {
+    public function testConstructorUsesConfiguredInterval(): void {
         $appConfig = $this->createStub(AppConfig::class);
-        $appConfig->method("settingsAreSuccessful")->willReturn(false);
-        $appConfig->method("getEditorsCheckInterval")->willReturn(86400);
-        $appConfig->method("getEditorsCheckFailedInterval")->willReturn(300);
+        $appConfig->method("getEditorsCheckInterval")->willReturn(300);
 
         [$job] = $this->makeJob($appConfig, $this->createStub(DocumentService::class), $this->emptyGroupManager());
 
         $this->assertSame(300, $job->getInterval());
-    }
-
-    public function testConstructorUsesConfiguredIntervalWhenSuccessful(): void {
-        $appConfig = $this->createStub(AppConfig::class);
-        $appConfig->method("settingsAreSuccessful")->willReturn(true);
-        $appConfig->method("getEditorsCheckInterval")->willReturn(86400);
-        $appConfig->method("getEditorsCheckFailedInterval")->willReturn(300);
-
-        [$job] = $this->makeJob($appConfig, $this->createStub(DocumentService::class), $this->emptyGroupManager());
-
-        $this->assertSame(86400, $job->getInterval());
-    }
-
-    public function testConstructorNeverOverridesADisabledCheck(): void {
-        $appConfig = $this->createStub(AppConfig::class);
-        $appConfig->method("settingsAreSuccessful")->willReturn(false);
-        $appConfig->method("getEditorsCheckInterval")->willReturn(0);
-        $appConfig->method("getEditorsCheckFailedInterval")->willReturn(300);
-
-        [$job] = $this->makeJob($appConfig, $this->createStub(DocumentService::class), $this->emptyGroupManager());
-
-        $this->assertSame(0, $job->getInterval());
     }
 }

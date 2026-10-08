@@ -55,20 +55,7 @@ class EditorsCheck extends TimedJob {
         private readonly DocumentService $documentService
     ) {
         parent::__construct($time);
-
-        $interval = $this->appConfig->getEditorsCheckInterval();
-        if ($interval > 0 && !$this->appConfig->settingsAreSuccessful()) {
-            // Recheck more often while down, so recovery is detected soon
-            // after the document server actually comes back rather than
-            // waiting for the next regularly scheduled check - but never
-            // overriding an admin who disabled the check entirely (interval
-            // of 0). Nextcloud reconstructs background jobs on every cron.php
-            // run, so this is re-evaluated on each run rather than fixed at
-            // registration time.
-            $interval = min($interval, $this->appConfig->getEditorsCheckFailedInterval());
-        }
-        $this->setInterval($interval);
-
+        $this->setInterval($this->appConfig->getEditorsCheckInterval());
         $this->setTimeSensitivity(IJob::TIME_SENSITIVE);
     }
 
@@ -146,14 +133,21 @@ class EditorsCheck extends TimedJob {
 
     /**
      * Build an unsent notification identifying the "server is not
-     * available" alert, without a user set - shared by notifyAdmins() and
-     * dismissAdminNotifications() so both always refer to the exact same
-     * notification identity.
+     * available" alert, without a user or date set - shared by
+     * notifyAdmins() and dismissAdminNotifications() so both always refer
+     * to the exact same notification identity (app/object/subject).
+     *
+     * Deliberately leaves the date unset: Nextcloud's notification backend
+     * matches markProcessed() on an exact timestamp whenever one is set
+     * (see notifications app Handler::sqlWhere()), so if this built a fresh
+     * "now" timestamp here, dismissAdminNotifications() could never match
+     * the original notification's stored timestamp from whenever it was
+     * sent, and would silently delete nothing. notifyAdmins() sets its own
+     * timestamp right before sending instead.
      */
     private function buildUnavailableNotification(\OCP\Notification\IManager $notificationManager): \OCP\Notification\INotification {
         $notification = $notificationManager->createNotification();
         $notification->setApp($this->appName)
-            ->setDateTime(new \DateTime())
             ->setObject("editorsCheck", $this->trans->t("Nextcloud Office server is not available"))
             ->setSubject("editorscheck_info");
         return $notification;
@@ -165,6 +159,7 @@ class EditorsCheck extends TimedJob {
     private function notifyAdmins(): void {
         $notificationManager = $this->getNotificationManager();
         $notification = $this->buildUnavailableNotification($notificationManager);
+        $notification->setDateTime(new \DateTime());
         foreach ($this->getUsersToNotify() as $uid) {
             $notification->setUser($uid);
             $notificationManager->notify($notification);
@@ -179,7 +174,8 @@ class EditorsCheck extends TimedJob {
      * who received it, once the document server is reachable again - so a
      * recovered connection doesn't leave a stale alert behind. Omitting the
      * user on the notification (unlike notifyAdmins()) marks it processed
-     * for all users that have it, not just one.
+     * for all users that have it, not just one; omitting the date (see
+     * buildUnavailableNotification()) matches regardless of when it was sent.
      */
     private function dismissAdminNotifications(): void {
         $notificationManager = $this->getNotificationManager();
