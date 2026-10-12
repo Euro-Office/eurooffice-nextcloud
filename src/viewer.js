@@ -21,8 +21,6 @@
  *
  */
 
-/* global _oc_appswebroots */
-
 /**
  * @param {object} OCA Nextcloud OCA object
  */
@@ -85,16 +83,6 @@
 
 		const mimes = Object.values(OCA.Eurooffice.setting.formats)
 			.filter(format => format.def)
-			.filter(format => {
-				// Don't collide with files_pdfviewer (bundled, enabled by default).
-				// Exception: if the admin has explicitly enabled EO as the default PDF
-				// viewer (format.def === true), register anyway so EO takes priority.
-				if (!format.def && typeof _oc_appswebroots !== 'undefined' && _oc_appswebroots.files_pdfviewer) {
-					const formatMimes = [].concat(format.mime)
-					if (formatMimes.includes('application/pdf')) return false
-				}
-				return true
-			})
 			.map(format => format.mime)
 			.flat()
 		OCA.Viewer.registerHandler({
