@@ -74,7 +74,8 @@ class RemoteInstance {
         ");
         $result = $select->execute([$remote]);
 
-        return $result->fetch();
+        $row = $result->fetch();
+        return $row === false ? null : $row;
     }
 
     /**
@@ -155,7 +156,7 @@ class RemoteInstance {
             self::update($remote, $status);
         }
 
-        $logger->debug("Remote instance " . $remote . " was stored to database status " . $dbremote["status"], ["app" => self::APP_NAME]);
+        $logger->debug("Remote instance " . $remote . " was stored to database status " . $status, ["app" => self::APP_NAME]);
 
         self::$healthRemote[$remote] = $status;
 
