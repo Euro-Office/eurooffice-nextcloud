@@ -192,6 +192,15 @@ class Preview implements IProviderV2 {
             "fileId" => $file->getId()
         ];
 
+        if (!$template && $user instanceof IUser) {
+            $userFolder = $this->root->getUserFolder($user->getUID());
+            $relativePath = $userFolder->getRelativePath($file->getPath());
+
+            if ($relativePath !== null && $relativePath !== '') {
+                $data["filePath"] = "/" . ltrim($relativePath, "/");
+            }
+        }
+
         $userId = null;
         if ($user instanceof IUser) {
             $userId = $user->getUID();
