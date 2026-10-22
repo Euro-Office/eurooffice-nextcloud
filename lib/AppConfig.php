@@ -1139,7 +1139,7 @@ class AppConfig {
             return $turnOff === "true";
         }
 
-        return $this->getSystemValue($this->_verification) === "true";
+        return self::isTrue($this->getSystemValue($this->_verification));
     }
 
     /**
