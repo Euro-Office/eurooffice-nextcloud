@@ -4,3 +4,7 @@
 
 # Vite chunk-CSS output for async-imported Vue components
 /css/*.chunk.css
+
+# Playwright
+/playwright-report
+/test-results
