@@ -138,6 +138,37 @@ class Notifier implements INotifier {
                     ])
                     ->setIcon($this->urlGenerator->getAbsoluteURL($this->urlGenerator->imagePath($this->appName, 'app-dark.svg')));
                 break;
+            case "document_conflict":
+                $fileId = $parameters["fileId"];
+                $fileName = $parameters["fileName"];
+                $copyId = $parameters["copyId"];
+                $copyName = $parameters["copyName"];
+
+                $this->logger->info("Notify prepare: conflict copy $copyId of document $fileId");
+
+                $link = $this->urlGenerator->linkToRouteAbsolute($this->appName . ".editor.index", ["fileId" => $copyId]);
+                $action = $notification->createAction();
+                $action->setLabel($trans->t('Open'))
+                    ->setParsedLabel($trans->t('Open'))
+                    ->setLink($link, IAction::TYPE_WEB)
+                    ->setPrimary(true);
+                $notification->addParsedAction($action);
+                $notification->setParsedSubject($trans->t("%1\$s was changed outside the editor while you were editing it. Your changes were saved as %2\$s.", [$fileName, $copyName]))
+                    ->setRichSubject($trans->t("{file} was changed outside the editor while you were editing it. Your changes were saved as {copy}."), [
+                        "file" => [
+                            "type" => "highlight",
+                            "id" => (string)$fileId,
+                            "name" => $fileName,
+                        ],
+                        "copy" => [
+                            "type" => "highlight",
+                            "id" => (string)$copyId,
+                            "name" => $copyName,
+                            "link" => $link,
+                        ]
+                    ])
+                    ->setIcon($this->urlGenerator->getAbsoluteURL($this->urlGenerator->imagePath($this->appName, 'app-dark.svg')));
+                break;
             default:
                 $this->logger->info("Unsupported notification object: ".$notification->getObjectType());
         }

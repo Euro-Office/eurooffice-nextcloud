@@ -30,6 +30,8 @@ use OCA\Files_Versions\Versions\IVersionManager;
 use OCA\Eurooffice\AppConfig;
 use OCA\Eurooffice\Crypt;
 use OCA\Eurooffice\DocumentService;
+use OCA\Eurooffice\EditSessionGuard;
+use OCA\Eurooffice\Events\DocumentConflictEvent;
 use OCA\Eurooffice\Events\DocumentUnsavedEvent;
 use OCA\Eurooffice\FileVersions;
 use OCA\Eurooffice\FileUtility;
@@ -47,6 +49,7 @@ use OCP\AppFramework\Http\Attribute\CORS;
 use OCP\AppFramework\Http\Attribute\NoAdminRequired;
 use OCP\AppFramework\Http\Attribute\NoCSRFRequired;
 use OCP\AppFramework\Http\Attribute\PublicPage;
+use OCP\EventDispatcher\Event;
 use OCP\EventDispatcher\IEventDispatcher;
 use OCP\Files\File;
 use OCP\Files\Folder;
@@ -66,6 +69,7 @@ use OCP\Lock\LockedException;
 use OCP\PreConditionNotMetException;
 use OCP\Share\Exceptions\ShareNotFound;
 use OCP\Share\IManager;
+use OCP\Share\IShare;
 use Psr\Log\LoggerInterface;
 
 /**
@@ -109,7 +113,8 @@ class CallbackController extends Controller {
         private readonly ?IVersionManager $versionManager,
         private readonly DocumentService $documentService,
         private readonly KeyManager $keyManager,
-        private readonly SetupManager $setupManager
+        private readonly SetupManager $setupManager,
+        private readonly EditSessionGuard $editSessionGuard
     ) {
         parent::__construct($appName, $request);
     }
@@ -479,6 +484,8 @@ class CallbackController extends Controller {
 
                 // Whether this request holds the key lock, so the catch below can release it.
                 $keyLocked = false;
+                // The document key of the session, before a conversion below reuses $key.
+                $sessionKey = $key;
                 try {
                     $url = $this->appConfig->replaceDocumentServerUrlToInternal($url);
 
@@ -505,6 +512,23 @@ class CallbackController extends Controller {
                         }
 
                         $newData = $this->documentService->request($url);
+                    }
+
+                    // Federated files keep their key on the remote instance, so they aren't checked.
+                    if (!$isCorrupted
+                        && !RemoteInstance::isRemoteFile($file)
+                        && $this->editSessionGuard->isStale($fileId, $sessionKey)) {
+                        // The file was written outside this session (an upload, a sync client, a
+                        // version restore) after it opened. Overwriting it would silently discard
+                        // that write. The key row now belongs to any session opened since, so
+                        // leave its lock and forcesave flags alone.
+                        $this->logger->warning("Track: $fileId status $status - file changed outside the editor session, saving as a copy");
+                        $result = $this->saveConflictCopy($userId, $file, $sessionKey, $newData, $share);
+
+                        if (!$isForcesave) {
+                            $this->unlock($file);
+                        }
+                        break;
                     }
 
                     $prevIsForcesave = $this->keyManager->wasForcesave($fileId);
@@ -805,18 +829,47 @@ class CallbackController extends Controller {
     }
 
     /**
-     * Tell the user their edit did not save. Dispatch is defensive: a notification-backend
-     * failure must not escape track() and skip the lock/forcesave bookkeeping around it.
+     * Tell the user their edit did not save
      */
     private function notifyUnsaved(?string $userId, int $fileId, string $fileName): void {
         if (empty($userId)) {
             return;
         }
 
+        $this->dispatchNotification($fileId, new DocumentUnsavedEvent($userId, $fileId, $fileName));
+    }
+
+    /**
+     * Save the content of a stale editor session as a conflict copy and tell the user where it went.
+     * Returns the callback result: 0 once the copy is saved, so DocumentServer does not retry.
+     */
+    private function saveConflictCopy(?string $userId, File $file, string $sessionKey, string $content, ?IShare $share): int {
         try {
-            $this->eventDispatcher->dispatchTyped(new DocumentUnsavedEvent($userId, $fileId, $fileName));
+            $copy = $this->editSessionGuard->saveConflictCopy($file, $sessionKey, $content, $share);
+        } catch (\Exception $e) {
+            $this->logger->error("Track: {$file->getId()} failed to save a conflict copy", ["exception" => $e]);
+            $this->notifyUnsaved($userId, $file->getId(), $file->getName());
+            return self::CALLBACK_ERROR_UNKNOWN;
+        }
+
+        if (!empty($userId)) {
+            $this->dispatchNotification(
+                $file->getId(),
+                new DocumentConflictEvent($userId, $file->getId(), $file->getName(), $copy->getId(), $copy->getName())
+            );
+        }
+
+        return 0;
+    }
+
+    /**
+     * A notification-backend failure must not escape track() and skip the bookkeeping around it.
+     */
+    private function dispatchNotification(int $fileId, Event $event): void {
+        try {
+            $this->eventDispatcher->dispatchTyped($event);
         } catch (\Throwable $e) {
-            $this->logger->error("Track: $fileId failed to dispatch DocumentUnsavedEvent", ["exception" => $e]);
+            $this->logger->error("Track: $fileId failed to dispatch " . $event::class, ["exception" => $e]);
         }
     }
 
