@@ -75,6 +75,7 @@ import axios from '@nextcloud/axios'
 				const config = response.data
 				if (config) {
 					OCA.Eurooffice.device = config.type
+					OCA.Eurooffice.folderLink = config._folder_link || OC.generateUrl('/apps/files')
 					if (OCA.Eurooffice.device === 'mobile') {
 						OCA.Eurooffice.resizeEvents()
 					}
@@ -188,9 +189,7 @@ import axios from '@nextcloud/axios'
 							}
 						}
 
-						if (OCA.Eurooffice.directEditor || OCA.Eurooffice.inframe) {
-							config.events.onRequestClose = OCA.Eurooffice.onRequestClose
-						}
+						config.events.onRequestClose = OCA.Eurooffice.onRequestClose
 
 						if (OCA.Eurooffice.inframe
 							&& config._files_sharing && !OCA.Eurooffice.shareToken
@@ -468,12 +467,28 @@ import axios from '@nextcloud/axios'
 			return
 		}
 
-		OCA.Eurooffice.docEditor.destroyEditor()
+		if (OCA.Eurooffice.docEditor) {
+			OCA.Eurooffice.docEditor.destroyEditor()
+		}
 
-		window.parent.postMessage({
-			method: 'editorRequestClose',
-		},
-		'*')
+		if (OCA.Eurooffice.inframe) {
+			window.parent.postMessage({
+				method: 'editorRequestClose',
+			},
+			'*')
+			return
+		}
+
+		const returnUrl = OCA.Eurooffice.folderLink || OC.generateUrl('/apps/files')
+		if (window.opener && !window.opener.closed) {
+			window.opener.focus()
+			window.close()
+			if (window.closed) {
+				return
+			}
+		}
+
+		window.location.replace(returnUrl)
 	}
 
 	OCA.Eurooffice.onRequestSharingSettings = function() {
