@@ -441,11 +441,7 @@ class EditorApiController extends OCSController {
 
         $canGoBack = $folderLink !== null;
         if ($inviewer) {
-            if ($canGoBack) {
-                $params["editorConfig"]["customization"]["goback"] = [
-                    "url" => $folderLink
-                ];
-            }
+            $params["editorConfig"]["customization"]["close"]["visible"] = true;
         } elseif (!$desktop
             && $inframe
             && ($this->appConfig->getSameTab()

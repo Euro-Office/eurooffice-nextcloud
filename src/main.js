@@ -190,6 +190,13 @@ import { loadState } from '@nextcloud/initial-state'
 			|| (!OCA.Eurooffice.setting.sameTab && !isDefault)) {
 			OCA.Eurooffice.SetDefaultUrl()
 			winEditor = window.open(url, '_blank')
+		} else if (OCA.Viewer && isDefault && filePath && OCA.Eurooffice.setting.sameTab && !isPublicShare()) {
+			OCA.Viewer.openWith(OCA.Eurooffice.AppName, { path: filePath, onClose: OCA.Eurooffice.SetDefaultUrl })
+			window.OCP?.Files?.Router?.goToRoute(
+				null, // use default route
+				{ view: 'files', fileid: fileId },
+				{ ...OCP.Files.Router.query, openfile: 'true' },
+			)
 		} else {
 			if (OCA.Eurooffice.setting.enableSharing
 				&& !isPublicShare()
