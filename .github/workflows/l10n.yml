@@ -1,0 +1,102 @@
+name: l10n
+
+on:
+  workflow_dispatch:
+  pull_request:
+    branches: [main, 'stable*']
+  push:
+    # main: a source change means the pot file needs rebuilding.
+    # weblate-translations: Weblate wrote po files, so l10n/ needs rebuilding.
+    # Committing here lands the generated files inside Weblate's own pull
+    # request instead of opening a second one.
+    branches: [main, weblate-translations]
+
+permissions:
+  contents: read
+
+jobs:
+  regenerate:
+    runs-on: ubuntu-latest
+    name: regenerate
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          # Pull requests only verify, so they do not need the robot token,
+          # and it is not available to forks anyway.
+          token: ${{ secrets.EO_ROBOT_GITHUB_TOKEN || github.token }}
+
+      - name: Set up php
+        uses: shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240 # 2.37.2
+        with:
+          php-version: "8.3"
+          coverage: none
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Install gettext
+        run: sudo apt-get install -y --no-install-recommends gettext
+
+      - name: Fetch translationtool
+        run: |
+          curl -sSfLo /tmp/translationtool.phar \
+            https://raw.githubusercontent.com/nextcloud/docker-ci/master/translations/translationtool/translationtool.phar
+
+      # Both are no-ops when nothing changed, so there is no need to work out
+      # what this push touched.
+      - name: Extract source strings
+        run: php /tmp/translationtool.phar create-pot-files
+
+      # xgettext stamps the current time into the pot header, which would make
+      # every run differ and fail the verification below on every pull request.
+      # Dropped before msgmerge, which would otherwise copy it into every po.
+      # translationtool only writes the pot; without this the po files never
+      # learn about new source strings and Weblate cannot show them.
+      - name: Update po files from the pot
+        run: |
+          for po in translationfiles/*/*.po; do
+            msgmerge --quiet --update --backup=none --no-fuzzy-matching \
+              "$po" translationfiles/templates/eurooffice.pot
+          done
+
+      # Without this the output depends on where the repository is checked
+      # out, so CI and a developer's machine would never agree.
+      - name: Normalise generated metadata
+        run: |
+          # xgettext stamps the current time into the pot header.
+          sed -i '/^"POT-Creation-Date: /d' translationfiles/templates/*.pot
+          # Source references are absolute paths.
+          sed -i "s|$(pwd -P)/||g" translationfiles/templates/*.pot translationfiles/*/*.po
+          # translationtool derives .vue hints from the fake file it builds and
+          # truncates the path by a fixed offset, leaving an unusable fragment
+          # that still varies with the checkout path. Real TRANSLATORS comments
+          # do not end in a .vue line number, so they survive.
+          sed -i -E '/^#\. TRANSLATORS .*\.vue:[0-9]+$/d' \
+            translationfiles/templates/*.pot translationfiles/*/*.po
+          ! grep -rq "$(pwd -P)" translationfiles/
+
+      - name: Convert po files to l10n
+        run: php /tmp/translationtool.phar convert-po-files
+
+
+      - name: Verify the committed files are up to date
+        if: github.event_name == 'pull_request'
+        run: |
+          git add -A -- translationfiles l10n
+          git diff --cached --exit-code --stat || {
+            echo "::error::translationfiles/ or l10n/ is out of date."
+            echo "Run translationtool create-pot-files and convert-po-files, then commit."
+            exit 1
+          }
+
+      - name: Commit if anything changed
+        if: github.event_name != 'pull_request'
+        run: |
+          git config user.name "euro-office-robot"
+          git config user.email "noreply@euro-office.org"
+          git add translationfiles l10n
+          git diff --cached --quiet && echo "nothing to do" && exit 0
+          git commit -m "chore(l10n): regenerate translation files"
+          # Weblate rebases its branch, so this commit can be dropped; the
+          # workflow simply runs again and re-adds it.
+          git push origin "HEAD:${GITHUB_REF_NAME}"
