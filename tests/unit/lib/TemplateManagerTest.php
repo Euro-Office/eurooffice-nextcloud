@@ -29,7 +29,7 @@ use Test\TestCase;
 #[CoversClass(TemplateManager::class)]
 class TemplateManagerTest extends TestCase {
 
-    private const EXTENSIONS = [".docx", ".xlsx", ".pptx"];
+    private const EXTENSIONS = [".docx", ".xlsx", ".pptx", ".odt", ".ods", ".odp"];
 
     /**
      * @return array<string, string> the language code to locale directory map the
@@ -109,11 +109,27 @@ class TemplateManagerTest extends TestCase {
     }
 
     /**
+     * A mapped language whose locale directory lacks the format falls back to the
+     * default locale. The ODF blanks are locale-neutral and only ship in default/;
+     * without this fallback every mapped language created 0-byte ODF files.
+     */
+    public function testMappedLanguageFallsBackToDefaultForMissingFormat(): void {
+        $localePath = TemplateManager::getEmptyTemplatePath("de", ".docx");
+        $this->assertStringContainsString(DIRECTORY_SEPARATOR . "de-DE" . DIRECTORY_SEPARATOR, $localePath);
+
+        $path = TemplateManager::getEmptyTemplatePath("de", ".odt");
+
+        $this->assertStringContainsString(DIRECTORY_SEPARATOR . "default" . DIRECTORY_SEPARATOR, $path);
+        $this->assertFileExists($path);
+    }
+
+    /**
      * getEmptyTemplate() is what the callers actually use; it must return real
      * file contents rather than false.
      */
-    public function testGetEmptyTemplateReturnsNonEmptyContent(): void {
-        $content = TemplateManager::getEmptyTemplate("whatever.docx");
+    #[DataProvider("extensionProvider")]
+    public function testGetEmptyTemplateReturnsNonEmptyContent(string $ext): void {
+        $content = TemplateManager::getEmptyTemplate("whatever" . $ext);
 
         $this->assertIsString($content, "getEmptyTemplate() returned false; the template path does not resolve");
         $this->assertNotSame("", $content);
