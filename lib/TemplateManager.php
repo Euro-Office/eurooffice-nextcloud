@@ -195,15 +195,30 @@ class TemplateManager {
     /**
      * Get template path
      *
+     * Falls back to the default locale when the language is not mapped, or when
+     * its locale directory has no template for the extension. The ODF blanks
+     * are locale-neutral and only exist in default/.
+     *
      * @param string $lang - language
      * @param string $ext - file extension
      */
     public static function getEmptyTemplatePath(string $lang, string $ext): string {
-        if (!array_key_exists($lang, self::$localPath)) {
-            $lang = "default";
+        $templatePath = self::getLocaleTemplatePath(self::$localPath[$lang] ?? self::$localPath["default"], $ext);
+        if (!file_exists($templatePath)) {
+            $templatePath = self::getLocaleTemplatePath(self::$localPath["default"], $ext);
         }
 
-        return dirname(__DIR__) . DIRECTORY_SEPARATOR . self::EMPTY_TEMPLATE_DIR . DIRECTORY_SEPARATOR . self::$localPath[$lang] . DIRECTORY_SEPARATOR . "new" . $ext;
+        return $templatePath;
+    }
+
+    /**
+     * Get template path inside a locale directory
+     *
+     * @param string $localeDir - locale directory
+     * @param string $ext - file extension
+     */
+    private static function getLocaleTemplatePath(string $localeDir, string $ext): string {
+        return dirname(__DIR__) . DIRECTORY_SEPARATOR . self::EMPTY_TEMPLATE_DIR . DIRECTORY_SEPARATOR . $localeDir . DIRECTORY_SEPARATOR . "new" . $ext;
     }
 
     /**
