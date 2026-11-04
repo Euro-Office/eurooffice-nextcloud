@@ -33,6 +33,7 @@ use OCA\Eurooffice\ExtraPermissions;
 use OCA\Eurooffice\FileUtility;
 use OCA\Eurooffice\TemplateManager;
 use OCA\Eurooffice\Vendor\Firebase\JWT\JWT;
+use OCP\AppFramework\Http;
 use OCP\AppFramework\Http\JSONResponse;
 use OCP\AppFramework\Http\Attribute\NoAdminRequired;
 use OCP\AppFramework\Http\Attribute\PublicPage;
@@ -338,26 +339,7 @@ class EditorApiController extends OCSController {
             $params["type"] = "mobile";
         }
 
-        if (!empty($userId)) {
-            $params["editorConfig"]["user"] = [
-                "id" => $this->buildUserId($userId),
-                "name" => $user->getDisplayName()
-            ];
-            $avatar = $this->avatarManager->getAvatar($userId);
-            if ($avatar->exists() && $avatar->isCustomAvatar()) {
-                $userAvatarUrl = $this->urlGenerator->getAbsoluteURL(
-                    $this->urlGenerator->linkToRoute("core.avatar.getAvatar", [
-                        "userId" => $userId,
-                        "size" => 64,
-                    ])
-                );
-                $params["editorConfig"]["user"]["image"] = $userAvatarUrl;
-            }
-        } elseif (!empty($guestName)) {
-            $params["editorConfig"]["user"] = [
-                "name" => $guestName
-            ];
-        }
+        $params = $this->setUser($params, $user, $guestName);
 
         $folderLink = null;
 
@@ -488,21 +470,92 @@ class EditorApiController extends OCSController {
             }
         }
 
-        if (!empty($this->appConfig->getDocumentServerUrl())) {
-            $params["documentServerUrl"] = $this->appConfig->getDocumentServerUrl();
-        }
-
-        if (!empty($this->appConfig->getDocumentServerSecret())) {
-            $now = time();
-            $iat = $now;
-            $exp = $now + $this->appConfig->getJwtExpiration() * 60;
-            $params["iat"] = $iat;
-            $params["exp"] = $exp;
-            $token = JWT::encode($params, $this->appConfig->getDocumentServerSecret(), "HS256");
-            $params["token"] = $token;
-        }
+        $params = $this->signParams($params);
 
         $this->logger->debug("Config is generated for: $fileId with key $key");
+
+        return new JSONResponse($params);
+    }
+
+    /**
+     * Collecting the editor parameters for a document supplied by the client (local session).
+     * The document never touches the server: the client hands the bytes to the editor,
+     * which converts and renders them in the browser.
+     *
+     * @param string $fileName - document name, the extension selects the editor
+     * @param bool $inframe - open in frame
+     * @param bool $inviewer - open in viewer
+     *
+     * @return JSONResponse
+     */
+    #[NoAdminRequired]
+    public function localConfig(
+        string $fileName,
+        bool $inframe = false,
+        bool $inviewer = false
+    ): JSONResponse {
+        $user = $this->userSession->getUser();
+        if ($user === null) {
+            return new JSONResponse(["error" => $this->trans->t("Not permitted")], Http::STATUS_UNAUTHORIZED);
+        }
+        $userId = $user->getUID();
+
+        if (!$this->appConfig->isUserAllowedToUse($userId)) {
+            return new JSONResponse(["error" => $this->trans->t("Not permitted")], Http::STATUS_FORBIDDEN);
+        }
+
+        if (!$this->appConfig->getLocalSessionEnabled()) {
+            return new JSONResponse(["error" => $this->trans->t("Opening documents in the browser only is disabled")], Http::STATUS_FORBIDDEN);
+        }
+
+        $fileName = basename(trim($fileName));
+        $ext = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
+        $format = !empty($ext) && array_key_exists($ext, $this->appConfig->formatsSetting()) ? $this->appConfig->formatsSetting()[$ext] : null;
+        if (!isset($format)) {
+            $this->logger->info("Format is not supported for local session: $fileName");
+            return new JSONResponse(["error" => $this->trans->t("Format is not supported")], Http::STATUS_UNPROCESSABLE_ENTITY);
+        }
+
+        $params = [
+            "document" => [
+                "fileType" => $ext,
+                "title" => $fileName,
+                "permissions" => [
+                    "edit" => false,
+                    "comment" => false,
+                    "review" => false,
+                    "fillForms" => false,
+                    "chat" => false,
+                    "protect" => false,
+                    "changeHistory" => false,
+                    "download" => !$this->appConfig->getDisableDownload(),
+                    "print" => !$this->appConfig->getDisableDownload(),
+                    "copy" => !$this->appConfig->getDisableDownload()
+                ]
+            ],
+            "documentType" => $format["type"],
+            "editorConfig" => [
+                "mode" => "view",
+                "session" => ["type" => "local"],
+                "lang" => str_replace("_", "-", $this->l10nFactory->findLanguage()),
+                "region" => str_replace("_", "-", $this->trans->getLocaleCode())
+            ]
+        ];
+
+        if ($this->request->isUserAgent([$this::USER_AGENT_MOBILE])) {
+            $params["type"] = "mobile";
+        }
+
+        $params = $this->setUser($params, $user, "");
+
+        if ($inframe || $inviewer) {
+            $params["editorConfig"]["customization"]["close"]["visible"] = true;
+        }
+
+        $params = $this->setCustomization($params);
+        $params = $this->signParams($params);
+
+        $this->logger->debug("Local session config is generated for: $fileName");
 
         return new JSONResponse($params);
     }
@@ -604,6 +657,62 @@ class EditorApiController extends OCSController {
         }
 
         return $fileUrl;
+    }
+
+    /**
+     * Set the editor user block
+     *
+     * @param array $params - file parameters
+     * @param IUser $user - current user
+     * @param string $guestName - nickname not logged user
+     */
+    private function setUser(array $params, ?IUser $user, string $guestName): array {
+        if (!empty($user)) {
+            $userId = $user->getUID();
+            $params["editorConfig"]["user"] = [
+                "id" => $this->buildUserId($userId),
+                "name" => $user->getDisplayName()
+            ];
+            $avatar = $this->avatarManager->getAvatar($userId);
+            if ($avatar->exists() && $avatar->isCustomAvatar()) {
+                $userAvatarUrl = $this->urlGenerator->getAbsoluteURL(
+                    $this->urlGenerator->linkToRoute("core.avatar.getAvatar", [
+                        "userId" => $userId,
+                        "size" => 64,
+                    ])
+                );
+                $params["editorConfig"]["user"]["image"] = $userAvatarUrl;
+            }
+        } elseif (!empty($guestName)) {
+            $params["editorConfig"]["user"] = [
+                "name" => $guestName
+            ];
+        }
+
+        return $params;
+    }
+
+    /**
+     * Add the document server address and sign the parameters
+     *
+     * @param array $params - file parameters
+     */
+    private function signParams(array $params): array {
+        if (!empty($this->appConfig->getDocumentServerUrl())) {
+            $params["documentServerUrl"] = $this->appConfig->getDocumentServerUrl();
+        }
+
+        if (!empty($this->appConfig->getDocumentServerSecret())) {
+            $now = time();
+            $iat = $now;
+            $exp = $now + $this->appConfig->getJwtExpiration() * 60;
+            $params["iat"] = $iat;
+            $params["exp"] = $exp;
+            $token = JWT::encode($params, $this->appConfig->getDocumentServerSecret(), "HS256");
+            $params["token"] = $token;
+        }
+
+        return $params;
     }
 
     /**

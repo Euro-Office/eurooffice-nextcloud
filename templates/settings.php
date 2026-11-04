@@ -128,6 +128,22 @@
     </p>
 
     <p>
+        <input type="checkbox" class="checkbox" id="euroofficeLocalSession"
+            <?php if ($_["localSession"]["enabled"]) { ?>checked="checked"<?php } ?> />
+        <label for="euroofficeLocalSession"><?php p($l->t("Open documents without a file (for example mail attachments) and end-to-end encrypted files in the browser only, without a Document Server session")) ?></label>
+    </p>
+
+    <p id="euroofficeLocalSessionBlock" <?php if (!$_["localSession"]["enabled"]) { ?> style="display: none" <?php } ?>>
+        <input type="checkbox" class="checkbox" id="euroofficeLocalSessionForceE2ee"
+            <?php if ($_["localSession"]["forceE2ee"]) { ?>checked="checked"<?php } ?> />
+        <label for="euroofficeLocalSessionForceE2ee"><?php p($l->t("Always open end-to-end encrypted files in the browser only")) ?></label>
+        <br />
+        <label for="euroofficeLocalSessionMaxSize"><?php p($l->t("Maximum document size for browser-only viewing (MB)")) ?></label>
+        <input type="number" min="1" step="1" id="euroofficeLocalSessionMaxSize"
+            value="<?php p((string)(int)ceil($_["localSession"]["maxSize"] / 1048576)) ?>" />
+    </p>
+
+    <p>
         <input type="checkbox" class="checkbox" id="euroofficeAdvanced"
             <?php if ($_["advanced"]) { ?>checked="checked"<?php } ?> />
         <label for="euroofficeAdvanced"><?php p($l->t("Provide advanced document permissions using Nextcloud Office")) ?></label>

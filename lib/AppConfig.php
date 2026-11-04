@@ -88,6 +88,26 @@ class AppConfig {
     private string $_enableSharing = "enableSharing";
 
     /**
+     * The config key for opening documents in a client-only (local) editor session
+     */
+    private string $_localSessionEnabled = "local_session_enabled";
+
+    /**
+     * The config key for the maximum document size (bytes) opened in a local session
+     */
+    private string $_localSessionMaxSize = "local_session_max_size";
+
+    /**
+     * The config key for forcing local sessions for end-to-end encrypted files
+     */
+    private string $_localSessionForceE2ee = "local_session_force_e2ee";
+
+    /**
+     * Default maximum document size (bytes) for local sessions
+     */
+    public const LOCAL_SESSION_DEFAULT_MAX_SIZE = 52428800;
+
+    /**
      * The config key for the generate preview
      */
     private string $_preview = "preview";
@@ -661,6 +681,69 @@ class AppConfig {
      */
     public function getEnableSharing(): bool {
         return $this->appConfig->getValueString($this->appName, $this->_enableSharing, "false") === "true";
+    }
+
+    /**
+     * Save the local session setting
+     */
+    public function setLocalSessionEnabled(bool $value): void {
+        $this->logger->info("Set local session enabled: " . json_encode($value), ["app" => $this->appName]);
+
+        $this->appConfig->setValueString($this->appName, $this->_localSessionEnabled, json_encode($value));
+    }
+
+    /**
+     * Get the local session setting
+     */
+    public function getLocalSessionEnabled(): bool {
+        return $this->appConfig->getValueString($this->appName, $this->_localSessionEnabled, "true") === "true";
+    }
+
+    /**
+     * Save the maximum document size (bytes) for local sessions
+     */
+    public function setLocalSessionMaxSize(int $value): void {
+        $this->logger->info("Set local session max size: " . $value, ["app" => $this->appName]);
+
+        $this->appConfig->setValueString($this->appName, $this->_localSessionMaxSize, (string)max(0, $value));
+    }
+
+    /**
+     * Get the maximum document size (bytes) for local sessions
+     */
+    public function getLocalSessionMaxSize(): int {
+        $value = $this->appConfig->getValueString($this->appName, $this->_localSessionMaxSize, "");
+        if ($value === "" || !is_numeric($value)) {
+            return self::LOCAL_SESSION_DEFAULT_MAX_SIZE;
+        }
+        return (int)$value;
+    }
+
+    /**
+     * Save the setting forcing local sessions for end-to-end encrypted files
+     */
+    public function setLocalSessionForceE2ee(bool $value): void {
+        $this->logger->info("Set local session force e2ee: " . json_encode($value), ["app" => $this->appName]);
+
+        $this->appConfig->setValueString($this->appName, $this->_localSessionForceE2ee, json_encode($value));
+    }
+
+    /**
+     * Get the setting forcing local sessions for end-to-end encrypted files
+     */
+    public function getLocalSessionForceE2ee(): bool {
+        return $this->appConfig->getValueString($this->appName, $this->_localSessionForceE2ee, "true") === "true";
+    }
+
+    /**
+     * Get the local session settings as exposed to the client
+     */
+    public function getLocalSessionSettings(): array {
+        return [
+            "enabled" => $this->getLocalSessionEnabled(),
+            "maxSize" => $this->getLocalSessionMaxSize(),
+            "forceE2ee" => $this->getLocalSessionForceE2ee()
+        ];
     }
 
     /**
