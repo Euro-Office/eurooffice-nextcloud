@@ -580,6 +580,15 @@ class EditorApiController extends OCSController {
             "fileId" => $file->getId()
         ];
 
+        if (!$template && $user instanceof IUser) {
+            $userFolder = $this->root->getUserFolder($user->getUID());
+            $relativePath = $userFolder->getRelativePath($file->getPath());
+
+            if ($relativePath !== null && $relativePath !== '') {
+                $data["filePath"] = "/" . ltrim($relativePath, "/");
+            }
+        }
+
         $userId = null;
         if (!empty($user)) {
             $userId = $user->getUID();

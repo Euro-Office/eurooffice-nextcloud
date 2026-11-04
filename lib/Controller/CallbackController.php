@@ -663,9 +663,52 @@ class CallbackController extends Controller {
             return [null, new JSONResponse(["message" => $this->trans->t("Invalid request")], Http::STATUS_BAD_REQUEST), null];
         }
 
+
         if (empty($files)) {
-            $this->logger->error("Files not found: $fileId");
-            return [null, new JSONResponse(["message" => $this->trans->t("Files not found")], Http::STATUS_NOT_FOUND), null];
+            $this->logger->warning(
+                "Callback getFile: ID $fileId not found, trying path"
+            );
+
+            if (!$template && $filePath !== "") {
+                try {
+                    $relativePath = ltrim($filePath, "/");
+                    $fallbackFile = $folder->get($relativePath);
+
+                    if (
+                        $fallbackFile instanceof File
+                        && $fallbackFile->getId() === $fileId
+                        && $fallbackFile->isReadable()
+                    ) {
+                        $files = [$fallbackFile];
+
+                        $this->logger->info(
+                            "Callback getFile: ID $fileId resolved by path"
+                        );
+                    }
+                } catch (\OCP\Files\NotFoundException $e) {
+                    $this->logger->warning(
+                        "Callback getFile: Path not found for ID $fileId"
+                    );
+                } catch (\Exception $e) {
+                    $this->logger->error(
+                        "Callback getFile: Path resolution failed for ID $fileId",
+                        ["exception" => $e]
+                    );
+                }
+            }
+
+            if (empty($files)) {
+                $this->logger->error("Files not found: $fileId");
+
+                return [
+                    null,
+                    new JSONResponse(
+                        ["message" => $this->trans->t("Files not found")],
+                        Http::STATUS_NOT_FOUND
+                    ),
+                    null
+                ];
+            }
         }
 
         $file = $files[0];
