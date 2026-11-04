@@ -70,6 +70,7 @@ class SettingsController extends Controller {
             "formats" => $this->appConfig->formatsSetting(),
             "sameTab" => $this->appConfig->getSameTab(),
             "enableSharing" => $this->appConfig->getEnableSharing(),
+            "localSession" => $this->appConfig->getLocalSessionSettings(),
             "preview" => $this->appConfig->getPreview(),
             "advanced" => $this->appConfig->getAdvanced(),
             "cronChecker" => $this->appConfig->getCronChecker(),
@@ -172,6 +173,9 @@ class SettingsController extends Controller {
      * @param bool $help - display help
      * @param string $reviewDisplay - review viewing mode
      * @param string $unknownAuthor - display unknown author
+     * @param bool $localSessionEnabled - open documents without a file node in a client-only session
+     * @param int $localSessionMaxSize - maximum document size (bytes) for a client-only session
+     * @param bool $localSessionForceE2ee - always use a client-only session for end-to-end encrypted files
      */
     public function saveCommon(
         array $defFormats,
@@ -192,7 +196,10 @@ class SettingsController extends Controller {
         string $reviewDisplay,
         string $theme,
         string $unknownAuthor,
-        array $limitGroups = []
+        array $limitGroups = [],
+        bool $localSessionEnabled = true,
+        int $localSessionMaxSize = AppConfig::LOCAL_SESSION_DEFAULT_MAX_SIZE,
+        bool $localSessionForceE2ee = true
     ): DataResponse {
 
         $this->appConfig->setDefaultFormats($defFormats);
@@ -214,6 +221,9 @@ class SettingsController extends Controller {
         $this->appConfig->setCustomizationReviewDisplay($reviewDisplay);
         $this->appConfig->setCustomizationTheme($theme);
         $this->appConfig->setUnknownAuthor($unknownAuthor);
+        $this->appConfig->setLocalSessionEnabled($localSessionEnabled);
+        $this->appConfig->setLocalSessionMaxSize($localSessionMaxSize);
+        $this->appConfig->setLocalSessionForceE2ee($localSessionForceE2ee);
 
         return new DataResponse();
     }
