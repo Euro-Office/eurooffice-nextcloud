@@ -55,12 +55,19 @@ import axios from '@nextcloud/axios'
 		OCA.Eurooffice.inviewer = !!iframeEditor.dataset.inviewer
 		OCA.Eurooffice.filePath = iframeEditor.dataset.path
 		OCA.Eurooffice.anchor = iframeEditor.getAttribute('data-anchor')
+		OCA.Eurooffice.localSession = iframeEditor.dataset.localsession === 'true'
+		OCA.Eurooffice.fileName = iframeEditor.dataset.filename
 		OCA.Eurooffice.currentWindow = window
 		OCA.Eurooffice.currentUser = OC.getCurrentUser()
 
 		if (OCA.Eurooffice.inframe) {
 			OCA.Eurooffice.currentWindow = window.parent
 			OCA.Eurooffice.currentUser = OCA.Eurooffice.currentWindow.OC.getCurrentUser()
+		}
+
+		if (OCA.Eurooffice.localSession) {
+			OCA.Eurooffice.initLocalSession()
+			return
 		}
 
 		if (!OCA.Eurooffice.fileId && !OCA.Eurooffice.shareToken && !OCA.Eurooffice.directToken) {
@@ -72,166 +79,242 @@ import axios from '@nextcloud/axios'
 
 		axios.get(configUrl)
 			.then((response) => {
-				const config = response.data
-				if (config) {
-					OCA.Eurooffice.device = config.type
-					if (OCA.Eurooffice.device === 'mobile') {
-						OCA.Eurooffice.resizeEvents()
-					}
-
-					if (config.redirectUrl) {
-						location.href = config.redirectUrl
-						return
-					}
-
-					if (config.error != null) {
-						OCA.Eurooffice.showMessage(config.error, 'error', { timeout: -1 })
-						return
-					}
-
-					if (!config.documentServerUrl) {
-						OCA.Eurooffice.showMessage('Nextcloud Office cannot be reached. Please contact admin', 'error', { timeout: -1 })
-						return
-					}
-
-					const script = document.createElement('script')
-					script.src = config.documentServerUrl + 'web-apps/apps/api/documents/api.js?shardKey=' + config.document.key
-					script.setAttribute('nonce', btoa(OC.requestToken))
-					script.onerror = function() {
-						OCA.Eurooffice.showMessage(t(OCA.Eurooffice.AppName, 'Nextcloud Office cannot be reached. Please contact admin'), 'error', { timeout: -1 })
-					}
-					script.onload = function() {
-						if (typeof DocsAPI === 'undefined') {
-							OCA.Eurooffice.showMessage(t(OCA.Eurooffice.AppName, 'Nextcloud Office cannot be reached. Please contact admin'), 'error', { timeout: -1 })
-							return
-						}
-
-						const docsVersion = DocsAPI.DocEditor.version().split('.')
-						if ((docsVersion[0] < 6)
-							|| (parseInt(docsVersion[0]) === 6 && parseInt(docsVersion[1]) === 0)) {
-							OCA.Eurooffice.showMessage(t(OCA.Eurooffice.AppName, 'Not supported version'), 'error', { timeout: -1 })
-							return
-						}
-
-						let docIsChanged = null
-						let docIsChangedTimeout = null
-
-						const setPageTitle = function(event) {
-							clearTimeout(docIsChangedTimeout)
-
-							if (docIsChanged !== event.data) {
-								const titleChange = function() {
-									OCA.Eurooffice.currentWindow.document.title = config.document.title + (event.data ? ' *' : '') + ' - ' + OC.theme.title
-									docIsChanged = event.data
-								}
-
-								if (event === false || event.data) {
-									titleChange()
-								} else {
-									docIsChangedTimeout = setTimeout(titleChange, 500)
-								}
-							}
-						}
-						setPageTitle(false)
-
-						OCA.Eurooffice.documentType = config.documentType
-
-						config.events = {
-							onDocumentStateChange: setPageTitle,
-							onDocumentReady: OCA.Eurooffice.onDocumentReady,
-							onMakeActionLink: OCA.Eurooffice.onMakeActionLink,
-						}
-
-						config.events.onAppReady = function() {
-							if (config.editorConfig.tenant) {
-								OCA.Eurooffice.docEditor.showMessage(t(OCA.Eurooffice.AppName, 'You are using public demo Nextcloud Office server. Please do not store private sensitive data.'))
-							}
-							// Tell the editor whether the NC Assistant app is enabled.
-							// The EditorController publishes this via initial state under
-							// the 'eurooffice' namespace so it works on every editor layout
-							// (including the inframe 'base' layout that doesn't run the
-							// Assistant app's own initial-state bootstrap).
-							const assistantAvailable = !!OCP?.InitialState?.loadState?.('eurooffice', 'assistant-enabled', false)
-							if (typeof OCA.Eurooffice.docEditor.setAssistantAvailable === 'function') {
-								OCA.Eurooffice.docEditor.setAssistantAvailable(assistantAvailable)
-							}
-						}
-
-						if ((OCA.Eurooffice.inframe && !OCA.Eurooffice.shareToken)
-							|| (OCA.Eurooffice.currentUser.uid)) {
-							config.events.onRequestSaveAs = OCA.Eurooffice.onRequestSaveAs
-							config.events.onRequestInsertImage = OCA.Eurooffice.onRequestInsertImage
-							config.events.onRequestMailMergeRecipients = OCA.Eurooffice.onRequestMailMergeRecipients
-							config.events.onRequestCompareFile = OCA.Eurooffice.onRequestSelectDocument // todo: remove (for editors 7.4)
-							config.events.onRequestSelectDocument = OCA.Eurooffice.onRequestSelectDocument
-							config.events.onRequestSendNotify = OCA.Eurooffice.onRequestSendNotify
-							config.events.onRequestReferenceData = OCA.Eurooffice.onRequestReferenceData
-							config.events.onRequestOpen = OCA.Eurooffice.onRequestOpen
-							config.events.onRequestReferenceSource = OCA.Eurooffice.onRequestReferenceSource
-							config.events.onMetaChange = OCA.Eurooffice.onMetaChange
-							config.events.onRequestRefreshFile = OCA.Eurooffice.onRequestRefreshFile
-							config.events.onRequestSmartPicker = OCA.Eurooffice.onRequestSmartPicker
-
-							if (OCA.Eurooffice.currentUser.uid) {
-								config.events.onRequestUsers = OCA.Eurooffice.onRequestUsers
-							}
-
-							if (!OCA.Eurooffice.filePath) {
-								OCA.Eurooffice.filePath = config._file_path
-							}
-
-							if (!OCA.Eurooffice.template) {
-								config.events.onRequestHistory = OCA.Eurooffice.onRequestHistory
-								config.events.onRequestHistoryData = OCA.Eurooffice.onRequestHistoryData
-								config.events.onRequestRestore = OCA.Eurooffice.onRequestRestore
-								config.events.onRequestHistoryClose = OCA.Eurooffice.onRequestHistoryClose
-							}
-						}
-
-						if (OCA.Eurooffice.directEditor || OCA.Eurooffice.inframe) {
-							config.events.onRequestClose = OCA.Eurooffice.onRequestClose
-						}
-
-						if (OCA.Eurooffice.inframe
-							&& config._files_sharing && !OCA.Eurooffice.shareToken
-							&& window.parent.OCA.Eurooffice.context) {
-							config.events.onRequestSharingSettings = OCA.Eurooffice.onRequestSharingSettings
-						}
-
-						OCA.Eurooffice.docEditor = new DocsAPI.DocEditor('iframeEditor', config)
-
-						if (OCA.Eurooffice.directEditor) {
-							OCA.Eurooffice.directEditor.loaded()
-						}
-
-						if (!OCA.Eurooffice.directEditor
-							&& config.type === 'mobile') {
-							const appIframe = document.querySelector('#app > iframe')
-							if (appIframe && window.getComputedStyle(appIframe).position === 'fixed') {
-								appIframe.style.height = 'calc(100% - 50px)'
-							}
-						}
-
-						const favicon = OC.filePath(OCA.Eurooffice.AppName, 'img', OCA.Eurooffice.documentType + '.ico')
-						if (OCA.Eurooffice.inframe) {
-							window.parent.postMessage({
-								method: 'changeFavicon',
-								param: favicon,
-							},
-							'*')
-						} else {
-							const faviconLink = document.querySelector('link[rel="icon"]')
-							if (faviconLink) {
-								faviconLink.setAttribute('href', favicon)
-							}
-						}
-					}
-					document.head.appendChild(script)
-				}
+				OCA.Eurooffice.loadEditor(response.data)
 			})
 			.catch((error) => {
 				OCA.Eurooffice.showMessage(error.message || t(OCA.Eurooffice.AppName, 'Failed to load configuration'), 'error', { timeout: -1 })
 			})
+	}
+
+	/**
+	 * Start a client-only (local) session: the embedding page hands the document bytes
+	 * over with postMessage, the config comes from the local config endpoint, and the
+	 * editor converts and renders the document in the browser without a Document Server
+	 * session.
+	 */
+	OCA.Eurooffice.initLocalSession = function() {
+		if (!OCA.Eurooffice.fileName) {
+			OCA.Eurooffice.showMessage(t(OCA.Eurooffice.AppName, 'File name is empty'), 'error', { timeout: -1 })
+			return
+		}
+
+		const sourcePromise = new Promise((resolve) => {
+			const onMessage = function(event) {
+				if (event.source !== window.parent
+					|| event.origin !== window.location.origin
+					|| event.data?.type !== OCA.Eurooffice.LOCAL_SOURCE_MESSAGE
+					|| !(event.data.buffer instanceof ArrayBuffer)) {
+					return
+				}
+				window.removeEventListener('message', onMessage)
+				resolve(event.data)
+			}
+			window.addEventListener('message', onMessage)
+			if (window.parent !== window) {
+				window.parent.postMessage({ method: 'localSessionReady' }, window.location.origin)
+			}
+		})
+
+		const params = ['fileName=' + encodeURIComponent(OCA.Eurooffice.fileName)]
+		if (OCA.Eurooffice.inframe) {
+			params.push('inframe=true')
+		}
+		if (OCA.Eurooffice.inviewer) {
+			params.push('inviewer=true')
+		}
+		const configUrl = OC.linkToOCS('apps/' + OCA.Eurooffice.AppName + '/api/v1/config', 2) + 'local?' + params.join('&')
+
+		Promise.all([axios.get(configUrl), sourcePromise])
+			.then(([response, source]) => {
+				OCA.Eurooffice.localSource = source
+				OCA.Eurooffice.loadEditor(response.data)
+			})
+			.catch((error) => {
+				const message = error.response?.data?.error || error.message || t(OCA.Eurooffice.AppName, 'Failed to load configuration')
+				OCA.Eurooffice.showMessage(message, 'error', { timeout: -1 })
+			})
+	}
+
+	/**
+	 * Load the document server API and start the editor for a config
+	 *
+	 * @param {object} config editor config as returned by the config endpoints
+	 */
+	OCA.Eurooffice.loadEditor = function(config) {
+		if (!config) {
+			return
+		}
+		OCA.Eurooffice.device = config.type
+		if (OCA.Eurooffice.device === 'mobile') {
+			OCA.Eurooffice.resizeEvents()
+		}
+
+		if (config.redirectUrl) {
+			location.href = config.redirectUrl
+			return
+		}
+
+		if (config.error != null) {
+			OCA.Eurooffice.showMessage(config.error, 'error', { timeout: -1 })
+			return
+		}
+
+		if (!config.documentServerUrl) {
+			OCA.Eurooffice.showMessage('Nextcloud Office cannot be reached. Please contact admin', 'error', { timeout: -1 })
+			return
+		}
+
+		const script = document.createElement('script')
+		script.src = config.documentServerUrl + 'web-apps/apps/api/documents/api.js'
+			+ (config.document.key ? '?shardKey=' + config.document.key : '')
+		script.setAttribute('nonce', btoa(OC.requestToken))
+		script.onerror = function() {
+			OCA.Eurooffice.showMessage(t(OCA.Eurooffice.AppName, 'Nextcloud Office cannot be reached. Please contact admin'), 'error', { timeout: -1 })
+		}
+		script.onload = function() {
+			if (typeof DocsAPI === 'undefined') {
+				OCA.Eurooffice.showMessage(t(OCA.Eurooffice.AppName, 'Nextcloud Office cannot be reached. Please contact admin'), 'error', { timeout: -1 })
+				return
+			}
+
+			const docsVersion = DocsAPI.DocEditor.version().split('.')
+			if ((docsVersion[0] < 6)
+				|| (parseInt(docsVersion[0]) === 6 && parseInt(docsVersion[1]) === 0)) {
+				OCA.Eurooffice.showMessage(t(OCA.Eurooffice.AppName, 'Not supported version'), 'error', { timeout: -1 })
+				return
+			}
+
+			if (OCA.Eurooffice.localSession) {
+				if (!DocsAPI.DocEditor.capabilities?.localSession) {
+					OCA.Eurooffice.showMessage(t(OCA.Eurooffice.AppName, 'The Document Server does not support opening documents in the browser only. Please contact admin'), 'error', { timeout: -1 })
+					return
+				}
+				config.document.source = {
+					data: OCA.Eurooffice.localSource.buffer,
+				}
+				config.editorConfig.session = { type: 'local' }
+			}
+
+			let docIsChanged = null
+			let docIsChangedTimeout = null
+
+			const setPageTitle = function(event) {
+				clearTimeout(docIsChangedTimeout)
+
+				if (docIsChanged !== event.data) {
+					const titleChange = function() {
+						OCA.Eurooffice.currentWindow.document.title = config.document.title + (event.data ? ' *' : '') + ' - ' + OC.theme.title
+						docIsChanged = event.data
+					}
+
+					if (event === false || event.data) {
+						titleChange()
+					} else {
+						docIsChangedTimeout = setTimeout(titleChange, 500)
+					}
+				}
+			}
+			setPageTitle(false)
+
+			OCA.Eurooffice.documentType = config.documentType
+
+			config.events = {
+				onDocumentStateChange: setPageTitle,
+				onDocumentReady: OCA.Eurooffice.onDocumentReady,
+				onMakeActionLink: OCA.Eurooffice.onMakeActionLink,
+			}
+
+			config.events.onAppReady = function() {
+				if (config.editorConfig.tenant) {
+					OCA.Eurooffice.docEditor.showMessage(t(OCA.Eurooffice.AppName, 'You are using public demo Nextcloud Office server. Please do not store private sensitive data.'))
+				}
+				// Tell the editor whether the NC Assistant app is enabled.
+				// The EditorController publishes this via initial state under
+				// the 'eurooffice' namespace so it works on every editor layout
+				// (including the inframe 'base' layout that doesn't run the
+				// Assistant app's own initial-state bootstrap).
+				const assistantAvailable = !!OCP?.InitialState?.loadState?.('eurooffice', 'assistant-enabled', false)
+				if (typeof OCA.Eurooffice.docEditor.setAssistantAvailable === 'function') {
+					OCA.Eurooffice.docEditor.setAssistantAvailable(assistantAvailable)
+				}
+			}
+
+			if (OCA.Eurooffice.localSession) {
+				config.events.onError = OCA.Eurooffice.onLocalSessionError
+				config.events.onLocalSessionProgress = OCA.Eurooffice.onLocalSessionProgress
+			}
+
+			if (!OCA.Eurooffice.localSession
+				&& ((OCA.Eurooffice.inframe && !OCA.Eurooffice.shareToken)
+				|| (OCA.Eurooffice.currentUser.uid))) {
+				config.events.onRequestSaveAs = OCA.Eurooffice.onRequestSaveAs
+				config.events.onRequestInsertImage = OCA.Eurooffice.onRequestInsertImage
+				config.events.onRequestMailMergeRecipients = OCA.Eurooffice.onRequestMailMergeRecipients
+				config.events.onRequestCompareFile = OCA.Eurooffice.onRequestSelectDocument // todo: remove (for editors 7.4)
+				config.events.onRequestSelectDocument = OCA.Eurooffice.onRequestSelectDocument
+				config.events.onRequestSendNotify = OCA.Eurooffice.onRequestSendNotify
+				config.events.onRequestReferenceData = OCA.Eurooffice.onRequestReferenceData
+				config.events.onRequestOpen = OCA.Eurooffice.onRequestOpen
+				config.events.onRequestReferenceSource = OCA.Eurooffice.onRequestReferenceSource
+				config.events.onMetaChange = OCA.Eurooffice.onMetaChange
+				config.events.onRequestRefreshFile = OCA.Eurooffice.onRequestRefreshFile
+				config.events.onRequestSmartPicker = OCA.Eurooffice.onRequestSmartPicker
+
+				if (OCA.Eurooffice.currentUser.uid) {
+					config.events.onRequestUsers = OCA.Eurooffice.onRequestUsers
+				}
+
+				if (!OCA.Eurooffice.filePath) {
+					OCA.Eurooffice.filePath = config._file_path
+				}
+
+				if (!OCA.Eurooffice.template) {
+					config.events.onRequestHistory = OCA.Eurooffice.onRequestHistory
+					config.events.onRequestHistoryData = OCA.Eurooffice.onRequestHistoryData
+					config.events.onRequestRestore = OCA.Eurooffice.onRequestRestore
+					config.events.onRequestHistoryClose = OCA.Eurooffice.onRequestHistoryClose
+				}
+			}
+
+			if (OCA.Eurooffice.directEditor || OCA.Eurooffice.inframe) {
+				config.events.onRequestClose = OCA.Eurooffice.onRequestClose
+			}
+
+			if (OCA.Eurooffice.inframe
+				&& config._files_sharing && !OCA.Eurooffice.shareToken
+				&& window.parent.OCA.Eurooffice.context) {
+				config.events.onRequestSharingSettings = OCA.Eurooffice.onRequestSharingSettings
+			}
+
+			OCA.Eurooffice.docEditor = new DocsAPI.DocEditor('iframeEditor', config)
+
+			if (OCA.Eurooffice.directEditor) {
+				OCA.Eurooffice.directEditor.loaded()
+			}
+
+			if (!OCA.Eurooffice.directEditor
+				&& config.type === 'mobile') {
+				const appIframe = document.querySelector('#app > iframe')
+				if (appIframe && window.getComputedStyle(appIframe).position === 'fixed') {
+					appIframe.style.height = 'calc(100% - 50px)'
+				}
+			}
+
+			const favicon = OC.filePath(OCA.Eurooffice.AppName, 'img', OCA.Eurooffice.documentType + '.ico')
+			if (OCA.Eurooffice.inframe) {
+				window.parent.postMessage({
+					method: 'changeFavicon',
+					param: favicon,
+				},
+				'*')
+			} else {
+				const faviconLink = document.querySelector('link[rel="icon"]')
+				if (faviconLink) {
+					faviconLink.setAttribute('href', favicon)
+				}
+			}
+		}
+		document.head.appendChild(script)
 	}
 
 	OCA.Eurooffice.onRequestHistory = function(version) {
@@ -692,6 +775,39 @@ import axios from '@nextcloud/axios'
 			.then((response) => {
 				OCA.Eurooffice.docEditor.refreshFile(response.data)
 			})
+	}
+
+	OCA.Eurooffice.LOCAL_SOURCE_MESSAGE = 'eurooffice-local-source'
+
+	OCA.Eurooffice.localSessionErrorMessage = function(errorCode) {
+		switch (errorCode) {
+		case -100:
+			return t(OCA.Eurooffice.AppName, 'The document converter could not be loaded')
+		case -101:
+			return t(OCA.Eurooffice.AppName, 'The document could not be converted')
+		case -102:
+			return t(OCA.Eurooffice.AppName, 'This format cannot be opened in the browser only')
+		case -103:
+			return t(OCA.Eurooffice.AppName, 'The document is too large to be opened in the browser only')
+		default:
+			return null
+		}
+	}
+
+	OCA.Eurooffice.onLocalSessionError = function(event) {
+		const message = OCA.Eurooffice.localSessionErrorMessage(event?.data?.errorCode)
+			|| event?.data?.errorDescription
+			|| t(OCA.Eurooffice.AppName, 'The document could not be opened')
+		OCA.Eurooffice.showMessage(message, 'error', { timeout: -1 })
+	}
+
+	OCA.Eurooffice.onLocalSessionProgress = function(event) {
+		if (OCA.Eurooffice.inframe) {
+			window.parent.postMessage({
+				method: 'localSessionProgress',
+				param: event?.data || null,
+			}, window.location.origin)
+		}
 	}
 
 	OCA.Eurooffice.showMessage = function(message, type = 'success', props = null) {

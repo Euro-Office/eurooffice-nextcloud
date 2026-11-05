@@ -31,6 +31,7 @@ return [
        ["name" => "template#preview", "url" => "/preview", "verb" => "GET"],
        ["name" => "editor#create_new", "url" => "/new", "verb" => "GET"],
        ["name" => "editor#download", "url" => "/downloadas", "verb" => "GET"],
+       ["name" => "editor#local", "url" => "/local", "verb" => "GET"],
        ["name" => "editor#index", "url" => "/{fileId}", "verb" => "GET"],
        ["name" => "editor#public_page", "url" => "/s/{shareToken}", "verb" => "GET"],
        ["name" => "editor#users", "url" => "/ajax/users", "verb" => "GET"],
@@ -61,6 +62,7 @@ return [
         ["name" => "federation#key", "url" => "/api/v1/key", "verb" => "POST"],
         ["name" => "federation#keylock", "url" => "/api/v1/keylock", "verb" => "POST"],
         ["name" => "federation#healthcheck", "url" => "/api/v1/healthcheck", "verb" => "GET"],
+        ["name" => "editorApi#local_config", "url" => "/api/v1/config/local", "verb" => "GET"],
         ["name" => "editorApi#config", "url" => "/api/v1/config/{fileId}", "verb" => "GET"],
         ["name" => "sharingApi#get_shares", "url" => "/api/v1/shares/{fileId}", "verb" => "GET"],
         ["name" => "sharingApi#set_shares", "url" => "/api/v1/shares", "verb" => "PUT"]
