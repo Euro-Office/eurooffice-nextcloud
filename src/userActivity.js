@@ -8,14 +8,17 @@ import { loadState } from '@nextcloud/initial-state'
 import { generateUrl } from '@nextcloud/router'
 
 /**
- * Same interval as core's own session heartbeat: half the session lifetime, within one minute and one day
+ * Minimum time between two heartbeats while the user is active: a tenth of the session lifetime,
+ * between one minute (core's shortest heartbeat interval) and 15 minutes. The session then expires
+ * within about a tenth of session_lifetime of when it would after the last activity, without a
+ * request a minute per open editor on long lifetimes.
  *
  * @param {number|undefined} sessionLifetime seconds
  * @return {number} milliseconds
  */
-function heartbeatInterval(sessionLifetime) {
-	const interval = sessionLifetime ? Math.floor(sessionLifetime / 2) : 900
-	return Math.min(24 * 3600, Math.max(60, interval)) * 1000
+function heartbeatGap(sessionLifetime) {
+	const gap = sessionLifetime ? Math.floor(sessionLifetime / 10) : 60
+	return Math.min(15 * 60, Math.max(60, gap)) * 1000
 }
 
 /**
@@ -59,25 +62,26 @@ export function createUserActivityHandler(hostWindow = window, config = loadStat
 		return undefined
 	}
 
-	const interval = heartbeatInterval(config.session_lifetime)
+	const gap = heartbeatGap(config.session_lifetime)
 	const windows = hostWindow === window ? [window] : [window, hostWindow]
-	let lastHeartbeat = Date.now()
+	// None yet: the page may have loaded long enough ago that the first activity must refresh the session
+	let lastHeartbeat = null
 
 	return function onUserActivity() {
 		if (autoLogout) {
 			reportActivity(windows)
 		}
 
-		const sinceHeartbeat = Date.now() - lastHeartbeat
+		const sinceHeartbeat = lastHeartbeat === null ? Infinity : Date.now() - lastHeartbeat
 		// Negative after the clock steps back: the server's session clock did not, so send now
-		if (heartbeat && (sinceHeartbeat >= interval || sinceHeartbeat < 0)) {
+		if (heartbeat && (sinceHeartbeat >= gap || sinceHeartbeat < 0)) {
 			const previous = lastHeartbeat
 			const current = Date.now()
 			lastHeartbeat = current
 			// Core's keepalive route: refreshes the session without running an app
 			axios.get(generateUrl('/heartbeat')).catch((error) => {
 				console.debug('Eurooffice: session heartbeat failed, retrying on the next activity', error)
-				// A request that hangs past the next interval must not undo a newer one
+				// A request that hangs past the next gap must not undo a newer one
 				if (lastHeartbeat === current) {
 					lastHeartbeat = previous
 				}
