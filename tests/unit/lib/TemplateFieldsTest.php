@@ -216,21 +216,41 @@ class TemplateFieldsTest extends TestCase {
         $this->assertStringContainsString("☒", self::part($filled, "word/document.xml"));
     }
 
-    public function testInvalidFilesThrowAndLeaveNoTemporaryFile(): void {
+    public function testInvalidFilesThrowOnFillAndLeaveNoTemporaryFile(): void {
         $before = glob(sys_get_temp_dir() . "/eotf*") ?: [];
+        $brokenPart = self::docx(null, "<w:ftr");
 
-        foreach (["not a zip", self::docx(null, "<w:ftr")] as $i => $broken) {
+        $this->assertCount(4, TemplateFields::extract($brokenPart), "listing fields skips a broken part");
+        foreach (["not a zip", $brokenPart] as $broken) {
             try {
                 TemplateFields::fill($broken, ["ContentControls.ByIndex.0" => ["content" => "x"]]);
-                if ($i === 0) {
-                    $this->fail("a file that is not a zip must throw");
-                }
-            } catch (\RuntimeException $e) {
-                $this->assertSame(0, $i, "only the non-zip file throws; a broken part is skipped");
+                $this->fail("filling a file with a broken part must throw");
+            } catch (\RuntimeException) {
+                $this->assertTrue(true);
             }
         }
 
         $this->assertSame($before, glob(sys_get_temp_dir() . "/eotf*") ?: [], "no temporary copy is left");
+    }
+
+    public function testControlsWithNotesCommentsOrTrackedChangesAreSkipped(): void {
+        $wrap = fn (string $tag, int $id, string $inner) => "<w:p><w:sdt>" . self::sdtPr($tag, $tag, $id) . "<w:sdtContent>{$inner}</w:sdtContent></w:sdt></w:p>";
+        $body = $wrap("footnote", 71, "<w:r><w:t>Tekst</w:t></w:r><w:r><w:footnoteReference w:id=\"1\"/></w:r>")
+            . $wrap("comment", 72, "<w:commentRangeStart w:id=\"0\"/><w:r><w:t>Tekst</w:t></w:r><w:commentRangeEnd w:id=\"0\"/><w:r><w:commentReference w:id=\"0\"/></w:r>")
+            . $wrap("inserted", 73, "<w:ins w:id=\"5\" w:author=\"A\"><w:r><w:t>Ny</w:t></w:r></w:ins>")
+            . $wrap("deleted", 74, "<w:del w:id=\"6\" w:author=\"A\"><w:r><w:delText>Gammel</w:delText></w:r></w:del>")
+            . $wrap("plain", 75, "<w:r><w:t>Tekst</w:t></w:r>");
+
+        $this->assertSame(["plain", "case"], array_column(TemplateFields::extract(self::docx($body)), "tag"));
+    }
+
+    public function testTabsAreWrittenAsTabElements(): void {
+        $filled = TemplateFields::fill(self::docx(), ["ContentControls.ByIndex.0" => ["content" => "Navn\tAdresse"]]);
+
+        $this->assertSame("Navn\tAdresse", TemplateFields::extract($filled)[0]["content"]);
+        $document = self::part($filled, "word/document.xml");
+        $this->assertStringContainsString("<w:tab/>", $document);
+        $this->assertStringNotContainsString("\t", $document);
     }
 
     public function testTooLargePartIsRejectedBeforeParsing(): void {

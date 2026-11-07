@@ -45,10 +45,14 @@ class TemplateFields {
 
     /**
      * Content that cannot be rewritten as plain text without loss: tables and
-     * their rows and cells, nested controls, hyperlinks, fields, pictures and
-     * embedded objects. Controls holding any of these are not reported.
+     * their rows and cells, nested controls, hyperlinks, fields, pictures,
+     * embedded objects, footnote, endnote and comment anchors, and tracked
+     * changes. Controls holding any of these are not reported.
      */
-    private const COMPLEX_CONTENT = "w:tr | w:tc | .//w:tbl | .//w:sdt | .//w:hyperlink | .//w:fldSimple | .//w:fldChar | .//w:drawing | .//w:pict | .//w:object";
+    private const COMPLEX_CONTENT = "w:tr | w:tc | .//w:tbl | .//w:sdt | .//w:hyperlink | .//w:fldSimple | .//w:fldChar"
+        . " | .//w:drawing | .//w:pict | .//w:object"
+        . " | .//w:footnoteReference | .//w:endnoteReference | .//w:commentReference | .//w:commentRangeStart | .//w:commentRangeEnd"
+        . " | .//w:ins | .//w:del | .//w:moveFrom | .//w:moveTo";
 
     /**
      * List the fillable content controls of a .docx file.
@@ -157,6 +161,11 @@ class TemplateFields {
                 $dom = new DOMDocument();
                 $dom->preserveWhiteSpace = true;
                 if (!$dom->loadXML($xml, LIBXML_NONET)) {
+                    // Listing fields can skip a broken part; filling must not hand back a
+                    // document whose parts could not all be read
+                    if ($write) {
+                        throw new \RuntimeException("Template part " . $part . " is not valid XML");
+                    }
                     continue;
                 }
                 $xpath = self::xpath($dom);
@@ -167,8 +176,8 @@ class TemplateFields {
                     $counter++;
                 }
 
-                if ($write) {
-                    $zip->addFromString($part, $dom->saveXML());
+                if ($write && !$zip->addFromString($part, $dom->saveXML())) {
+                    throw new \RuntimeException("Could not write template part " . $part);
                 }
             }
 
@@ -184,11 +193,14 @@ class TemplateFields {
         } finally {
             libxml_clear_errors();
             libxml_use_internal_errors($libxmlErrors);
-            if ($opened && !$closed) {
-                $zip->close();
+            try {
+                if ($opened && !$closed) {
+                    $zip->close();
+                }
+            } finally {
+                // The copy holds the user's template: remove it on every path, errors included
+                @unlink($path);
             }
-            // The copy holds the user's template: remove it on every path, errors included
-            @unlink($path);
         }
 
         return $result;
@@ -330,10 +342,19 @@ class TemplateFields {
                 if ($i > 0) {
                     $run->appendChild($dom->createElementNS(self::NS_W, "w:br"));
                 }
-                $t = $dom->createElementNS(self::NS_W, "w:t");
-                $t->setAttributeNS("http://www.w3.org/XML/1998/namespace", "xml:space", "preserve");
-                $t->appendChild($dom->createTextNode($line));
-                $run->appendChild($t);
+                // A tab is its own element in WordprocessingML, not a character in w:t
+                foreach (explode("\t", $line) as $j => $piece) {
+                    if ($j > 0) {
+                        $run->appendChild($dom->createElementNS(self::NS_W, "w:tab"));
+                    }
+                    if ($piece === "") {
+                        continue;
+                    }
+                    $t = $dom->createElementNS(self::NS_W, "w:t");
+                    $t->setAttributeNS("http://www.w3.org/XML/1998/namespace", "xml:space", "preserve");
+                    $t->appendChild($dom->createTextNode($piece));
+                    $run->appendChild($t);
+                }
             }
 
             return $run;
