@@ -112,11 +112,13 @@ class TemplateFields {
             throw new \RuntimeException("Not a valid .docx file");
         }
 
+        $closed = false;
         try {
             $counter = 0;
             foreach (self::parts($zip) as $part) {
+                // loadXML() throws on an empty string, so an empty part is skipped like a missing one
                 $xml = $zip->getFromName($part);
-                if ($xml === false) {
+                if ($xml === false || $xml === "") {
                     continue;
                 }
 
@@ -137,12 +139,20 @@ class TemplateFields {
                     $zip->addFromString($part, $dom->saveXML());
                 }
             }
-        } finally {
-            $zip->close();
-        }
 
-        $result = file_get_contents($path);
-        unlink($path);
+            // The changes are written to the file on close, so it has to happen before reading it back
+            $closed = true;
+            if (!$zip->close()) {
+                throw new \RuntimeException("Could not write the .docx file");
+            }
+            $result = file_get_contents($path);
+        } finally {
+            if (!$closed) {
+                $zip->close();
+            }
+            // The copy holds the user's template: remove it on every path, errors included
+            @unlink($path);
+        }
 
         return $result;
     }
@@ -175,9 +185,15 @@ class TemplateFields {
 
     /**
      * Field type as Nextcloud names it, or null for controls it cannot show
-     * (date, drop-down, combo box, picture and the like).
+     * (date, drop-down, combo box, picture and the like) or cannot refill as
+     * text (controls around a table, a row or a cell).
      */
     private static function type(DOMElement $sdt, DOMXPath $xpath): ?string {
+        $content = $xpath->query("w:sdtContent", $sdt)->item(0);
+        if ($content !== null && $xpath->query("w:tr | w:tc | .//w:tbl", $content)->length > 0) {
+            return null;
+        }
+
         $pr = $xpath->query("w:sdtPr", $sdt)->item(0);
         if ($pr === null) {
             return "rich-text";
@@ -301,7 +317,13 @@ class TemplateFields {
      * Tick or clear a checkbox control: its state and the symbol it shows.
      */
     private static function setChecked(DOMElement $sdt, DOMXPath $xpath, bool $checked): void {
-        $state = $xpath->query("w:sdtPr/w14:checkbox/w14:checked", $sdt)->item(0);
+        $checkbox = $xpath->query("w:sdtPr/w14:checkbox", $sdt)->item(0);
+        $state = $checkbox instanceof DOMElement ? $xpath->query("w14:checked", $checkbox)->item(0) : null;
+        if (!$state instanceof DOMElement && $checkbox instanceof DOMElement) {
+            // The element is optional; without it the state could not be saved
+            $state = $sdt->ownerDocument->createElementNS(self::NS_W14, "w14:checked");
+            $checkbox->insertBefore($state, $checkbox->firstChild);
+        }
         if ($state instanceof DOMElement) {
             $state->setAttributeNS(self::NS_W14, "w14:val", $checked ? "1" : "0");
         }

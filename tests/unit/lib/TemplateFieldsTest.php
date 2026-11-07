@@ -31,8 +31,12 @@ class TemplateFieldsTest extends TestCase {
         return "<w:sdtPr><w:alias w:val=\"{$alias}\"/><w:tag w:val=\"{$tag}\"/><w:id w:val=\"{$id}\"/>{$extra}</w:sdtPr>";
     }
 
-    private static function docx(): string {
-        $body = "<w:p><w:r><w:t>Til: </w:t></w:r>"
+    /**
+     * A small .docx with the default controls, or with the given body; an
+     * empty string for $footer adds an empty footer part.
+     */
+    private static function docx(?string $body = null, ?string $footer = null): string {
+        $body ??= "<w:p><w:r><w:t>Til: </w:t></w:r>"
             . "<w:sdt>" . self::sdtPr("Modtager", "recipient", 11, "<w:showingPlcHdr/><w:text/>")
             . "<w:sdtContent><w:r><w:rPr><w:rStyle w:val=\"PlaceholderText\"/><w:b/></w:rPr><w:t>Klik for at skrive</w:t></w:r></w:sdtContent></w:sdt></w:p>"
             . "<w:sdt>" . self::sdtPr("Brødtekst", "body", 12)
@@ -51,6 +55,9 @@ class TemplateFieldsTest extends TestCase {
         $zip->addFromString("[Content_Types].xml", "<?xml version=\"1.0\"?><Types xmlns=\"http://schemas.openxmlformats.org/package/2006/content-types\"/>");
         $zip->addFromString("word/document.xml", "<?xml version=\"1.0\" encoding=\"UTF-8\"?><w:document {$ns}><w:body>{$body}</w:body></w:document>");
         $zip->addFromString("word/header1.xml", "<?xml version=\"1.0\" encoding=\"UTF-8\"?><w:hdr {$ns}>{$header}</w:hdr>");
+        if ($footer !== null) {
+            $zip->addFromString("word/footer1.xml", $footer);
+        }
         $zip->close();
         $content = file_get_contents($path);
         unlink($path);
@@ -109,6 +116,52 @@ class TemplateFieldsTest extends TestCase {
         $this->assertStringContainsString("<w:jc w:val=\"both\"/>", $document, "the paragraph's formatting is kept");
         $this->assertStringContainsString("☒", $document, "the checkbox shows the checked symbol");
         $this->assertStringContainsString("1. januar", $document, "controls without a value are untouched");
+    }
+
+    public function testControlsAroundTablesRowsAndCellsAreNotReportedOrFilled(): void {
+        $cell = "<w:tc><w:p><w:r><w:t>Celle</w:t></w:r></w:p></w:tc>";
+        $body = "<w:sdt>" . self::sdtPr("Tabel", "table", 21) . "<w:sdtContent><w:tbl><w:tr>{$cell}</w:tr></w:tbl></w:sdtContent></w:sdt>"
+            . "<w:tbl><w:sdt>" . self::sdtPr("Række", "row", 22) . "<w:sdtContent><w:tr>{$cell}</w:tr></w:sdtContent></w:sdt>"
+            . "<w:tr><w:sdt>" . self::sdtPr("Celle", "cell", 23) . "<w:sdtContent>{$cell}</w:sdtContent></w:sdt></w:tr></w:tbl>"
+            . "<w:p><w:sdt>" . self::sdtPr("Navn", "name", 24) . "<w:sdtContent><w:r><w:t>Navn</w:t></w:r></w:sdtContent></w:sdt></w:p>";
+        $docx = self::docx($body);
+
+        $fields = TemplateFields::extract($docx);
+        $this->assertSame(["name", "case"], array_column($fields, "tag"));
+        $this->assertSame("ContentControls.ByIndex.3", $fields[0]["index"], "skipped controls still count, so indexes stay stable");
+
+        $filled = TemplateFields::fill($docx, [
+            "ContentControls.ByIndex.0" => ["content" => "x"],
+            "ContentControls.ByIndex.1" => ["content" => "x"],
+            "ContentControls.ByIndex.2" => ["content" => "x"],
+            "ContentControls.ByIndex.3" => ["content" => "Ishøj"],
+        ]);
+        $document = self::part($filled, "word/document.xml");
+        $this->assertSame(3, substr_count($document, "<w:t>Celle</w:t>"), "tables, rows and cells are left intact");
+        $this->assertSame("Ishøj", TemplateFields::extract($filled)[0]["content"]);
+    }
+
+    public function testFillAddsTheCheckedStateWhenTheTemplateLacksIt(): void {
+        $body = "<w:p><w:sdt>" . self::sdtPr("Haster", "urgent", 31, "<w14:checkbox><w14:checkedState w14:val=\"2612\"/><w14:uncheckedState w14:val=\"2610\"/></w14:checkbox>")
+            . "<w:sdtContent><w:r><w:t>☐</w:t></w:r></w:sdtContent></w:sdt></w:p>";
+        $docx = self::docx($body);
+        $this->assertFalse(TemplateFields::extract($docx)[0]["checked"]);
+
+        $filled = TemplateFields::fill($docx, ["ContentControls.ByIndex.0" => ["checked" => true]]);
+
+        $this->assertTrue(TemplateFields::extract($filled)[0]["checked"]);
+        $this->assertStringContainsString("☒", self::part($filled, "word/document.xml"));
+    }
+
+    public function testEmptyPartsAreSkippedAndNoTemporaryFileIsLeft(): void {
+        $before = glob(sys_get_temp_dir() . "/eotf*") ?: [];
+        $docx = self::docx(null, "");
+
+        $this->assertCount(4, TemplateFields::extract($docx));
+        $filled = TemplateFields::fill($docx, ["ContentControls.ByIndex.0" => ["content" => "x"]]);
+        $this->assertSame("x", TemplateFields::extract($filled)[0]["content"]);
+
+        $this->assertSame($before, glob(sys_get_temp_dir() . "/eotf*") ?: [], "the temporary copy is removed");
     }
 
     public function testFillWithoutValuesReturnsTheFileUnchanged(): void {
