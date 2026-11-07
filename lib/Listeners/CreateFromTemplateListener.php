@@ -29,12 +29,18 @@ use OCP\EventDispatcher\Event;
 use OCP\EventDispatcher\IEventListener;
 use OCP\Files\Template\FileCreatedFromTemplateEvent;
 
+use OCA\Eurooffice\TemplateFields;
 use OCA\Eurooffice\TemplateManager;
+use Psr\Log\LoggerInterface;
 
 /**
  * CreateFromTemplate listener
  */
 class CreateFromTemplateListener implements IEventListener {
+
+    public function __construct(
+        private readonly LoggerInterface $logger,
+    ) {}
 
     public function handle(Event $event): void {
         if (!$event instanceof FileCreatedFromTemplateEvent) {
@@ -42,11 +48,22 @@ class CreateFromTemplateListener implements IEventListener {
         }
 
         $template = $event->getTemplate();
+        $targetFile = $event->getTarget();
         if ($template === null) {
-            $targetFile = $event->getTarget();
             $templateEmpty = TemplateManager::GetEmptyTemplate($targetFile->getName());
             if ($templateEmpty) {
                 $targetFile->putContent($templateEmpty);
+            }
+            return;
+        }
+
+        // The values typed in Nextcloud's template dialog, see BeforeGetTemplatesListener
+        $fields = $event->getTemplateFields();
+        if (!empty($fields) && $template->getMimeType() === TemplateFields::MIMETYPE) {
+            try {
+                $targetFile->putContent(TemplateFields::fill($template->getContent(), $fields));
+            } catch (\Throwable $e) {
+                $this->logger->error("Could not fill the template fields of " . $targetFile->getName(), ["exception" => $e]);
             }
         }
     }
