@@ -63,7 +63,15 @@ class CreateFromTemplateListener implements IEventListener {
             try {
                 $targetFile->putContent(TemplateFields::fill($template->getContent(), $fields));
             } catch (\Throwable $e) {
+                // A copy of the template without the user's values must not pass for the
+                // document they asked for: remove it and let Nextcloud report the failure
                 $this->logger->error("Could not fill the template fields of " . $targetFile->getName(), ["exception" => $e]);
+                try {
+                    $targetFile->delete();
+                } catch (\Throwable $deleteError) {
+                    $this->logger->error("Could not remove the unfilled file " . $targetFile->getName(), ["exception" => $deleteError]);
+                }
+                throw new \RuntimeException("Could not fill the template fields", 0, $e);
             }
         }
     }

@@ -37,6 +37,20 @@ class TemplateFields {
     private const INDEX_PREFIX = "ContentControls.ByIndex.";
 
     /**
+     * Largest uncompressed XML part that is parsed. A document part of a real
+     * template is a few hundred kilobytes; the limit keeps a highly compressed
+     * part from exhausting memory when its DOM is built.
+     */
+    private const MAX_PART_SIZE = 20 * 1024 * 1024;
+
+    /**
+     * Content that cannot be rewritten as plain text without loss: tables and
+     * their rows and cells, nested controls, hyperlinks, fields, pictures and
+     * embedded objects. Controls holding any of these are not reported.
+     */
+    private const COMPLEX_CONTENT = "w:tr | w:tc | .//w:tbl | .//w:sdt | .//w:hyperlink | .//w:fldSimple | .//w:fldChar | .//w:drawing | .//w:pict | .//w:object";
+
+    /**
      * List the fillable content controls of a .docx file.
      *
      * @param string $docx the file's content
@@ -104,18 +118,34 @@ class TemplateFields {
      */
     private static function walk(string $docx, bool $write, callable $visit): string {
         $path = tempnam(sys_get_temp_dir(), "eotf");
-        file_put_contents($path, $docx);
+        if ($path === false) {
+            throw new \RuntimeException("Could not create a temporary file");
+        }
+        if (file_put_contents($path, $docx) === false) {
+            @unlink($path);
+            throw new \RuntimeException("Could not write a temporary file");
+        }
 
         $zip = new ZipArchive();
         if ($zip->open($path) !== true) {
-            unlink($path);
+            @unlink($path);
             throw new \RuntimeException("Not a valid .docx file");
         }
 
         $closed = false;
+        // A broken part is skipped below; collect libxml's messages instead of raising warnings
+        $libxmlErrors = libxml_use_internal_errors(true);
         try {
             $counter = 0;
             foreach (self::parts($zip) as $part) {
+                $stat = $zip->statName($part);
+                if ($stat === false) {
+                    continue;
+                }
+                if ($stat["size"] > self::MAX_PART_SIZE) {
+                    throw new \RuntimeException("Template part " . $part . " is too large");
+                }
+
                 // loadXML() throws on an empty string, so an empty part is skipped like a missing one
                 $xml = $zip->getFromName($part);
                 if ($xml === false || $xml === "") {
@@ -146,7 +176,12 @@ class TemplateFields {
                 throw new \RuntimeException("Could not write the .docx file");
             }
             $result = file_get_contents($path);
+            if ($result === false) {
+                throw new \RuntimeException("Could not read the .docx file back");
+            }
         } finally {
+            libxml_clear_errors();
+            libxml_use_internal_errors($libxmlErrors);
             if (!$closed) {
                 $zip->close();
             }
@@ -186,11 +221,11 @@ class TemplateFields {
     /**
      * Field type as Nextcloud names it, or null for controls it cannot show
      * (date, drop-down, combo box, picture and the like) or cannot refill as
-     * text (controls around a table, a row or a cell).
+     * text without loss (see COMPLEX_CONTENT).
      */
     private static function type(DOMElement $sdt, DOMXPath $xpath): ?string {
         $content = $xpath->query("w:sdtContent", $sdt)->item(0);
-        if ($content !== null && $xpath->query("w:tr | w:tc | .//w:tbl", $content)->length > 0) {
+        if ($content !== null && $xpath->query(self::COMPLEX_CONTENT, $content)->length > 0) {
             return null;
         }
 
@@ -250,8 +285,13 @@ class TemplateFields {
     }
 
     /**
-     * Replace the control's text and drop its placeholder state. The first run's
-     * formatting is kept for the new text; the placeholder character style is not.
+     * Replace the control's text and drop its placeholder state.
+     *
+     * The value is plain text, so the new text gets ONE formatting: the first
+     * run's, without the placeholder character style. In a block control each
+     * line becomes its own paragraph with the first paragraph's properties; in
+     * an inline control lines are joined with line breaks. Bookmarks inside the
+     * control are kept around the new text.
      */
     private static function setText(DOMElement $sdt, DOMXPath $xpath, string $value): void {
         $content = $xpath->query("w:sdtContent", $sdt)->item(0);
@@ -264,6 +304,9 @@ class TemplateFields {
             $node->parentNode->removeChild($node);
         }
 
+        $bookmarkStarts = iterator_to_array($xpath->query(".//w:bookmarkStart", $content));
+        $bookmarkEnds = iterator_to_array($xpath->query(".//w:bookmarkEnd", $content));
+
         $firstRun = $xpath->query(".//w:r", $content)->item(0);
         $runPr = $firstRun instanceof DOMElement ? $xpath->query("w:rPr", $firstRun)->item(0) : null;
         if ($runPr instanceof DOMElement) {
@@ -275,41 +318,61 @@ class TemplateFields {
             }
         }
 
-        $run = $dom->createElementNS(self::NS_W, "w:r");
-        if ($runPr instanceof DOMElement) {
-            $run->appendChild($runPr);
-        }
         $lines = preg_split("/\r\n|\r|\n/", $value);
-        foreach ($lines as $i => $line) {
-            if ($i > 0) {
-                $run->appendChild($dom->createElementNS(self::NS_W, "w:br"));
+        $run = static function (array $lines) use ($dom, $runPr): DOMElement {
+            $run = $dom->createElementNS(self::NS_W, "w:r");
+            if ($runPr instanceof DOMElement) {
+                $run->appendChild($runPr->cloneNode(true));
             }
-            $t = $dom->createElementNS(self::NS_W, "w:t");
-            $t->setAttributeNS("http://www.w3.org/XML/1998/namespace", "xml:space", "preserve");
-            $t->appendChild($dom->createTextNode($line));
-            $run->appendChild($t);
+            foreach ($lines as $i => $line) {
+                if ($i > 0) {
+                    $run->appendChild($dom->createElementNS(self::NS_W, "w:br"));
+                }
+                $t = $dom->createElementNS(self::NS_W, "w:t");
+                $t->setAttributeNS("http://www.w3.org/XML/1998/namespace", "xml:space", "preserve");
+                $t->appendChild($dom->createTextNode($line));
+                $run->appendChild($t);
+            }
+
+            return $run;
+        };
+
+        $firstParagraph = $xpath->query("w:p", $content)->item(0);
+        $paraPr = $firstParagraph instanceof DOMElement ? $xpath->query("w:pPr", $firstParagraph)->item(0) : null;
+        while ($content->firstChild !== null) {
+            $content->removeChild($content->firstChild);
         }
 
-        $paragraph = $xpath->query("w:p", $content)->item(0);
-        if ($paragraph instanceof DOMElement) {
-            // Block control: keep the first paragraph and its properties, drop the rest
-            foreach (iterator_to_array($xpath->query("w:p", $content)) as $i => $p) {
-                if ($i > 0) {
-                    $content->removeChild($p);
+        if ($firstParagraph instanceof DOMElement) {
+            // Block control: one paragraph per line, each with the first paragraph's properties
+            $paragraphs = [];
+            foreach ($lines as $line) {
+                $p = $dom->createElementNS(self::NS_W, "w:p");
+                if ($paraPr instanceof DOMElement) {
+                    $p->appendChild($paraPr->cloneNode(true));
                 }
+                $p->appendChild($run([$line]));
+                $content->appendChild($p);
+                $paragraphs[] = $p;
             }
-            foreach (iterator_to_array($paragraph->childNodes) as $child) {
-                if (!($child instanceof DOMElement && $child->localName === "pPr")) {
-                    $paragraph->removeChild($child);
-                }
+            $first = $paragraphs[0];
+            $last = $paragraphs[count($paragraphs) - 1];
+            $anchor = $first->firstChild instanceof DOMElement && $first->firstChild->localName === "pPr" ? $first->firstChild->nextSibling : $first->firstChild;
+            foreach ($bookmarkStarts as $node) {
+                $first->insertBefore($node, $anchor);
             }
-            $paragraph->appendChild($run);
+            foreach ($bookmarkEnds as $node) {
+                $last->appendChild($node);
+            }
         } else {
             // Inline control: the content holds runs directly
-            while ($content->firstChild !== null) {
-                $content->removeChild($content->firstChild);
+            foreach ($bookmarkStarts as $node) {
+                $content->appendChild($node);
             }
-            $content->appendChild($run);
+            $content->appendChild($run($lines));
+            foreach ($bookmarkEnds as $node) {
+                $content->appendChild($node);
+            }
         }
     }
 
@@ -334,8 +397,19 @@ class TemplateFields {
         $char = $code !== "" ? mb_chr((int)hexdec($code), "UTF-8") : ($checked ? "\u{2612}" : "\u{2610}");
 
         $t = $xpath->query("w:sdtContent//w:t", $sdt)->item(0);
-        if ($t instanceof DOMElement) {
-            $t->textContent = $char;
+        if (!$t instanceof DOMElement) {
+            // No visible symbol yet: add a run for it, inside the first paragraph of a block control
+            $content = $xpath->query("w:sdtContent", $sdt)->item(0);
+            if (!$content instanceof DOMElement) {
+                $content = $sdt->ownerDocument->createElementNS(self::NS_W, "w:sdtContent");
+                $sdt->appendChild($content);
+            }
+            $holder = $xpath->query("w:p", $content)->item(0) ?? $content;
+            $run = $sdt->ownerDocument->createElementNS(self::NS_W, "w:r");
+            $t = $sdt->ownerDocument->createElementNS(self::NS_W, "w:t");
+            $run->appendChild($t);
+            $holder->appendChild($run);
         }
+        $t->textContent = $char;
     }
 }

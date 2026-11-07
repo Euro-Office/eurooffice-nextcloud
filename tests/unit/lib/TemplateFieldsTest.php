@@ -164,6 +164,82 @@ class TemplateFieldsTest extends TestCase {
         $this->assertSame($before, glob(sys_get_temp_dir() . "/eotf*") ?: [], "the temporary copy is removed");
     }
 
+    public function testControlsWithContentThatCannotBeRewrittenAreSkipped(): void {
+        $wrap = fn (string $tag, int $id, string $inner) => "<w:p><w:sdt>" . self::sdtPr($tag, $tag, $id) . "<w:sdtContent>{$inner}</w:sdtContent></w:sdt></w:p>";
+        $body = $wrap("nested", 41, "<w:sdt><w:sdtContent><w:r><w:t>Indre</w:t></w:r></w:sdtContent></w:sdt>")
+            . $wrap("link", 42, "<w:hyperlink><w:r><w:t>Link</w:t></w:r></w:hyperlink>")
+            . $wrap("field", 43, "<w:fldSimple w:instr=\"DATE\"><w:r><w:t>1-1-2026</w:t></w:r></w:fldSimple>")
+            . $wrap("picture", 44, "<w:r><w:drawing/></w:r>")
+            . $wrap("plain", 45, "<w:r><w:t>Tekst</w:t></w:r>");
+
+        $this->assertSame(["plain", "case"], array_column(TemplateFields::extract(self::docx($body)), "tag"));
+    }
+
+    public function testBlockLinesBecomeParagraphsAndBookmarksAreKept(): void {
+        $body = "<w:sdt>" . self::sdtPr("Brødtekst", "body", 51) . "<w:sdtContent>"
+            . "<w:p><w:pPr><w:jc w:val=\"center\"/></w:pPr><w:bookmarkStart w:id=\"7\" w:name=\"Bodytext\"/><w:r><w:t>Gammel</w:t></w:r><w:bookmarkEnd w:id=\"7\"/></w:p>"
+            . "</w:sdtContent></w:sdt>";
+
+        $filled = TemplateFields::fill(self::docx($body), ["ContentControls.ByIndex.0" => ["content" => "Første\nAnden\nTredje"]]);
+        $document = self::part($filled, "word/document.xml");
+
+        $this->assertSame("Første\nAnden\nTredje", TemplateFields::extract($filled)[0]["content"]);
+        $this->assertSame(3, substr_count($document, "<w:jc w:val=\"center\"/>"), "each line is a paragraph with the original properties");
+        $this->assertStringNotContainsString("<w:br/>", $document);
+        $this->assertSame(1, substr_count($document, "w:bookmarkStart"));
+        $this->assertSame(1, substr_count($document, "w:bookmarkEnd"));
+        $this->assertLessThan(strpos($document, "Første"), strpos($document, "w:bookmarkStart"), "the bookmark starts before the text");
+        $this->assertGreaterThan(strpos($document, "Tredje"), strpos($document, "w:bookmarkEnd"), "and ends after it");
+    }
+
+    public function testFillCanClearACheckboxAndEmptyATextControl(): void {
+        $docx = TemplateFields::fill(self::docx(), ["ContentControls.ByIndex.2" => ["checked" => true]]);
+
+        $filled = TemplateFields::fill($docx, [
+            "ContentControls.ByIndex.1" => ["content" => ""],
+            "ContentControls.ByIndex.2" => ["checked" => false],
+        ]);
+
+        $fields = TemplateFields::extract($filled);
+        $this->assertSame("", $fields[1]["content"]);
+        $this->assertFalse($fields[2]["checked"]);
+        $this->assertStringContainsString("☐", self::part($filled, "word/document.xml"));
+    }
+
+    public function testCheckboxWithoutVisibleSymbolGetsOne(): void {
+        $body = "<w:p><w:sdt>" . self::sdtPr("Haster", "urgent", 61, "<w14:checkbox><w14:checked w14:val=\"0\"/></w14:checkbox>")
+            . "<w:sdtContent/></w:sdt></w:p>";
+
+        $filled = TemplateFields::fill(self::docx($body), ["ContentControls.ByIndex.0" => ["checked" => true]]);
+
+        $this->assertTrue(TemplateFields::extract($filled)[0]["checked"]);
+        $this->assertStringContainsString("☒", self::part($filled, "word/document.xml"));
+    }
+
+    public function testInvalidFilesThrowAndLeaveNoTemporaryFile(): void {
+        $before = glob(sys_get_temp_dir() . "/eotf*") ?: [];
+
+        foreach (["not a zip", self::docx(null, "<w:ftr")] as $i => $broken) {
+            try {
+                TemplateFields::fill($broken, ["ContentControls.ByIndex.0" => ["content" => "x"]]);
+                if ($i === 0) {
+                    $this->fail("a file that is not a zip must throw");
+                }
+            } catch (\RuntimeException $e) {
+                $this->assertSame(0, $i, "only the non-zip file throws; a broken part is skipped");
+            }
+        }
+
+        $this->assertSame($before, glob(sys_get_temp_dir() . "/eotf*") ?: [], "no temporary copy is left");
+    }
+
+    public function testTooLargePartIsRejectedBeforeParsing(): void {
+        $big = "<?xml version=\"1.0\"?><w:ftr xmlns:w=\"" . self::W . "\"><w:p><w:r><w:t>" . str_repeat("a", 21 * 1024 * 1024) . "</w:t></w:r></w:p></w:ftr>";
+
+        $this->expectException(\RuntimeException::class);
+        TemplateFields::extract(self::docx(null, $big));
+    }
+
     public function testFillWithoutValuesReturnsTheFileUnchanged(): void {
         $docx = self::docx();
 
