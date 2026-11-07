@@ -315,7 +315,8 @@ class TemplateFields {
                 continue;
             }
             $line = "";
-            foreach ($xpath->query(".//w:t | .//w:br | .//w:tab", $block) as $node) {
+            // Run content only: w:pPr/w:tabs/w:tab defines a tab stop, not a tab character
+            foreach ($xpath->query(".//w:r/w:t | .//w:r/w:br | .//w:r/w:tab", $block) as $node) {
                 $line .= match ($node->localName) {
                     "t" => $node->textContent,
                     "br" => "\n",
@@ -326,6 +327,18 @@ class TemplateFields {
         }
 
         return implode("\n", $lines);
+    }
+
+    /**
+     * Make typed text safe for XML 1.0. A vertical tab, which a word processor
+     * puts on the clipboard for a manual line break, becomes a line break; other
+     * characters XML does not allow are dropped, as are invalid UTF-8 sequences.
+     * saveXML() would otherwise write them raw and leave the part unreadable.
+     */
+    private static function xmlSafe(string $value): string {
+        $value = mb_scrub(str_replace("\x0B", "\n", $value), "UTF-8");
+
+        return preg_replace("/[^\x{9}\x{A}\x{D}\x{20}-\x{D7FF}\x{E000}-\x{FFFD}\x{10000}-\x{10FFFF}]/u", "", $value) ?? "";
     }
 
     /**
@@ -362,7 +375,7 @@ class TemplateFields {
             }
         }
 
-        $lines = preg_split("/\r\n|\r|\n/", $value);
+        $lines = preg_split("/\r\n|\r|\n/", self::xmlSafe($value));
         $run = static function (array $lines) use ($dom, $runPr): DOMElement {
             $run = $dom->createElementNS(self::NS_W, "w:r");
             if ($runPr instanceof DOMElement) {

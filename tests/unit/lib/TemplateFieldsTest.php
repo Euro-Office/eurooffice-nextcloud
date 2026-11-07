@@ -277,6 +277,22 @@ class TemplateFieldsTest extends TestCase {
         $this->assertSame(array_values($cases), array_slice(array_column($fields, "checked"), 0, count($cases)));
     }
 
+    public function testTabStopsAreNotReadAsTabs(): void {
+        $body = "<w:sdt>" . self::sdtPr("Adresse", "address", 101) . "<w:sdtContent>"
+            . "<w:p><w:pPr><w:tabs><w:tab w:val=\"left\" w:pos=\"2268\"/><w:tab w:val=\"left\" w:pos=\"4536\"/></w:tabs></w:pPr><w:r><w:t>Vej</w:t><w:tab/><w:t>1</w:t></w:r></w:p>"
+            . "</w:sdtContent></w:sdt>";
+
+        $this->assertSame("Vej\t1", TemplateFields::extract(self::docx($body))[0]["content"]);
+    }
+
+    public function testCharactersXmlDoesNotAllowAreRemovedOrTurnedIntoLineBreaks(): void {
+        $filled = TemplateFields::fill(self::docx(), ["ContentControls.ByIndex.0" => ["content" => "Linje 1\x0BLinje 2\x01\x1F slut"]]);
+
+        $this->assertSame("Linje 1\nLinje 2 slut", TemplateFields::extract($filled)[0]["content"]);
+        $document = self::part($filled, "word/document.xml");
+        $this->assertSame(0, preg_match("/[\x01-\x08\x0B\x0C\x0E-\x1F]/", $document), "the saved part holds no character XML forbids");
+    }
+
     public function testTabsAreWrittenAsTabElements(): void {
         $filled = TemplateFields::fill(self::docx(), ["ContentControls.ByIndex.0" => ["content" => "Navn\tAdresse"]]);
 
