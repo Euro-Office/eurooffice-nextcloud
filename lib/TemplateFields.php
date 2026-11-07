@@ -41,11 +41,12 @@ class TemplateFields {
     /**
      * Anything in a control's content besides paragraphs and runs of text, line
      * breaks, tabs, formatting and bookmarks. A control holding such content
-     * (a table, picture, field, note, comment, tracked change, nested control
-     * and so on) is left alone: rewriting it as text would lose it.
+     * (a table, picture, field, note, comment, tracked change, page or column
+     * break, nested control and so on) is left alone: rewriting it as text would lose it.
      */
     private const UNSUPPORTED_CONTENT = ".//*[not(ancestor-or-self::w:pPr or ancestor-or-self::w:rPr)]"
-        . "[not(self::w:p or self::w:r or self::w:t or self::w:br or self::w:tab"
+        . "[not(self::w:p or self::w:r or self::w:t or self::w:tab"
+        . " or (self::w:br and (not(@w:type) or @w:type = 'textWrapping'))"
         . " or self::w:bookmarkStart or self::w:bookmarkEnd or self::w:proofErr or self::w:lastRenderedPageBreak)]";
 
     /**
