@@ -44,6 +44,10 @@ class CreateFromTemplateListener implements IEventListener {
         private readonly IAppManager $appManager,
     ) {}
 
+    /**
+     * Write the empty template for a new blank file, or fill a .docx template
+     * with the values from Nextcloud's template dialog.
+     */
     public function handle(Event $event): void {
         if (!$event instanceof FileCreatedFromTemplateEvent) {
             return;

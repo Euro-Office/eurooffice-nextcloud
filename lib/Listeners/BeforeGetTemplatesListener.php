@@ -39,6 +39,9 @@ class BeforeGetTemplatesListener implements IEventListener {
         private readonly IAppManager $appManager,
     ) {}
 
+    /**
+     * Set the fields of each .docx template when Nextcloud asks for them.
+     */
     public function handle(Event $event): void {
         if (!$event instanceof BeforeGetTemplatesEvent || !$event->shouldGetFields()) {
             return;

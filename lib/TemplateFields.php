@@ -248,6 +248,9 @@ class TemplateFields {
         return in_array(strtolower($node->getAttributeNS(self::NS_W14, "val")), ["1", "true", "on"], true);
     }
 
+    /**
+     * The val attribute of an element under w:sdtPr, or null when it is missing or empty.
+     */
     private static function property(DOMElement $sdt, DOMXPath $xpath, string $path): ?string {
         $node = $xpath->query("w:sdtPr/" . $path, $sdt)->item(0);
         if (!$node instanceof DOMElement) {
