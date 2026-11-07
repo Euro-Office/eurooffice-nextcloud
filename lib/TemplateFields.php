@@ -121,21 +121,23 @@ class TemplateFields {
         if ($path === false) {
             throw new \RuntimeException("Could not create a temporary file");
         }
-        if (file_put_contents($path, $docx) === false) {
-            @unlink($path);
-            throw new \RuntimeException("Could not write a temporary file");
-        }
 
         $zip = new ZipArchive();
-        if ($zip->open($path) !== true) {
-            @unlink($path);
-            throw new \RuntimeException("Not a valid .docx file");
-        }
-
+        $opened = false;
         $closed = false;
         // A broken part is skipped below; collect libxml's messages instead of raising warnings
         $libxmlErrors = libxml_use_internal_errors(true);
+        // Everything after tempnam() runs inside this try, so the copy is removed on every path,
+        // including a write error that an error handler turns into an exception
         try {
+            if (file_put_contents($path, $docx) === false) {
+                throw new \RuntimeException("Could not write a temporary file");
+            }
+            if ($zip->open($path) !== true) {
+                throw new \RuntimeException("Not a valid .docx file");
+            }
+            $opened = true;
+
             $counter = 0;
             foreach (self::parts($zip) as $part) {
                 $stat = $zip->statName($part);
@@ -182,7 +184,7 @@ class TemplateFields {
         } finally {
             libxml_clear_errors();
             libxml_use_internal_errors($libxmlErrors);
-            if (!$closed) {
+            if ($opened && !$closed) {
                 $zip->close();
             }
             // The copy holds the user's template: remove it on every path, errors included
