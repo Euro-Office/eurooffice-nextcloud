@@ -77,7 +77,7 @@ class TemplateFields {
                 "id" => ($id = self::property($sdt, $xpath, "w:id")) !== null ? (int)$id : null,
             ];
             if ($type === "checkbox") {
-                $field["checked"] = self::property($sdt, $xpath, "w14:checkbox/w14:checked") === "1";
+                $field["checked"] = self::isChecked($sdt, $xpath);
             } else {
                 $field["content"] = self::isPlaceholder($sdt, $xpath) ? "" : self::text($sdt, $xpath);
             }
@@ -152,9 +152,16 @@ class TemplateFields {
                     throw new \RuntimeException("Template part " . $part . " is too large");
                 }
 
-                // loadXML() throws on an empty string, so an empty part is skipped like a missing one
                 $xml = $zip->getFromName($part);
-                if ($xml === false || $xml === "") {
+                if ($xml === false) {
+                    // The part exists (statName found it) but could not be read: an error when filling
+                    if ($write) {
+                        throw new \RuntimeException("Could not read template part " . $part);
+                    }
+                    continue;
+                }
+                // loadXML() throws on an empty string; an empty part has no controls to visit
+                if ($xml === "") {
                     continue;
                 }
 
@@ -234,8 +241,9 @@ class TemplateFields {
 
     /**
      * Field type as Nextcloud names it, or null for controls it cannot show
-     * (date, drop-down, combo box, picture and the like) or cannot refill as
-     * text without loss (see COMPLEX_CONTENT).
+     * (date, drop-down, combo box, picture and the like), cannot refill as
+     * text without loss (see COMPLEX_CONTENT), or whose value is bound to a
+     * Custom XML part: Word would restore it from that part on opening.
      */
     private static function type(DOMElement $sdt, DOMXPath $xpath): ?string {
         $content = $xpath->query("w:sdtContent", $sdt)->item(0);
@@ -247,6 +255,9 @@ class TemplateFields {
         if ($pr === null) {
             return "rich-text";
         }
+        if ($xpath->query("w:dataBinding", $pr)->length > 0) {
+            return null;
+        }
         if ($xpath->query("w14:checkbox", $pr)->length > 0) {
             return "checkbox";
         }
@@ -257,6 +268,22 @@ class TemplateFields {
         }
 
         return "rich-text";
+    }
+
+    /**
+     * The checkbox state. w14:checked is an on/off value: "1", "true" and "on"
+     * are true, and so is the element without a val attribute; no element is false.
+     */
+    private static function isChecked(DOMElement $sdt, DOMXPath $xpath): bool {
+        $node = $xpath->query("w:sdtPr/w14:checkbox/w14:checked", $sdt)->item(0);
+        if (!$node instanceof DOMElement) {
+            return false;
+        }
+        if (!$node->hasAttributeNS(self::NS_W14, "val")) {
+            return true;
+        }
+
+        return in_array(strtolower($node->getAttributeNS(self::NS_W14, "val")), ["1", "true", "on"], true);
     }
 
     private static function property(DOMElement $sdt, DOMXPath $xpath, string $path): ?string {

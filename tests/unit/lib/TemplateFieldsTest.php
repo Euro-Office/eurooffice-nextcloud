@@ -244,6 +244,39 @@ class TemplateFieldsTest extends TestCase {
         $this->assertSame(["plain", "case"], array_column(TemplateFields::extract(self::docx($body)), "tag"));
     }
 
+    public function testControlsBoundToCustomXmlAreSkipped(): void {
+        $binding = "<w:dataBinding w:xpath=\"/root/name\" w:storeItemID=\"{00000000-0000-0000-0000-000000000001}\"/>";
+        $body = "<w:p><w:sdt>" . self::sdtPr("Bundet", "bound", 81, $binding . "<w:text/>")
+            . "<w:sdtContent><w:r><w:t>Fra XML</w:t></w:r></w:sdtContent></w:sdt></w:p>"
+            . "<w:p><w:sdt>" . self::sdtPr("Bundet flueben", "boundbox", 82, $binding . "<w14:checkbox><w14:checked w14:val=\"0\"/></w14:checkbox>")
+            . "<w:sdtContent><w:r><w:t>☐</w:t></w:r></w:sdtContent></w:sdt></w:p>"
+            . "<w:p><w:sdt>" . self::sdtPr("Fri", "free", 83) . "<w:sdtContent><w:r><w:t>Tekst</w:t></w:r></w:sdtContent></w:sdt></w:p>";
+
+        $this->assertSame(["free", "case"], array_column(TemplateFields::extract(self::docx($body)), "tag"));
+    }
+
+    public function testCheckedStateAcceptsEveryOnOffSpelling(): void {
+        $box = fn (int $id, string $checked) => "<w:p><w:sdt>" . self::sdtPr("Boks", "box" . $id, $id, "<w14:checkbox>{$checked}</w14:checkbox>")
+            . "<w:sdtContent><w:r><w:t>☐</w:t></w:r></w:sdtContent></w:sdt></w:p>";
+        $cases = [
+            "<w14:checked w14:val=\"1\"/>" => true,
+            "<w14:checked w14:val=\"true\"/>" => true,
+            "<w14:checked w14:val=\"on\"/>" => true,
+            "<w14:checked/>" => true,
+            "<w14:checked w14:val=\"0\"/>" => false,
+            "<w14:checked w14:val=\"false\"/>" => false,
+            "" => false,
+        ];
+        $body = "";
+        $id = 90;
+        foreach (array_keys($cases) as $checked) {
+            $body .= $box($id++, $checked);
+        }
+
+        $fields = TemplateFields::extract(self::docx($body));
+        $this->assertSame(array_values($cases), array_slice(array_column($fields, "checked"), 0, count($cases)));
+    }
+
     public function testTabsAreWrittenAsTabElements(): void {
         $filled = TemplateFields::fill(self::docx(), ["ContentControls.ByIndex.0" => ["content" => "Navn\tAdresse"]]);
 
