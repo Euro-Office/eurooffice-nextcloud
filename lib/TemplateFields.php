@@ -19,17 +19,13 @@ use ZipArchive;
 /**
  * Reads and fills the content controls (w:sdt) of a .docx file.
  *
- * Nextcloud asks for template fields through BeforeGetTemplatesEvent and hands
- * the values back in FileCreatedFromTemplateEvent. The index of a field is
- * "ContentControls.ByIndex.N". The form is the one richdocuments uses, but the
- * numbering is this app's own: N counts the outermost controls in the main
- * document first, then in the headers and footers, so extract() and fill()
- * must walk the parts in the same order. LibreOffice, and so richdocuments,
- * counts in another order, which is why the listeners stand back when
- * richdocuments is enabled.
+ * Fields are indexed "ContentControls.ByIndex.N", the form richdocuments uses,
+ * but numbered our own way: the outermost controls of the main document first,
+ * then those of the headers and footers. extract() and fill() walk the parts in
+ * the same order. richdocuments numbers differently, so the listeners do
+ * nothing when it is enabled.
  *
- * Only plain text, rich text and checkbox controls are reported: those are the
- * field types Nextcloud's template dialog can show.
+ * Only text and checkbox controls are reported, the types Nextcloud's dialog shows.
  */
 class TemplateFields {
 
@@ -39,28 +35,21 @@ class TemplateFields {
     private const NS_W14 = "http://schemas.microsoft.com/office/word/2010/wordml";
     private const INDEX_PREFIX = "ContentControls.ByIndex.";
 
-    /**
-     * Largest uncompressed XML part that is parsed. A document part of a real
-     * template is a few hundred kilobytes; the limit keeps a highly compressed
-     * part from exhausting memory when its DOM is built.
-     */
+    /** Guards against a highly compressed part; real document parts are far smaller. */
     private const MAX_PART_SIZE = 20 * 1024 * 1024;
 
     /**
-     * Content that cannot be rewritten as plain text without loss: tables and
-     * their rows and cells, nested controls, hyperlinks, fields, pictures,
-     * embedded objects, footnote, endnote and comment anchors, and tracked
-     * changes. Controls holding any of these are not reported.
+     * Anything in a control's content besides paragraphs and runs of text, line
+     * breaks, tabs, formatting and bookmarks. A control holding such content
+     * (a table, picture, field, note, comment, tracked change, nested control
+     * and so on) is left alone: rewriting it as text would lose it.
      */
-    private const COMPLEX_CONTENT = "w:tr | w:tc | .//w:tbl | .//w:sdt | .//w:hyperlink | .//w:fldSimple | .//w:fldChar"
-        . " | .//w:drawing | .//w:pict | .//w:object"
-        . " | .//w:footnoteReference | .//w:endnoteReference | .//w:commentReference | .//w:commentRangeStart | .//w:commentRangeEnd"
-        . " | .//w:ins | .//w:del | .//w:moveFrom | .//w:moveTo";
+    private const UNSUPPORTED_CONTENT = ".//*[not(ancestor-or-self::w:pPr or ancestor-or-self::w:rPr)]"
+        . "[not(self::w:p or self::w:r or self::w:t or self::w:br or self::w:tab"
+        . " or self::w:bookmarkStart or self::w:bookmarkEnd or self::w:proofErr or self::w:lastRenderedPageBreak)]";
 
     /**
      * List the fillable content controls of a .docx file.
-     *
-     * @param string $docx the file's content
      *
      * @return array<int, array{index: string, type: string, alias: ?string, tag: ?string, id: ?int, content?: string, checked?: bool}>
      */
@@ -93,11 +82,7 @@ class TemplateFields {
     /**
      * Fill content controls and return the new file content.
      *
-     * @param string $docx   the template's content
-     * @param array  $values field values keyed by index, as Nextcloud's dialog
-     *                       sends them: ["ContentControls.ByIndex.0" => ["content" => "…"]]
-     *
-     * @return string the filled .docx
+     * @param array $values as Nextcloud's dialog sends them: ["ContentControls.ByIndex.0" => ["content" => "…"]]
      */
     public static function fill(string $docx, array $values): string {
         if (empty($values)) {
@@ -120,8 +105,9 @@ class TemplateFields {
     }
 
     /**
-     * Visit every content control in document order and, when $write is set,
-     * save the changed parts into a new copy of the file.
+     * Visit every content control in document order. When $write is set, save
+     * the changes and return the new file; a part that cannot be read is then
+     * an error, while listing fields just skips it.
      */
     private static function walk(string $docx, bool $write, callable $visit): string {
         $path = tempnam(sys_get_temp_dir(), "eotf");
@@ -129,21 +115,17 @@ class TemplateFields {
             throw new \RuntimeException("Could not create a temporary file");
         }
 
-        $zip = new ZipArchive();
-        $opened = false;
-        $closed = false;
-        // A broken part is skipped below; collect libxml's messages instead of raising warnings
+        $zip = null;
         $libxmlErrors = libxml_use_internal_errors(true);
-        // Everything after tempnam() runs inside this try, so the copy is removed on every path,
-        // including a write error that an error handler turns into an exception
         try {
             if (file_put_contents($path, $docx) === false) {
                 throw new \RuntimeException("Could not write a temporary file");
             }
-            if ($zip->open($path) !== true) {
+            $archive = new ZipArchive();
+            if ($archive->open($path) !== true) {
                 throw new \RuntimeException("Not a valid .docx file");
             }
-            $opened = true;
+            $zip = $archive;
 
             $counter = 0;
             foreach (self::parts($zip) as $part) {
@@ -156,31 +138,19 @@ class TemplateFields {
                 }
 
                 $xml = $zip->getFromName($part);
-                if ($xml === false) {
-                    // The part exists (statName found it) but could not be read: an error when filling
+                if ($xml === "") {
+                    continue;
+                }
+                $dom = new DOMDocument();
+                $dom->preserveWhiteSpace = true;
+                if ($xml === false || !$dom->loadXML($xml, LIBXML_NONET)) {
                     if ($write) {
                         throw new \RuntimeException("Could not read template part " . $part);
                     }
                     continue;
                 }
-                // loadXML() throws on an empty string; an empty part has no controls to visit
-                if ($xml === "") {
-                    continue;
-                }
-
-                $dom = new DOMDocument();
-                $dom->preserveWhiteSpace = true;
-                if (!$dom->loadXML($xml, LIBXML_NONET)) {
-                    // Listing fields can skip a broken part; filling must not hand back a
-                    // document whose parts could not all be read
-                    if ($write) {
-                        throw new \RuntimeException("Template part " . $part . " is not valid XML");
-                    }
-                    continue;
-                }
                 $xpath = self::xpath($dom);
 
-                // Outermost controls only: nested controls are not reported
                 foreach ($xpath->query("//w:sdt[not(ancestor::w:sdt)]") as $sdt) {
                     $visit($sdt, $xpath, self::INDEX_PREFIX . $counter);
                     $counter++;
@@ -191,29 +161,20 @@ class TemplateFields {
                 }
             }
 
-            // The changes are written to the file on close, so it has to happen before reading it back
-            $closed = true;
-            if (!$zip->close()) {
+            $written = $zip->close();
+            $zip = null;
+            if (!$written) {
                 throw new \RuntimeException("Could not write the .docx file");
             }
-            $result = file_get_contents($path);
-            if ($result === false) {
-                throw new \RuntimeException("Could not read the .docx file back");
-            }
+
+            return file_get_contents($path);
         } finally {
             libxml_clear_errors();
             libxml_use_internal_errors($libxmlErrors);
-            try {
-                if ($opened && !$closed) {
-                    $zip->close();
-                }
-            } finally {
-                // The copy holds the user's template: remove it on every path, errors included
-                @unlink($path);
-            }
+            // Drop pending changes, so the archive does not rewrite the file when it is freed
+            $zip?->unchangeAll();
+            @unlink($path);
         }
-
-        return $result;
     }
 
     /**
@@ -243,14 +204,13 @@ class TemplateFields {
     }
 
     /**
-     * Field type as Nextcloud names it, or null for controls it cannot show
-     * (date, drop-down, combo box, picture and the like), cannot refill as
-     * text without loss (see COMPLEX_CONTENT), or whose value is bound to a
-     * Custom XML part: Word would restore it from that part on opening.
+     * "rich-text" or "checkbox", or null for a control we leave alone: other
+     * control types, unsupported content, or a value bound to a Custom XML
+     * part (w:dataBinding), which Word would restore from that part.
      */
     private static function type(DOMElement $sdt, DOMXPath $xpath): ?string {
         $content = $xpath->query("w:sdtContent", $sdt)->item(0);
-        if ($content !== null && $xpath->query(self::COMPLEX_CONTENT, $content)->length > 0) {
+        if ($content !== null && $xpath->query(self::UNSUPPORTED_CONTENT, $content)->length > 0) {
             return null;
         }
 
@@ -274,8 +234,7 @@ class TemplateFields {
     }
 
     /**
-     * The checkbox state. w14:checked is an on/off value: "1", "true" and "on"
-     * are true, and so is the element without a val attribute; no element is false.
+     * w14:checked is an on/off value: "1", "true", "on" and a missing val all mean checked.
      */
     private static function isChecked(DOMElement $sdt, DOMXPath $xpath): bool {
         $node = $xpath->query("w:sdtPr/w14:checkbox/w14:checked", $sdt)->item(0);
@@ -294,7 +253,7 @@ class TemplateFields {
         if (!$node instanceof DOMElement) {
             return null;
         }
-        $value = $node->getAttributeNS(str_starts_with($path, "w14:") || str_contains($path, "/w14:") ? self::NS_W14 : self::NS_W, "val");
+        $value = $node->getAttributeNS(str_contains($path, "w14:") ? self::NS_W14 : self::NS_W, "val");
 
         return $value === "" ? null : $value;
     }
@@ -315,7 +274,7 @@ class TemplateFields {
                 continue;
             }
             $line = "";
-            // Run content only: w:pPr/w:tabs/w:tab defines a tab stop, not a tab character
+            // Run content only: a w:tab under w:pPr/w:tabs is a tab stop
             foreach ($xpath->query(".//w:r/w:t | .//w:r/w:br | .//w:r/w:tab", $block) as $node) {
                 $line .= match ($node->localName) {
                     "t" => $node->textContent,
@@ -330,10 +289,8 @@ class TemplateFields {
     }
 
     /**
-     * Make typed text safe for XML 1.0. A vertical tab, which a word processor
-     * puts on the clipboard for a manual line break, becomes a line break; other
-     * characters XML does not allow are dropped, as are invalid UTF-8 sequences.
-     * saveXML() would otherwise write them raw and leave the part unreadable.
+     * Keep the typed text valid in XML 1.0: a vertical tab (a pasted manual line
+     * break) becomes a line break, and characters XML does not allow are dropped.
      */
     private static function xmlSafe(string $value): string {
         $value = mb_scrub(str_replace("\x0B", "\n", $value), "UTF-8");
@@ -342,13 +299,12 @@ class TemplateFields {
     }
 
     /**
-     * Replace the control's text and drop its placeholder state.
+     * Replace the control's text and clear its placeholder state.
      *
-     * The value is plain text, so the new text gets ONE formatting: the first
-     * run's, without the placeholder character style. In a block control each
-     * line becomes its own paragraph with the first paragraph's properties; in
-     * an inline control lines are joined with line breaks. Bookmarks inside the
-     * control are kept around the new text.
+     * The new text takes the first run's formatting, minus the placeholder style.
+     * In a block control each line is a paragraph with the first paragraph's
+     * properties; in an inline control lines are joined with line breaks.
+     * Bookmarks inside the control are kept around the new text.
      */
     private static function setText(DOMElement $sdt, DOMXPath $xpath, string $value): void {
         $content = $xpath->query("w:sdtContent", $sdt)->item(0);
@@ -385,7 +341,6 @@ class TemplateFields {
                 if ($i > 0) {
                     $run->appendChild($dom->createElementNS(self::NS_W, "w:br"));
                 }
-                // A tab is its own element in WordprocessingML, not a character in w:t
                 foreach (explode("\t", $line) as $j => $piece) {
                     if ($j > 0) {
                         $run->appendChild($dom->createElementNS(self::NS_W, "w:tab"));
@@ -410,7 +365,6 @@ class TemplateFields {
         }
 
         if ($firstParagraph instanceof DOMElement) {
-            // Block control: one paragraph per line, each with the first paragraph's properties
             $paragraphs = [];
             foreach ($lines as $line) {
                 $p = $dom->createElementNS(self::NS_W, "w:p");
@@ -422,16 +376,14 @@ class TemplateFields {
                 $paragraphs[] = $p;
             }
             $first = $paragraphs[0];
-            $last = $paragraphs[count($paragraphs) - 1];
             $anchor = $first->firstChild instanceof DOMElement && $first->firstChild->localName === "pPr" ? $first->firstChild->nextSibling : $first->firstChild;
             foreach ($bookmarkStarts as $node) {
                 $first->insertBefore($node, $anchor);
             }
             foreach ($bookmarkEnds as $node) {
-                $last->appendChild($node);
+                $paragraphs[count($paragraphs) - 1]->appendChild($node);
             }
         } else {
-            // Inline control: the content holds runs directly
             foreach ($bookmarkStarts as $node) {
                 $content->appendChild($node);
             }
@@ -446,35 +398,25 @@ class TemplateFields {
      * Tick or clear a checkbox control: its state and the symbol it shows.
      */
     private static function setChecked(DOMElement $sdt, DOMXPath $xpath, bool $checked): void {
+        $dom = $sdt->ownerDocument;
         $checkbox = $xpath->query("w:sdtPr/w14:checkbox", $sdt)->item(0);
-        $state = $checkbox instanceof DOMElement ? $xpath->query("w14:checked", $checkbox)->item(0) : null;
-        if (!$state instanceof DOMElement && $checkbox instanceof DOMElement) {
-            // The element is optional; without it the state could not be saved
-            $state = $sdt->ownerDocument->createElementNS(self::NS_W14, "w14:checked");
-            $checkbox->insertBefore($state, $checkbox->firstChild);
-        }
-        if ($state instanceof DOMElement) {
+        if ($checkbox instanceof DOMElement) {
+            $state = $xpath->query("w14:checked", $checkbox)->item(0);
+            if (!$state instanceof DOMElement) {
+                $state = $checkbox->insertBefore($dom->createElementNS(self::NS_W14, "w14:checked"), $checkbox->firstChild);
+            }
             $state->setAttributeNS(self::NS_W14, "w14:val", $checked ? "1" : "0");
         }
 
-        $stateName = $checked ? "w14:checkedState" : "w14:uncheckedState";
-        $symbol = $xpath->query("w:sdtPr/w14:checkbox/" . $stateName, $sdt)->item(0);
+        $symbol = $xpath->query("w:sdtPr/w14:checkbox/" . ($checked ? "w14:checkedState" : "w14:uncheckedState"), $sdt)->item(0);
         $code = $symbol instanceof DOMElement ? $symbol->getAttributeNS(self::NS_W14, "val") : "";
         $char = $code !== "" ? mb_chr((int)hexdec($code), "UTF-8") : ($checked ? "\u{2612}" : "\u{2610}");
 
         $t = $xpath->query("w:sdtContent//w:t", $sdt)->item(0);
         if (!$t instanceof DOMElement) {
-            // No visible symbol yet: add a run for it, inside the first paragraph of a block control
-            $content = $xpath->query("w:sdtContent", $sdt)->item(0);
-            if (!$content instanceof DOMElement) {
-                $content = $sdt->ownerDocument->createElementNS(self::NS_W, "w:sdtContent");
-                $sdt->appendChild($content);
-            }
+            $content = $xpath->query("w:sdtContent", $sdt)->item(0) ?? $sdt->appendChild($dom->createElementNS(self::NS_W, "w:sdtContent"));
             $holder = $xpath->query("w:p", $content)->item(0) ?? $content;
-            $run = $sdt->ownerDocument->createElementNS(self::NS_W, "w:r");
-            $t = $sdt->ownerDocument->createElementNS(self::NS_W, "w:t");
-            $run->appendChild($t);
-            $holder->appendChild($run);
+            $t = $holder->appendChild($dom->createElementNS(self::NS_W, "w:r"))->appendChild($dom->createElementNS(self::NS_W, "w:t"));
         }
         $t->textContent = $char;
     }

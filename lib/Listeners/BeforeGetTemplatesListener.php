@@ -43,8 +43,7 @@ class BeforeGetTemplatesListener implements IEventListener {
         if (!$event instanceof BeforeGetTemplatesEvent || !$event->shouldGetFields()) {
             return;
         }
-        // richdocuments reports and fills the same fields with its own numbering; if both
-        // apps acted, values could land in the wrong controls, so leave it to richdocuments
+        // richdocuments numbers the same fields differently; let it handle them alone
         if ($this->appManager->isEnabledForUser("richdocuments")) {
             return;
         }

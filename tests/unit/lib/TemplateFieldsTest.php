@@ -170,7 +170,8 @@ class TemplateFieldsTest extends TestCase {
             . $wrap("link", 42, "<w:hyperlink><w:r><w:t>Link</w:t></w:r></w:hyperlink>")
             . $wrap("field", 43, "<w:fldSimple w:instr=\"DATE\"><w:r><w:t>1-1-2026</w:t></w:r></w:fldSimple>")
             . $wrap("picture", 44, "<w:r><w:drawing/></w:r>")
-            . $wrap("plain", 45, "<w:r><w:t>Tekst</w:t></w:r>");
+            . $wrap("smarttag", 46, "<w:smartTag w:element=\"place\"><w:r><w:t>Ishøj</w:t></w:r></w:smartTag>")
+            . $wrap("plain", 45, "<w:r><w:rPr><w:b/></w:rPr><w:t>Tekst</w:t><w:tab/><w:br/></w:r><w:proofErr w:type=\"spellStart\"/>");
 
         $this->assertSame(["plain", "case"], array_column(TemplateFields::extract(self::docx($body)), "tag"));
     }

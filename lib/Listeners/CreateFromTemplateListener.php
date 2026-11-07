@@ -59,22 +59,16 @@ class CreateFromTemplateListener implements IEventListener {
             return;
         }
 
-        // The values typed in Nextcloud's template dialog, see BeforeGetTemplatesListener.
-        // With richdocuments enabled, its fields and numbering are the ones in the dialog.
+        // Values from Nextcloud's template dialog; see BeforeGetTemplatesListener
         $fields = $event->getTemplateFields();
         if (!empty($fields) && $template->getMimeType() === TemplateFields::MIMETYPE
             && !$this->appManager->isEnabledForUser("richdocuments")) {
             try {
                 $targetFile->putContent(TemplateFields::fill($template->getContent(), $fields));
             } catch (\Throwable $e) {
-                // A copy of the template without the user's values must not pass for the
-                // document they asked for: remove it and let Nextcloud report the failure
+                // Remove the unfilled copy; Nextcloud then reports that the file could not be created
                 $this->logger->error("Could not fill the template fields of " . $targetFile->getName(), ["exception" => $e]);
-                try {
-                    $targetFile->delete();
-                } catch (\Throwable $deleteError) {
-                    $this->logger->error("Could not remove the unfilled file " . $targetFile->getName(), ["exception" => $deleteError]);
-                }
+                $targetFile->delete();
                 throw new \RuntimeException("Could not fill the template fields", 0, $e);
             }
         }
