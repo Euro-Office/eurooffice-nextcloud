@@ -192,6 +192,8 @@ OC.L10N.register(
     "Info": "Information",
     "Open": "Ouvrir",
     "%1$s could not be saved. Please open the file again.": "%1$s n'a pas pu être enregistré. Veuillez rouvrir le fichier.",
-    "{file} could not be saved. Please open the file again.": "Impossible d'enregistrer le fichier {file}. Veuillez rouvrir le fichier."
+    "{file} could not be saved. Please open the file again.": "Impossible d'enregistrer le fichier {file}. Veuillez rouvrir le fichier.",
+    "\"{name}\" uploaded successfully.": "\"{name}\" a été téléversé avec succès.",
+    "\"{name}\" deleted.": "\"{name}\" a été supprimé."
 },
 "nplurals=2; plural=(n > 1);");
