@@ -200,6 +200,23 @@ function isUrl(value) {
 }
 
 /**
+ * The generated text from what the Assistant hands an action button.
+ *
+ * The Assistant calls onClick with its task object, whose `output` is the form's
+ * outputs keyed by slot, so the text of a core:text2text task sits at
+ * task.output.output (its own Text picker reads it the same way). Passing
+ * task.output on would insert "[object Object]". A plain string or a bare
+ * outputs object is accepted too, so another Assistant version does not break it.
+ *
+ * @param {object|string} task what the Assistant passed to onClick
+ * @return {string} the generated text, '' when there is none
+ */
+function assistantResultText(task) {
+	const candidates = [task, task?.output, task?.output?.output]
+	return candidates.find((value) => typeof value === 'string') ?? ''
+}
+
+/**
  * Seed the Assistant's own form with the selection.
  *
  * @param {string} selectedText the editor's current selection
@@ -230,10 +247,8 @@ async function openAssistant(selectedText, isInsideViewer, target) {
 				label: t('eurooffice', 'Insert into document'),
 				title: t('eurooffice', 'Insert this result into the document'),
 				variant: 'primary',
-				onClick: (output) => {
-					const text = typeof output === 'string'
-						? output
-						: (output?.output ?? '')
+				onClick: (task) => {
+					const text = assistantResultText(task)
 					if (!text) {
 						return
 					}
