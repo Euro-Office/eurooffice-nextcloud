@@ -884,9 +884,7 @@ msgstr ""
 
 #: templates/settings.php:206
 msgid "Enable live-viewing mode when accessing file by public link"
-msgstr ""
-"Включить режим просмотра в режиме реального времени при доступе к файлу по "
-"общедоступной ссылке"
+msgstr "Включить режим просмотра в реальном времени при доступе к файлу по публичной ссылке"
 
 #: templates/settings.php:210
 msgid "The customization section allows personalizing the editor interface"

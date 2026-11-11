@@ -264,7 +264,7 @@ msgstr ""
 #: lib/DocumentService.php:416
 #: src/editor.js:112
 msgid "Not supported version"
-msgstr "サポートされていなバージョン"
+msgstr "サポートされていないバージョン"
 
 #: lib/EmailManager.php:94
 msgid "You were mentioned in the document"
