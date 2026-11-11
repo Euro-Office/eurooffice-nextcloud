@@ -1,8 +1,12 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": [
-    "config:recommended"
+    "config:recommended",
+    "github>Euro-Office/.github"
   ],
+  "constraints": {
+    "php": "8.2.*"
+  },
   "packageRules": [
     {
       "description": "stylelint and its shared configs declare peer ranges on each other, so bumping them separately produces an unsatisfiable tree and Renovate cannot regenerate the lockfile. Always update them in a single PR.",
@@ -12,6 +16,25 @@
         "stylelint-config-**",
         "@nextcloud/stylelint-config"
       ]
+    },
+    {
+      "description": "vite and @nextcloud/vite-config move together: vite-config pins the vite major it supports.",
+      "groupName": "vite",
+      "matchPackageNames": [
+        "vite",
+        "@vitejs/**",
+        "@nextcloud/vite-config"
+      ]
+    },
+    {
+      "description": "Keep the vue stack in one PR. Majors stay separate so a blocked major does not hold back patches.",
+      "groupName": "vue",
+      "matchPackageNames": [
+        "vue",
+        "@vue/**",
+        "@nextcloud/vue"
+      ],
+      "matchUpdateTypes": ["minor", "patch"]
     }
   ]
 }
