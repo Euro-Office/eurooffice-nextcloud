@@ -1,0 +1,37 @@
+# SPDX-FileCopyrightText: 2026 Nextcloud GmbH or a Nextcloud affiliate company and Euro-Office contributors
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+name: Vitest
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main, 'stable*']
+  pull_request:
+    branches: [main, 'stable*']
+
+permissions:
+  contents: read
+
+env:
+  # Same as lint-eslint.yml: @nextcloud/files@4 requires node ^24.0.0
+  NODE_VERSION: 24
+
+jobs:
+  test:
+    name: Unit tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install NodeJS
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Code Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Run tests
+        run: npm test
