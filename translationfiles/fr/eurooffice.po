@@ -1,0 +1,981 @@
+msgid ""
+msgstr ""
+"Report-Msgid-Bugs-To: translations\\@example.com\n"
+"Language: fr\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#: lib/Controller/CallbackController.php
+msgid "Access denied"
+msgstr "Accès refusé"
+
+#: lib/Controller/CallbackController.php
+#: lib/Controller/EditorApiController.php
+#: lib/Controller/EditorController.php
+#: lib/FileUtility.php
+msgid "Invalid request"
+msgstr "Requête invalide"
+
+#: lib/Controller/CallbackController.php
+msgid "Files not found"
+msgstr "Fichiers introuvables"
+
+#: lib/Controller/CallbackController.php
+#: lib/Controller/EditorApiController.php
+#: lib/Controller/EditorController.php
+#: lib/DirectEditor.php
+msgid "Not permitted"
+msgstr "Non autorisé"
+
+#: lib/Controller/CallbackController.php
+#: lib/Controller/EditorController.php
+msgid "Download failed"
+msgstr "Echec du téléchargement"
+
+#: lib/Controller/CallbackController.php
+#: lib/Controller/EditorApiController.php
+#: lib/Controller/EditorController.php
+#: lib/FileUtility.php
+msgid "File not found"
+msgstr "Fichier introuvable"
+
+#: lib/Controller/CallbackController.php
+#: lib/Controller/EditorApiController.php
+#: lib/Controller/EditorController.php
+#: lib/FileUtility.php
+#: src/editor.js
+msgid "FileId is empty"
+msgstr "FileId est vide"
+
+#: lib/Controller/CallbackController.php
+#: lib/Controller/EditorApiController.php
+#: lib/Controller/EditorController.php
+#: lib/FileUtility.php
+msgid "You do not have enough permissions to view the file"
+msgstr "Vous n'avez pas la permission de voir le fichier"
+
+#: lib/Controller/EditorApiController.php
+#: lib/Controller/EditorController.php
+msgid "Format is not supported"
+msgstr "Format non supporté"
+
+#: lib/Controller/EditorApiController.php
+#: lib/FileCreator.php
+#: lib/Listeners/RegisterTemplateCreatorListener.php
+#: src/main.js
+msgid "New document"
+msgstr "Nouveau document"
+
+#: lib/Controller/EditorApiController.php
+#: lib/FileCreator.php
+#: lib/Listeners/RegisterTemplateCreatorListener.php
+#: src/main.js
+msgid "New spreadsheet"
+msgstr "Nouvelle feuille de calcul"
+
+#: lib/Controller/EditorApiController.php
+#: lib/FileCreator.php
+#: lib/Listeners/RegisterTemplateCreatorListener.php
+#: src/main.js
+msgid "New presentation"
+msgstr "Nouvelle présentation"
+
+#: lib/Controller/EditorApiController.php
+#: src/main.js
+msgid "New PDF form"
+msgstr "Nouveau formulaire PDF"
+
+#: lib/Controller/EditorApiController.php
+#: lib/Controller/EditorController.php
+msgid "UserId is empty"
+msgstr ""
+
+#: lib/Controller/EditorApiController.php
+msgid "Anonymous"
+msgstr "Anonyme"
+
+#: lib/Controller/EditorController.php
+msgid "Template not found"
+msgstr "Modèle introuvable"
+
+#: lib/Controller/EditorController.php
+msgid "You don't have enough permission to create"
+msgstr "Vous n'avez pas la permission de créer"
+
+#: lib/Controller/EditorController.php
+msgid "The required folder was not found"
+msgstr "Le dossier requis n'a pas été trouvé"
+
+#: lib/Controller/EditorController.php
+msgid "Can't create file"
+msgstr "Le fichier ne peut pas être créé"
+
+#: lib/Controller/EditorController.php
+msgid "Failed to send notification"
+msgstr "Échec de l'envoi de la notification"
+
+#: lib/Controller/EditorController.php
+msgid "Notification sent successfully"
+msgstr "Notification a été envoyée avec succès"
+
+#: lib/Controller/EditorController.php
+msgid "Conversion is not required"
+msgstr "Conversion non requise"
+
+#: lib/Controller/EditorController.php
+msgid "Failed to download converted file"
+msgstr "Echec du téléchargement du fichier converti"
+
+#: lib/Controller/EditorController.php
+#: lib/DirectEditor.php
+#: lib/DocumentService.php
+msgid "Nextcloud Office app is not configured. Please contact admin"
+msgstr ""
+"L'application Nextcloud Office n'est pas configuré. Veuillez contacter votre "
+"administrateur"
+
+#: lib/Controller/EditorController.php
+msgid ""
+"The domain in the file url does not match the domain of the Document server"
+msgstr ""
+"Le domaine dans l'URL du fichier ne correspond pas au domaine de Document "
+"Server"
+
+#: lib/Controller/SettingsController.php
+#: templates/settings.php
+msgid ""
+"The 30-day test period is over, you can no longer connect to demo Nextcloud "
+"Office server."
+msgstr ""
+"La période d'essai de 30 jours est expirée, vous n'êtes plus en mesure de "
+"vous connecter à la version démo de Nextcloud Office."
+
+#: lib/Controller/SettingsController.php
+#: templates/settings.php
+msgid "DO NOT SHARE THIS"
+msgstr "MERCI DE NE PAS LE PARTAGER"
+
+#: lib/Controller/TemplateController.php
+msgid "Template must be in OOXML format"
+msgstr "Le modèle doit être au format OOXML"
+
+#: lib/Controller/TemplateController.php
+msgid "Template already exists"
+msgstr "Le modèle existe déjà"
+
+#: lib/Controller/TemplateController.php
+msgid "Invalid file provided"
+msgstr "Fichier non valide"
+
+#: lib/Controller/TemplateController.php
+msgid "Failed to delete template"
+msgstr "Impossible de supprimer le modèle"
+
+#: lib/Cron/EditorsCheck.php
+msgid "Nextcloud Office server is not available"
+msgstr "Le serveur Nextcloud Office n'est pas disponible"
+
+#: lib/DocumentService.php
+msgid "Bad Response. JSON error: "
+msgstr ""
+
+#: lib/DocumentService.php
+msgid "Error occurred in the document service"
+msgstr "Une erreur s'est produite dans le service de document"
+
+#: lib/DocumentService.php
+msgid ""
+"Mixed Active Content is not allowed. HTTPS address for Nextcloud Office is "
+"required."
+msgstr ""
+"Le contenu mixte actif n'est pas autorisé. Une adresse HTTPS pour le "
+"Nextcloud Office est requise"
+
+#: lib/DocumentService.php
+msgid "Bad healthcheck status"
+msgstr ""
+
+#: lib/DocumentService.php
+#: src/editor.js
+msgid "Not supported version"
+msgstr "Version non supportée"
+
+#: lib/EmailManager.php
+msgid "You were mentioned in the document"
+msgstr "Vous avez été mentionné dans le document"
+
+#: lib/EmailManager.php
+#, php-format
+msgid "%1$s mentioned you in the document comment"
+msgstr "%1$s vous a mentionné dans le commentaire du document"
+
+#: lib/EmailManager.php
+#, php-format
+msgid ""
+"This is a mail message to notify that you have been mentioned by <a "
+"href=\"%1$s\">%2$s</a> in the comment to the <a href=\"%3$s\">%4$s</a>:"
+"<br>\"%5$s\""
+msgstr ""
+"Ceci est un message pour vous notifier que vous avez été mentionné par <a "
+"href=\"%1$s\">%2$s</a> dans le commentaire à <a href=\"%3$s\">%4$s</a>:"
+"<br>\"%5$s\""
+
+#: lib/EmailManager.php
+msgid "Open file"
+msgstr "Ouvrir le fichier"
+
+#: lib/EmailManager.php
+msgid "Nextcloud Office Document Server is unavailable"
+msgstr "Nextcloud Office Document Server n'est pas disponible"
+
+#: lib/EmailManager.php
+msgid ""
+"This is a mail message to notify that the connection with the Nextcloud "
+"Office Document Server has been lost. Please check the connection settings:"
+msgstr ""
+"Ceci est un message pour vous informer que la connexion avec Nextcloud "
+"Office Document Server a été interrompue. Veuillez vérifier les paramètres "
+"de connexion :"
+
+#: lib/EmailManager.php
+msgid "Go to Settings"
+msgstr "Aller dans Paramètres"
+
+#: lib/Notifier.php
+msgid "Please check the settings to resolve the problem."
+msgstr "Veuillez vérifier les paramètres pour résoudre le problème."
+
+#: lib/Notifier.php
+msgid "View settings"
+msgstr "Afficher les paramètres"
+
+#: lib/Notifier.php
+#, php-format
+msgid "%1$s mentioned in the %2$s: \"%3$s\"."
+msgstr "%1$s a mentionné dans %2$s: \"%3$s\"."
+
+#: lib/Notifier.php
+#, php-format
+msgid "{notifier} mentioned in the {file}: \"%1$s\"."
+msgstr "{notifier} vous a mentionné dans {file}: \"%1$s\"."
+
+#: lib/Notifier.php
+msgid "Open"
+msgstr "Ouvrir"
+
+#: lib/Notifier.php
+#, php-format
+msgid "%1$s could not be saved. Please open the file again."
+msgstr "%1$s n'a pas pu être enregistré. Veuillez rouvrir le fichier."
+
+#: lib/Notifier.php
+msgid "{file} could not be saved. Please open the file again."
+msgstr ""
+"Impossible d'enregistrer le fichier {file}. Veuillez rouvrir le fichier."
+
+#: specialAppInfoFakeDummyForL10nScript.php
+msgid "Nextcloud Office"
+msgstr ""
+
+#: specialAppInfoFakeDummyForL10nScript.php
+msgid "Nextcloud Office app"
+msgstr ""
+
+#: specialAppInfoFakeDummyForL10nScript.php
+msgid ""
+"The Nextcloud Office app for Nextcloud brings powerful document editing and "
+"collaboration tools directly to your Nextcloud environment. With this "
+"integration, you can seamlessly create, edit, and co-author text documents, "
+"spreadsheets, presentations, and PDFs, as well as build and fill out PDF "
+"forms.\n"
+"\n"
+"Collaborate with your team in real time, make use of Track Changes, version "
+"history, comments, integrated chat, and more. Work together on files with "
+"federated cloud sharing. Flexible access permissions allow you to control "
+"who can view, edit, or comment, ensuring secure role-based collaboration "
+"tailored to your needs. Documents can also be protected with watermarks, "
+"password settings, and encryption for added security.\n"
+"\n"
+"The app offers support for over 50 file formats, including DOCX, XLSX, PPTX, "
+"PDF, RTF, TXT, CSV, ODT, ODS, ODP, EPUB, FB2, HTML, HWP, HWPX, Pages, "
+"Numbers, Keynote, etc. Seamless desktop and mobile app integration means "
+"you'll have access to your Nextcloud files wherever you go.\n"
+"\n"
+"Furthermore, you can seamlessly connect any AI assistant, including local "
+"ones, directly to the editors to work faster and more efficient. This allows "
+"you to leverage various AI models for tasks like chatbot interactions, "
+"translations, OCR, and more.\n"
+"\n"
+"Whether you’re working with internal teams or external collaborators, the "
+"Nextcloud Office app for Nextcloud enhances productivity, simplifies "
+"workflows, and ensures your files remain secure."
+msgstr ""
+
+#: specialVueFakeDummyForL10nScript.js
+#: src/main.js
+msgid "Download as"
+msgstr "Télécharger sous"
+
+#: specialVueFakeDummyForL10nScript.js
+msgid "Choose a format to convert {fileName}"
+msgstr "Choisissez un format à convertir {fileName}"
+
+#: specialVueFakeDummyForL10nScript.js
+msgid "Origin format"
+msgstr "Format d'origin"
+
+#: specialVueFakeDummyForL10nScript.js
+msgid "Cancel"
+msgstr ""
+
+#: specialVueFakeDummyForL10nScript.js
+msgid "Download"
+msgstr "Télécharger"
+
+#: specialVueFakeDummyForL10nScript.js
+#: src/settings.js
+msgid "Server settings have been successfully updated"
+msgstr "Les paramètres du serveur ont été mis à jour avec succès"
+
+#: specialVueFakeDummyForL10nScript.js
+msgid "Info"
+msgstr "Information"
+
+#: specialVueFakeDummyForL10nScript.js
+msgid "Ok"
+msgstr ""
+
+#: specialVueFakeDummyForL10nScript.js
+msgid ""
+"To ensure the security of important parameters in Nextcloud Office requests, "
+"please set a Secret Key on the Settings page. To learn more, <a "
+"href=\"{url}\" target=\"_blank\">click here</a>."
+msgstr ""
+"Pour garantir la sécurité des paramètres importants dans les requêtes "
+"Nextcloud Office, veuillez définir une clé secrète sur la page Paramètres. "
+"Pour en savoir plus, <a href=\"{url}\" target=\"_blank\">cliquez ici</a>."
+
+#: specialVueFakeDummyForL10nScript.js
+msgid "Failed to load fonts: {error}"
+msgstr ""
+
+#: specialVueFakeDummyForL10nScript.js
+msgid ""
+"Unsupported file type. Please upload TTF, OTF, TTC, WOFF or WOFF2 fonts."
+msgstr ""
+
+#: specialVueFakeDummyForL10nScript.js
+msgid "\"{name}\" uploaded successfully."
+msgstr ""
+
+#: specialVueFakeDummyForL10nScript.js
+msgid "Upload failed: {error}"
+msgstr ""
+
+#: specialVueFakeDummyForL10nScript.js
+msgid "\"{name}\" deleted."
+msgstr ""
+
+#: specialVueFakeDummyForL10nScript.js
+msgid "Delete failed: {error}"
+msgstr ""
+
+#: specialVueFakeDummyForL10nScript.js
+msgid "Font regeneration started. This may take a moment…"
+msgstr ""
+
+#: specialVueFakeDummyForL10nScript.js
+msgid "Regeneration failed: {error}"
+msgstr ""
+
+#: specialVueFakeDummyForL10nScript.js
+msgid "Font regeneration completed successfully."
+msgstr ""
+
+#: specialVueFakeDummyForL10nScript.js
+msgid "Regeneration error: {error}"
+msgstr ""
+
+#: specialVueFakeDummyForL10nScript.js
+msgid ""
+"Custom font management requires the AdminPanel service to be enabled on the "
+"document server."
+msgstr ""
+
+#: specialVueFakeDummyForL10nScript.js
+msgid "Uploading…"
+msgstr ""
+
+#: specialVueFakeDummyForL10nScript.js
+msgid "Add font"
+msgstr ""
+
+#: specialVueFakeDummyForL10nScript.js
+msgid "Regenerate font cache"
+msgstr ""
+
+#: specialVueFakeDummyForL10nScript.js
+msgid "Regenerating…"
+msgstr ""
+
+#: specialVueFakeDummyForL10nScript.js
+msgid "Regenerate"
+msgstr ""
+
+#: specialVueFakeDummyForL10nScript.js
+msgid "Loading fonts…"
+msgstr ""
+
+#: specialVueFakeDummyForL10nScript.js
+msgid ""
+"No custom fonts installed. Upload TTF, OTF, TTC, WOFF or WOFF2 files to add "
+"them."
+msgstr ""
+
+#: specialVueFakeDummyForL10nScript.js
+msgid "Delete {name}"
+msgstr ""
+
+#: specialVueFakeDummyForL10nScript.js
+msgid "Select template"
+msgstr "Sélectionnez un modèle"
+
+#: specialVueFakeDummyForL10nScript.js
+msgid "Empty"
+msgstr "Vide"
+
+#: specialVueFakeDummyForL10nScript.js
+msgid "Create"
+msgstr "Créer"
+
+#: src/editor.js
+msgid "Nextcloud Office cannot be reached. Please contact admin"
+msgstr ""
+"Nextcloud Office est indisponible. Veuillez contacter votre administrateur"
+
+#: src/editor.js
+msgid ""
+"You are using public demo Nextcloud Office server. Please do not store "
+"private sensitive data."
+msgstr ""
+"Vous utilisez la version démo de Nextcloud Office, proposée à des fins de "
+"tests. Veuillez ne pas stocker vos données confidentielles."
+
+#: src/editor.js
+msgid "Failed to load configuration"
+msgstr ""
+
+#: src/editor.js
+#: src/listener.js
+msgid "Save as"
+msgstr "Enregistrer sous"
+
+#: src/editor.js
+msgid "File saved"
+msgstr "Le fichier a été enregistré"
+
+#: src/editor.js
+#: src/listener.js
+msgid "Insert image"
+msgstr "Insérer une image"
+
+#: src/editor.js
+#: src/listener.js
+msgid "Select recipients"
+msgstr "Sélectionner les destinataires"
+
+#: src/editor.js
+msgid "The data source must not be the current document"
+msgstr "La source de données ne doit pas être le document actuel"
+
+#: src/editor.js
+#: src/listener.js
+msgid "Select file to combine"
+msgstr "Sélectionner le fichier à combiner"
+
+#: src/editor.js
+#: src/listener.js
+msgid "Select file to compare"
+msgstr "Sélectionner fichier à comparer"
+
+#: src/editor.js
+#: src/listener.js
+msgid "Select file to insert text"
+msgstr "Sélectionner le fichier pour insérer le texte"
+
+#: src/editor.js
+#: src/listener.js
+msgid "Select file"
+msgstr "Sélectionner un fichier"
+
+#: src/editor.js
+#: src/listener.js
+msgid "Select data source"
+msgstr "Sélectionner la source de données"
+
+#: src/main.js
+msgid "File created"
+msgstr "Fichier créé"
+
+#: src/main.js
+msgid "Failed to create file"
+msgstr ""
+
+#: src/main.js
+msgid "File has been converted. Its content might look different."
+msgstr "Le fichier a été converti. Son contenu peut s'afficher différemment."
+
+#: src/main.js
+msgid "Failed to convert file"
+msgstr ""
+
+#: src/main.js
+msgid "Blank"
+msgstr "Vide"
+
+#: src/main.js
+msgid "From text document"
+msgstr "À partir d'un fichier texte"
+
+#: src/main.js
+msgid "Create new PDF form"
+msgstr "Créer un nouveau formulaire PDF"
+
+#: src/main.js
+msgid "Edit in Nextcloud Office"
+msgstr ""
+
+#: src/main.js
+msgid "Open in Nextcloud Office"
+msgstr "Ouvrir dans Nextcloud Office"
+
+#: src/main.js
+msgid "Convert with Nextcloud Office"
+msgstr "Convertir avec Nextcloud Office"
+
+#: src/main.js
+msgid "Create form"
+msgstr "Créer un formulaire"
+
+#: src/settings.js
+#: templates/settings.php
+msgid "Allow the following groups to access the editors"
+msgstr "Autoriser les groupes suivants à accéder aux éditeurs"
+
+#: src/settings.js
+msgid "Error when trying to connect"
+msgstr "Erreur durant la tentative de connexion"
+
+#: src/settings.js
+msgid "version"
+msgstr "version"
+
+#: src/settings.js
+msgid "Failed to save settings"
+msgstr ""
+
+#: src/settings.js
+msgid "Common settings have been successfully updated"
+msgstr "Les paramètres généraux ont été mis à jour avec succès"
+
+#: src/settings.js
+msgid "Security settings have been successfully updated"
+msgstr "Les paramètres de sécurité ont été mis à jour avec succès"
+
+#: src/settings.js
+msgid "Are you sure you want to clear metadata?"
+msgstr "Voulez-vous vraiment effacer les métadonnées ?"
+
+#: src/settings.js
+msgid "Confirm metadata removal"
+msgstr "Confirmer la suppression des métadonnées"
+
+#: src/settings.js
+msgid "All history successfully deleted"
+msgstr "L'historique a été supprimé avec succès"
+
+#: src/settings.js
+msgid "Failed to clear history"
+msgstr ""
+
+#: src/settings.js
+#: templates/directeditorerror.php
+msgid "Error"
+msgstr "Erreur"
+
+#: src/settings.js
+msgid "Template successfully added"
+msgstr "Le modèle a été ajouté avec succès"
+
+#: src/settings.js
+msgid "Template successfully deleted"
+msgstr "Le modèle a été supprimé avec succès"
+
+#: src/share.js
+msgid "Advanced"
+msgstr "Avancé"
+
+#: src/share.js
+#: templates/settings.php
+msgid "Provide advanced document permissions using Nextcloud Office"
+msgstr ""
+"Fournir des autorisations avancées pour les documents en utilisant Nextcloud "
+"Office"
+
+#: src/share.js
+msgid "group"
+msgstr "groupe"
+
+#: src/share.js
+msgid "conversation"
+msgstr "conversation"
+
+#: src/share.js
+msgid "Share link"
+msgstr "Lien de partage"
+
+#: src/share.js
+msgid "Review only"
+msgstr "Révision uniquement"
+
+#: src/share.js
+msgid "Comment only"
+msgstr "Commentaires uniquement"
+
+#: src/share.js
+msgid "Form filling"
+msgstr "Remplissage de formulaire"
+
+#: src/share.js
+msgid "Global filter"
+msgstr "Filtre global"
+
+#: templates/settings.php
+msgid "Welcome to Nextcloud Office!"
+msgstr "Bienvenue dans Nextcloud Office !"
+
+#: templates/settings.php
+msgid ""
+"Edit and collaborate on text documents, spreadsheets, presentations, and "
+"PDFs within Nextcloud using Nextcloud Office."
+msgstr ""
+"Modifiez et collaborez sur des documents texte, des feuilles de calcul, des "
+"présentations et des fichiers PDF dans Nextcloud à l'aide de Nextcloud "
+"Office."
+
+#: templates/settings.php
+msgid "Learn more"
+msgstr "En savoir plus"
+
+#: templates/settings.php
+msgid "Suggest a feature"
+msgstr "Suggérer une fonctionnalité"
+
+#: templates/settings.php
+msgid "Server settings"
+msgstr "Paramètres du serveur"
+
+#: templates/settings.php
+msgid ""
+"Nextcloud Office Location specifies the address of the server with the "
+"document services installed. Please change the '<documentserver>' for the "
+"server address in the below line."
+msgstr ""
+"L'emplacement du Nextcloud Office désigne l'adresse du serveur sur lequel "
+"est installé le service de document. Veuillez modifier le '<documentserver>' "
+"avec l'adresse du serveur de service de document dans la ligne ci-dessous"
+
+#: templates/settings.php
+msgid "Nextcloud Office address"
+msgstr "Adresse du Nextcloud Office"
+
+#: templates/settings.php
+msgid "Disable certificate verification (insecure)"
+msgstr "Désactiver la vérification du certificat (non sur)"
+
+#: templates/settings.php
+msgid "Secret key (leave blank to disable)"
+msgstr "Clé secrète (laisser vide pour désactiver)"
+
+#: templates/settings.php
+msgid "Advanced server settings"
+msgstr "Paramètres avancés du serveur"
+
+#: templates/settings.php
+msgid "Authorization header (leave blank to use default header)"
+msgstr ""
+"En-tête d'autorisation (laissez vide pour utiliser l'en-tête par défaut)"
+
+#: templates/settings.php
+msgid "Nextcloud Office address for internal requests from the server"
+msgstr "Adresse du Nextcloud Office pour les demandes internes du serveur"
+
+#: templates/settings.php
+msgid "Server address for internal requests from Nextcloud Office"
+msgstr "Adresse du serveur pour les demandes internes du Nextcloud Office"
+
+#: templates/settings.php
+msgid "Save"
+msgstr "Enregistrer"
+
+#: templates/settings.php
+msgid "Connect to demo Nextcloud Office server"
+msgstr "Se connecter à la version démo de Nextcloud Office"
+
+#: templates/settings.php
+msgid ""
+"This is a public test server, please do not use it for private sensitive "
+"data. The server will be available during a 30-day period."
+msgstr ""
+"C'est un serveur public proposé à des fins de tests, veuillez ne pas "
+"l'utiliser pour vos données personnelles sensibles. Le serveur est "
+"disponible pendant 30 jours."
+
+#: templates/settings.php
+msgid "Common settings"
+msgstr "Paramètres communs"
+
+#: templates/settings.php
+msgid ""
+"Use Nextcloud Office to generate a document preview (it will take up disk "
+"space)"
+msgstr ""
+"Utilisez Nextcloud Office pour générer l'aperçu du document (occupe de "
+"l'espace disque)"
+
+#: templates/settings.php
+msgid "Open file in the same tab"
+msgstr "Ouvrir le fichier dans le même onglet"
+
+#: templates/settings.php
+msgid "Enable sharing (might increase editors loading time)"
+msgstr ""
+"Activer le panneau de partage (le temps de chargement des éditeurs peut être "
+"augmenté)"
+
+#: templates/settings.php
+msgid ""
+"Keep metadata for each version once the document is edited (it will take up "
+"disk space)"
+msgstr ""
+"Gardez les métadonnées pour chaque version dès que le document est modifié "
+"(occupe de l'espace disque)"
+
+#: templates/settings.php
+msgid "Clear"
+msgstr "Effacer"
+
+#: templates/settings.php
+msgid "Enable background connection check to the editors"
+msgstr ""
+"Activer la vérification des connexions en arrière-plan avec les éditeurs"
+
+#: templates/settings.php
+msgid "Enable e-mail notifications"
+msgstr "Activer les notifications par e-mail"
+
+#: templates/settings.php
+msgid "Unknown author display name"
+msgstr "Nom d'affichage de l'auteur inconnu"
+
+#: templates/settings.php
+msgid "The default application for opening the format"
+msgstr "Application par défaut pour ouvrir le format"
+
+#: templates/settings.php
+msgid ""
+"Open the file for editing (due to format restrictions, the data might be "
+"lost when saving to the formats from the list below)"
+msgstr ""
+"Ouvrir le fichier pour édition (en raison de restrictions de format, des "
+"données peuvent être perdues lors de l'enregistrement dans les formats de la "
+"liste ci-dessous)"
+
+#: templates/settings.php
+msgid "Editor customization settings"
+msgstr "Paramètres de personnalisation de l'éditeur"
+
+#: templates/settings.php
+msgid "Keep intermediate versions when editing (forcesave)"
+msgstr ""
+"Sauvegarder les versions intermédiaires lors de l'édition (enregistrement "
+"obligatoire)"
+
+#: templates/settings.php
+msgid "Enable live-viewing mode when accessing file by public link"
+msgstr ""
+"Activer le mode de visualisation en direct lors de l'accès au fichier via un "
+"lien public"
+
+#: templates/settings.php
+msgid "The customization section allows personalizing the editor interface"
+msgstr ""
+"La section de personnalisation permet de personnaliser l'interface de "
+"l'éditeur"
+
+#: templates/settings.php
+msgid "Display Chat menu button"
+msgstr "Afficher le bouton du menu du chat"
+
+#: templates/settings.php
+msgid "Display the header more compact"
+msgstr "Afficher l'en-tête plus compact"
+
+#: templates/settings.php
+msgid "Display Feedback & Support menu button"
+msgstr "Afficher le bouton du menu 'Feedback & Support'"
+
+#: templates/settings.php
+msgid "Display Help menu button"
+msgstr "Afficher le bouton du menu 'Aide'"
+
+#: templates/settings.php
+msgid "REVIEW mode for viewing"
+msgstr ""
+
+#: templates/settings.php
+msgid "Markup"
+msgstr "Balisage"
+
+#: templates/settings.php
+msgid "Final"
+msgstr "Finale"
+
+#: templates/settings.php
+msgid "Original"
+msgstr "Original"
+
+#: templates/settings.php
+msgid "Default editor theme"
+msgstr "Thème d'éditeur par défaut"
+
+#: templates/settings.php
+msgid "Same as system"
+msgstr "Identique à système"
+
+#: templates/settings.php
+msgid "Light"
+msgstr "Clair"
+
+#: templates/settings.php
+msgid "Dark"
+msgstr "Sombre"
+
+#: templates/settings.php
+msgid "Custom fonts"
+msgstr ""
+
+#: templates/settings.php
+msgid ""
+"Upload custom fonts (TTF, OTF, TTC, WOFF, WOFF2) to make them available in "
+"the document editor. Click Regenerate after uploading or deleting fonts to "
+"apply changes."
+msgstr ""
+
+#: templates/settings.php
+msgid "Common templates"
+msgstr "Modèles communs"
+
+#: templates/settings.php
+msgid "Add a new template"
+msgstr "Ajouter un nouveau modèle"
+
+#: templates/settings.php
+msgid "Security"
+msgstr "Sécurité"
+
+#: templates/settings.php
+msgid "Enable plugins"
+msgstr "Activer les plugins"
+
+#: templates/settings.php
+msgid "Run document macros"
+msgstr "Exécuter des macros de documents"
+
+#: templates/settings.php
+msgid "Enable document protection for"
+msgstr "Activer la protection des documents par mot de passe pour"
+
+#: templates/settings.php
+msgid "All users"
+msgstr "Tous les utilisateurs"
+
+#: templates/settings.php
+msgid "Owner only"
+msgstr "Propriétaire uniquement"
+
+#: templates/settings.php
+msgid "Secure view enables you to secure documents by embedding a watermark"
+msgstr ""
+"L'affichage sécurisé permet de protéger vos documents à l'aide d'un "
+"filigrane."
+
+#: templates/settings.php
+msgid "Enable watermarking"
+msgstr "Activer un filigrane"
+
+#: templates/settings.php
+msgid "Watermark text"
+msgstr "Texte du filigrane"
+
+#: templates/settings.php
+msgid "Supported placeholders"
+msgstr "Espaces réservés supportés"
+
+#: templates/settings.php
+msgid "Show watermark on tagged files"
+msgstr "Afficher un filigrane pour les fichiers sélectionnés"
+
+#: templates/settings.php
+msgid "Show watermark for users of groups"
+msgstr "Afficher un filigrane pour un groupe d'utilisateurs"
+
+#: templates/settings.php
+msgid "Show watermark for all shares"
+msgstr "Afficher un filigrane à tout le monde ayant l'accès"
+
+#: templates/settings.php
+msgid "Show watermark for read only shares"
+msgstr "Afficher un filigrane pour l'accès de lecture seule"
+
+#: templates/settings.php
+msgid "Link shares"
+msgstr "Accès par le lien"
+
+#: templates/settings.php
+msgid "Show watermark for all link shares"
+msgstr "Afficher un filigrane pour l'accès par le lien externe"
+
+#: templates/settings.php
+msgid "Show watermark for download hidden shares"
+msgstr "Afficher un filigrane pour la restriction de téléchargement"
+
+#: templates/settings.php
+msgid "Show watermark for read only link shares"
+msgstr ""
+"Afficher un filigrane pour l'accès de lecture seule par le lien externe"
+
+#: templates/settings.php
+msgid "Show watermark on link shares with specific system tags"
+msgstr ""
+"Afficher un filigrane pour l'accès par le lien externe avec les marques "
+"spécifiques du système"
+
+#~ msgid "Loading, please wait."
+#~ msgstr "Chargement, veuillez patienter."
+
+#~ msgid "Server can't read xml"
+#~ msgstr "Le serveur ne peut pas lire le XML"
+
+#~ msgid "Bad Response. Errors: "
+#~ msgstr "Mauvaise réponse. Erreurs:"
+
+#~ msgid "Documentation"
+#~ msgstr "Documentation"
+
+#~ msgid "Select tag"
+#~ msgstr "Sélectionner une étiquette"
+
+#~ msgid "Review mode for viewing"
+#~ msgstr "Mode révision lors de l'affichage"

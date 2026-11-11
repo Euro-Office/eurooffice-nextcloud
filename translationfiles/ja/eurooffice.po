@@ -1,0 +1,954 @@
+msgid ""
+msgstr ""
+"Report-Msgid-Bugs-To: translations\\@example.com\n"
+"Language: ja\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+#: lib/Controller/CallbackController.php
+msgid "Access denied"
+msgstr "アクセスが拒否されました"
+
+#: lib/Controller/CallbackController.php
+#: lib/Controller/EditorApiController.php
+#: lib/Controller/EditorController.php
+#: lib/FileUtility.php
+msgid "Invalid request"
+msgstr "リクエストが不正です"
+
+#: lib/Controller/CallbackController.php
+msgid "Files not found"
+msgstr "ファイルが見つかりません"
+
+#: lib/Controller/CallbackController.php
+#: lib/Controller/EditorApiController.php
+#: lib/Controller/EditorController.php
+#: lib/DirectEditor.php
+msgid "Not permitted"
+msgstr "権限がありません"
+
+#: lib/Controller/CallbackController.php
+#: lib/Controller/EditorController.php
+msgid "Download failed"
+msgstr "ダウンロードできませんでした"
+
+#: lib/Controller/CallbackController.php
+#: lib/Controller/EditorApiController.php
+#: lib/Controller/EditorController.php
+#: lib/FileUtility.php
+msgid "File not found"
+msgstr "ファイルが見つかりません"
+
+#: lib/Controller/CallbackController.php
+#: lib/Controller/EditorApiController.php
+#: lib/Controller/EditorController.php
+#: lib/FileUtility.php
+#: src/editor.js
+msgid "FileId is empty"
+msgstr "ファイルIDが空です"
+
+#: lib/Controller/CallbackController.php
+#: lib/Controller/EditorApiController.php
+#: lib/Controller/EditorController.php
+#: lib/FileUtility.php
+msgid "You do not have enough permissions to view the file"
+msgstr "ファイルを閲覧する権限がありません"
+
+#: lib/Controller/EditorApiController.php
+#: lib/Controller/EditorController.php
+msgid "Format is not supported"
+msgstr "このフォーマットはサポートされていません"
+
+#: lib/Controller/EditorApiController.php
+#: lib/FileCreator.php
+#: lib/Listeners/RegisterTemplateCreatorListener.php
+#: src/main.js
+msgid "New document"
+msgstr "新しいドキュメント"
+
+#: lib/Controller/EditorApiController.php
+#: lib/FileCreator.php
+#: lib/Listeners/RegisterTemplateCreatorListener.php
+#: src/main.js
+msgid "New spreadsheet"
+msgstr "新しいスプレッドシート"
+
+#: lib/Controller/EditorApiController.php
+#: lib/FileCreator.php
+#: lib/Listeners/RegisterTemplateCreatorListener.php
+#: src/main.js
+msgid "New presentation"
+msgstr "新しいプレゼンテーション"
+
+#: lib/Controller/EditorApiController.php
+#: src/main.js
+msgid "New PDF form"
+msgstr "新規PDFフォーム"
+
+#: lib/Controller/EditorApiController.php
+#: lib/Controller/EditorController.php
+msgid "UserId is empty"
+msgstr ""
+
+#: lib/Controller/EditorApiController.php
+msgid "Anonymous"
+msgstr "匿名"
+
+#: lib/Controller/EditorController.php
+msgid "Template not found"
+msgstr "テンプレートが見つかりません"
+
+#: lib/Controller/EditorController.php
+msgid "You don't have enough permission to create"
+msgstr "作成権限がありません"
+
+#: lib/Controller/EditorController.php
+msgid "The required folder was not found"
+msgstr "開こうとしたフォルダーがありません"
+
+#: lib/Controller/EditorController.php
+msgid "Can't create file"
+msgstr "ファイルを作成できません"
+
+#: lib/Controller/EditorController.php
+msgid "Failed to send notification"
+msgstr "通知を送信できませんでした"
+
+#: lib/Controller/EditorController.php
+msgid "Notification sent successfully"
+msgstr "通知を送信しました"
+
+#: lib/Controller/EditorController.php
+msgid "Conversion is not required"
+msgstr "変換する必要はありません"
+
+#: lib/Controller/EditorController.php
+msgid "Failed to download converted file"
+msgstr "変換されたファイルをダウンロードできませんでした"
+
+#: lib/Controller/EditorController.php
+#: lib/DirectEditor.php
+#: lib/DocumentService.php
+msgid "Nextcloud Office app is not configured. Please contact admin"
+msgstr "Nextcloud Officeアプリが設定されていません。管理者に相談してください"
+
+#: lib/Controller/EditorController.php
+msgid ""
+"The domain in the file url does not match the domain of the Document server"
+msgstr "ファイルURLのドメインがドキュメントサーバーのドメインと一致しません"
+
+#: lib/Controller/SettingsController.php
+#: templates/settings.php
+msgid ""
+"The 30-day test period is over, you can no longer connect to demo Nextcloud "
+"Office server."
+msgstr ""
+"30日間のテスト期間が終了したら、Nextcloud Office デモサーバーには繋がらなくな"
+"ります。"
+
+#: lib/Controller/SettingsController.php
+#: templates/settings.php
+msgid "DO NOT SHARE THIS"
+msgstr "これを共有しない"
+
+#: lib/Controller/TemplateController.php
+msgid "Template must be in OOXML format"
+msgstr "テンプレートはOOXML形式である必要があります"
+
+#: lib/Controller/TemplateController.php
+msgid "Template already exists"
+msgstr "テンプレートは既に存在しています"
+
+#: lib/Controller/TemplateController.php
+msgid "Invalid file provided"
+msgstr "提供されたファイルは無効です"
+
+#: lib/Controller/TemplateController.php
+msgid "Failed to delete template"
+msgstr "テンプレートを削除できませんでした"
+
+#: lib/Cron/EditorsCheck.php
+msgid "Nextcloud Office server is not available"
+msgstr "Nextcloud Officeサーバーは只今利用できません"
+
+#: lib/DocumentService.php
+msgid "Bad Response. JSON error: "
+msgstr ""
+
+#: lib/DocumentService.php
+msgid "Error occurred in the document service"
+msgstr "ドキュメントサービスでエラーが発生しました"
+
+#: lib/DocumentService.php
+msgid ""
+"Mixed Active Content is not allowed. HTTPS address for Nextcloud Office is "
+"required."
+msgstr ""
+"アクティブコンテンツの混在は許可されていません。Nextcloud OfficeにはHTTPSアド"
+"レスが必要です"
+
+#: lib/DocumentService.php
+msgid "Bad healthcheck status"
+msgstr ""
+
+#: lib/DocumentService.php
+#: src/editor.js
+msgid "Not supported version"
+msgstr "サポートされていないバージョン"
+
+#: lib/EmailManager.php
+msgid "You were mentioned in the document"
+msgstr "あなたがドキュメントでメンションされました"
+
+#: lib/EmailManager.php
+#, php-format
+msgid "%1$s mentioned you in the document comment"
+msgstr "%1$s さんは文書コメントであなたをメンションしました"
+
+#: lib/EmailManager.php
+#, php-format
+msgid ""
+"This is a mail message to notify that you have been mentioned by <a "
+"href=\"%1$s\">%2$s</a> in the comment to the <a href=\"%3$s\">%4$s</a>:"
+"<br>\"%5$s\""
+msgstr ""
+"これは、 <a href=\"%1$s\">%2$s</a> さんが <a href=\"%3$s\">%4$s</a> へのコメ"
+"ントであなたをメンションしたことを通知するメッセージです:<br>\"%5$s\""
+
+#: lib/EmailManager.php
+msgid "Open file"
+msgstr "ファイルを開く"
+
+#: lib/EmailManager.php
+msgid "Nextcloud Office Document Server is unavailable"
+msgstr "Nextcloud Officeドキュメントサーバーは只今ご利用いただけません"
+
+#: lib/EmailManager.php
+msgid ""
+"This is a mail message to notify that the connection with the Nextcloud "
+"Office Document Server has been lost. Please check the connection settings:"
+msgstr ""
+"これは、Nextcloud Officeドキュメントサーバーとの接続が失われたことを通知する"
+"メッセージです。接続設定をご確認ください："
+
+#: lib/EmailManager.php
+msgid "Go to Settings"
+msgstr "設定に進む"
+
+#: lib/Notifier.php
+msgid "Please check the settings to resolve the problem."
+msgstr "問題を解決するために設定をご確認ください。"
+
+#: lib/Notifier.php
+msgid "View settings"
+msgstr "設定を見る"
+
+#: lib/Notifier.php
+#, php-format
+msgid "%1$s mentioned in the %2$s: \"%3$s\"."
+msgstr "%1$s は %2$s: \"%3$s\"に記載されました。"
+
+#: lib/Notifier.php
+#, php-format
+msgid "{notifier} mentioned in the {file}: \"%1$s\"."
+msgstr "{notifier} は あなたを {file}: \"%1$s\"に記載しました。"
+
+#: lib/Notifier.php
+msgid "Open"
+msgstr "開く"
+
+#: lib/Notifier.php
+#, php-format
+msgid "%1$s could not be saved. Please open the file again."
+msgstr "%1$sを保存できませんでした。ファイルを再度開いてください。"
+
+#: lib/Notifier.php
+msgid "{file} could not be saved. Please open the file again."
+msgstr "{file}を保存できませんでした。ファイルを再度開いてください。"
+
+#: specialAppInfoFakeDummyForL10nScript.php
+msgid "Nextcloud Office"
+msgstr ""
+
+#: specialAppInfoFakeDummyForL10nScript.php
+msgid "Nextcloud Office app"
+msgstr ""
+
+#: specialAppInfoFakeDummyForL10nScript.php
+msgid ""
+"The Nextcloud Office app for Nextcloud brings powerful document editing and "
+"collaboration tools directly to your Nextcloud environment. With this "
+"integration, you can seamlessly create, edit, and co-author text documents, "
+"spreadsheets, presentations, and PDFs, as well as build and fill out PDF "
+"forms.\n"
+"\n"
+"Collaborate with your team in real time, make use of Track Changes, version "
+"history, comments, integrated chat, and more. Work together on files with "
+"federated cloud sharing. Flexible access permissions allow you to control "
+"who can view, edit, or comment, ensuring secure role-based collaboration "
+"tailored to your needs. Documents can also be protected with watermarks, "
+"password settings, and encryption for added security.\n"
+"\n"
+"The app offers support for over 50 file formats, including DOCX, XLSX, PPTX, "
+"PDF, RTF, TXT, CSV, ODT, ODS, ODP, EPUB, FB2, HTML, HWP, HWPX, Pages, "
+"Numbers, Keynote, etc. Seamless desktop and mobile app integration means "
+"you'll have access to your Nextcloud files wherever you go.\n"
+"\n"
+"Furthermore, you can seamlessly connect any AI assistant, including local "
+"ones, directly to the editors to work faster and more efficient. This allows "
+"you to leverage various AI models for tasks like chatbot interactions, "
+"translations, OCR, and more.\n"
+"\n"
+"Whether you’re working with internal teams or external collaborators, the "
+"Nextcloud Office app for Nextcloud enhances productivity, simplifies "
+"workflows, and ensures your files remain secure."
+msgstr ""
+
+#: specialVueFakeDummyForL10nScript.js
+#: src/main.js
+msgid "Download as"
+msgstr "別の形式でダウンロード"
+
+#: specialVueFakeDummyForL10nScript.js
+msgid "Choose a format to convert {fileName}"
+msgstr "{fileName}を変換する形式を選択してください"
+
+#: specialVueFakeDummyForL10nScript.js
+msgid "Origin format"
+msgstr "オリジンの形式"
+
+#: specialVueFakeDummyForL10nScript.js
+msgid "Cancel"
+msgstr ""
+
+#: specialVueFakeDummyForL10nScript.js
+msgid "Download"
+msgstr "ダウンロード"
+
+#: specialVueFakeDummyForL10nScript.js
+#: src/settings.js
+msgid "Server settings have been successfully updated"
+msgstr "サーバー設定が正常に更新されました"
+
+#: specialVueFakeDummyForL10nScript.js
+msgid "Info"
+msgstr "情報"
+
+#: specialVueFakeDummyForL10nScript.js
+msgid "Ok"
+msgstr ""
+
+#: specialVueFakeDummyForL10nScript.js
+msgid ""
+"To ensure the security of important parameters in Nextcloud Office requests, "
+"please set a Secret Key on the Settings page. To learn more, <a "
+"href=\"{url}\" target=\"_blank\">click here</a>."
+msgstr ""
+"Nextcloud Officeリクエストの重要なパラメータのセキュリティを確保するため、設"
+"定ページでシークレットキーを設定してください。詳細については、<a "
+"href=\"{url}\" target=\"_blank\">こちらをクリック</a>してください。"
+
+#: specialVueFakeDummyForL10nScript.js
+msgid "Failed to load fonts: {error}"
+msgstr ""
+
+#: specialVueFakeDummyForL10nScript.js
+msgid ""
+"Unsupported file type. Please upload TTF, OTF, TTC, WOFF or WOFF2 fonts."
+msgstr ""
+
+#: specialVueFakeDummyForL10nScript.js
+msgid "\"{name}\" uploaded successfully."
+msgstr ""
+
+#: specialVueFakeDummyForL10nScript.js
+msgid "Upload failed: {error}"
+msgstr ""
+
+#: specialVueFakeDummyForL10nScript.js
+msgid "\"{name}\" deleted."
+msgstr ""
+
+#: specialVueFakeDummyForL10nScript.js
+msgid "Delete failed: {error}"
+msgstr ""
+
+#: specialVueFakeDummyForL10nScript.js
+msgid "Font regeneration started. This may take a moment…"
+msgstr ""
+
+#: specialVueFakeDummyForL10nScript.js
+msgid "Regeneration failed: {error}"
+msgstr ""
+
+#: specialVueFakeDummyForL10nScript.js
+msgid "Font regeneration completed successfully."
+msgstr ""
+
+#: specialVueFakeDummyForL10nScript.js
+msgid "Regeneration error: {error}"
+msgstr ""
+
+#: specialVueFakeDummyForL10nScript.js
+msgid ""
+"Custom font management requires the AdminPanel service to be enabled on the "
+"document server."
+msgstr ""
+
+#: specialVueFakeDummyForL10nScript.js
+msgid "Uploading…"
+msgstr ""
+
+#: specialVueFakeDummyForL10nScript.js
+msgid "Add font"
+msgstr ""
+
+#: specialVueFakeDummyForL10nScript.js
+msgid "Regenerate font cache"
+msgstr ""
+
+#: specialVueFakeDummyForL10nScript.js
+msgid "Regenerating…"
+msgstr ""
+
+#: specialVueFakeDummyForL10nScript.js
+msgid "Regenerate"
+msgstr ""
+
+#: specialVueFakeDummyForL10nScript.js
+msgid "Loading fonts…"
+msgstr ""
+
+#: specialVueFakeDummyForL10nScript.js
+msgid ""
+"No custom fonts installed. Upload TTF, OTF, TTC, WOFF or WOFF2 files to add "
+"them."
+msgstr ""
+
+#: specialVueFakeDummyForL10nScript.js
+msgid "Delete {name}"
+msgstr ""
+
+#: specialVueFakeDummyForL10nScript.js
+msgid "Select template"
+msgstr "テンプレートを選択する"
+
+#: specialVueFakeDummyForL10nScript.js
+msgid "Empty"
+msgstr "空"
+
+#: specialVueFakeDummyForL10nScript.js
+msgid "Create"
+msgstr "作成"
+
+#: src/editor.js
+msgid "Nextcloud Office cannot be reached. Please contact admin"
+msgstr "Nextcloud Officeに接続できません。管理者に相談してください"
+
+#: src/editor.js
+msgid ""
+"You are using public demo Nextcloud Office server. Please do not store "
+"private sensitive data."
+msgstr ""
+"パブリック Nextcloud Office サーバーを使っているので、プライベートな機密デー"
+"タを利用しないようにしてください。"
+
+#: src/editor.js
+msgid "Failed to load configuration"
+msgstr ""
+
+#: src/editor.js
+#: src/listener.js
+msgid "Save as"
+msgstr "別名で保存"
+
+#: src/editor.js
+msgid "File saved"
+msgstr "ファイルが保存されました"
+
+#: src/editor.js
+#: src/listener.js
+msgid "Insert image"
+msgstr "画像を挿入"
+
+#: src/editor.js
+#: src/listener.js
+msgid "Select recipients"
+msgstr "受取者を選択"
+
+#: src/editor.js
+msgid "The data source must not be the current document"
+msgstr "データソースは現在の文書であってはなりません"
+
+#: src/editor.js
+#: src/listener.js
+msgid "Select file to combine"
+msgstr "結合するファイルの選択"
+
+#: src/editor.js
+#: src/listener.js
+msgid "Select file to compare"
+msgstr "比較するファイルを選択"
+
+#: src/editor.js
+#: src/listener.js
+msgid "Select file to insert text"
+msgstr "テキストを挿入するファイルを選択"
+
+#: src/editor.js
+#: src/listener.js
+msgid "Select file"
+msgstr "ファイルを選択"
+
+#: src/editor.js
+#: src/listener.js
+msgid "Select data source"
+msgstr "データソースの選択"
+
+#: src/main.js
+msgid "File created"
+msgstr "ファイルが作成されました"
+
+#: src/main.js
+msgid "Failed to create file"
+msgstr ""
+
+#: src/main.js
+msgid "File has been converted. Its content might look different."
+msgstr "ファイルが変換されました。 その内容は異なって見えるかもしれません。"
+
+#: src/main.js
+msgid "Failed to convert file"
+msgstr ""
+
+#: src/main.js
+msgid "Blank"
+msgstr "空白"
+
+#: src/main.js
+msgid "From text document"
+msgstr "テキスト文書から作成する"
+
+#: src/main.js
+msgid "Create new PDF form"
+msgstr "新規PDFフォームの作成"
+
+#: src/main.js
+msgid "Edit in Nextcloud Office"
+msgstr ""
+
+#: src/main.js
+msgid "Open in Nextcloud Office"
+msgstr "Nextcloud Officeで開く"
+
+#: src/main.js
+msgid "Convert with Nextcloud Office"
+msgstr "Nextcloud Officeで変換"
+
+#: src/main.js
+msgid "Create form"
+msgstr "フォームの作成"
+
+#: src/settings.js
+#: templates/settings.php
+msgid "Allow the following groups to access the editors"
+msgstr "以下のグループにエディタへのアクセスを許可する"
+
+#: src/settings.js
+msgid "Error when trying to connect"
+msgstr "接続時にエラーが発生しました"
+
+#: src/settings.js
+msgid "version"
+msgstr "バージョン"
+
+#: src/settings.js
+msgid "Failed to save settings"
+msgstr ""
+
+#: src/settings.js
+msgid "Common settings have been successfully updated"
+msgstr "共通設定が正常に更新されました"
+
+#: src/settings.js
+msgid "Security settings have been successfully updated"
+msgstr "セキュリティ設定が正常に更新されました"
+
+#: src/settings.js
+msgid "Are you sure you want to clear metadata?"
+msgstr "メタデータをクリアしてもよろしいですか？"
+
+#: src/settings.js
+msgid "Confirm metadata removal"
+msgstr "メタデータの削除をご確認ください"
+
+#: src/settings.js
+msgid "All history successfully deleted"
+msgstr "すべての履歴が正常に削除されました"
+
+#: src/settings.js
+msgid "Failed to clear history"
+msgstr ""
+
+#: src/settings.js
+#: templates/directeditorerror.php
+msgid "Error"
+msgstr "エラー"
+
+#: src/settings.js
+msgid "Template successfully added"
+msgstr "テンプレートが正常に追加されました"
+
+#: src/settings.js
+msgid "Template successfully deleted"
+msgstr "テンプレートが正常に削除されました"
+
+#: src/share.js
+msgid "Advanced"
+msgstr "詳細"
+
+#: src/share.js
+#: templates/settings.php
+msgid "Provide advanced document permissions using Nextcloud Office"
+msgstr "Nextcloud Officeを利用した高度なドキュメント権限の提供"
+
+#: src/share.js
+msgid "group"
+msgstr "グループ"
+
+#: src/share.js
+msgid "conversation"
+msgstr "会話"
+
+#: src/share.js
+msgid "Share link"
+msgstr "URLで共有"
+
+#: src/share.js
+msgid "Review only"
+msgstr "レビューのみ"
+
+#: src/share.js
+msgid "Comment only"
+msgstr "コメントのみ"
+
+#: src/share.js
+msgid "Form filling"
+msgstr "フォーム入力"
+
+#: src/share.js
+msgid "Global filter"
+msgstr "グローバルフィルター"
+
+#: templates/settings.php
+msgid "Welcome to Nextcloud Office!"
+msgstr "Nextcloud Officeへようこそ！"
+
+#: templates/settings.php
+msgid ""
+"Edit and collaborate on text documents, spreadsheets, presentations, and "
+"PDFs within Nextcloud using Nextcloud Office."
+msgstr ""
+"Nextcloud Officeを使用して、Nextcloud内でテキストドキュメント、スプレッドシー"
+"ト、プレゼンテーション、PDFを編集・共同作業できます。"
+
+#: templates/settings.php
+msgid "Learn more"
+msgstr "詳細を見る"
+
+#: templates/settings.php
+msgid "Suggest a feature"
+msgstr "機能を提案"
+
+#: templates/settings.php
+msgid "Server settings"
+msgstr "サーバー設定"
+
+#: templates/settings.php
+msgid ""
+"Nextcloud Office Location specifies the address of the server with the "
+"document services installed. Please change the '<documentserver>' for the "
+"server address in the below line."
+msgstr ""
+"Nextcloud Officeアドレスにはドキュメントサービスがインストールされているサー"
+"バーのアドレスを指定します。以下の行の'<documentserver>'をサーバーアドレスに"
+"変更してください。"
+
+#: templates/settings.php
+msgid "Nextcloud Office address"
+msgstr "Nextcloud Office アドレス"
+
+#: templates/settings.php
+msgid "Disable certificate verification (insecure)"
+msgstr "証明書の検証を無効にする（安全ではありません)"
+
+#: templates/settings.php
+msgid "Secret key (leave blank to disable)"
+msgstr "シークレットキー (ブランクで無効)"
+
+#: templates/settings.php
+msgid "Advanced server settings"
+msgstr "サーバー詳細設定"
+
+#: templates/settings.php
+msgid "Authorization header (leave blank to use default header)"
+msgstr ""
+"認証ヘッダー (デフォルトのヘッダーを使用したい場合は空白にしてください)"
+
+#: templates/settings.php
+msgid "Nextcloud Office address for internal requests from the server"
+msgstr "サーバーから内部リクエストに利用されるNextcloud Office アドレス"
+
+#: templates/settings.php
+msgid "Server address for internal requests from Nextcloud Office"
+msgstr "Nextcloud Officeから内部リクエストに利用されるサーバーアドレス"
+
+#: templates/settings.php
+msgid "Save"
+msgstr "保存"
+
+#: templates/settings.php
+msgid "Connect to demo Nextcloud Office server"
+msgstr "Nextcloud Officeのデモサーバーに接続する"
+
+#: templates/settings.php
+msgid ""
+"This is a public test server, please do not use it for private sensitive "
+"data. The server will be available during a 30-day period."
+msgstr ""
+"これはパブリックテストサーバーです。プライベートな機密データには使用しないで"
+"ください。サーバーを30日間、利用できます。"
+
+#: templates/settings.php
+msgid "Common settings"
+msgstr "共通設定"
+
+#: templates/settings.php
+msgid ""
+"Use Nextcloud Office to generate a document preview (it will take up disk "
+"space)"
+msgstr ""
+"Nextcloud Officeを使用してドキュメントのサムネールを生成する(ディスク容量を消"
+"費します)"
+
+#: templates/settings.php
+msgid "Open file in the same tab"
+msgstr "ファイルを同じタブで開く"
+
+#: templates/settings.php
+msgid "Enable sharing (might increase editors loading time)"
+msgstr "共有を有効にする（エディタの読み込み時間が増加する可能性があります）"
+
+#: templates/settings.php
+msgid ""
+"Keep metadata for each version once the document is edited (it will take up "
+"disk space)"
+msgstr ""
+"編集されたドキュメントの各バージョンのメタデータを保持する(ディスク容量を消費"
+"します)"
+
+#: templates/settings.php
+msgid "Clear"
+msgstr "消去"
+
+#: templates/settings.php
+msgid "Enable background connection check to the editors"
+msgstr "エディタへのバックグラウンド接続チェックを有効にする"
+
+#: templates/settings.php
+msgid "Enable e-mail notifications"
+msgstr "電子メール通知を有効にする"
+
+#: templates/settings.php
+msgid "Unknown author display name"
+msgstr "不明の作成者表示名"
+
+#: templates/settings.php
+msgid "The default application for opening the format"
+msgstr "以下のファイルフォーマットをデフォルトで開く"
+
+#: templates/settings.php
+msgid ""
+"Open the file for editing (due to format restrictions, the data might be "
+"lost when saving to the formats from the list below)"
+msgstr ""
+"編集できるファイルフォーマット (フォーマットの制限により、以下のフォーマット"
+"を保存する時にデータが失われる可能性があります)"
+
+#: templates/settings.php
+msgid "Editor customization settings"
+msgstr "エディターカスタム設定"
+
+#: templates/settings.php
+msgid "Keep intermediate versions when editing (forcesave)"
+msgstr "編集時に、中間バージョンを保持する (強制保存)"
+
+#: templates/settings.php
+msgid "Enable live-viewing mode when accessing file by public link"
+msgstr "公開リンクでファイルにアクセスする際にライブビューモードを有効にする"
+
+#: templates/settings.php
+msgid "The customization section allows personalizing the editor interface"
+msgstr "エディターインターフェイスのカスタマイズ"
+
+#: templates/settings.php
+msgid "Display Chat menu button"
+msgstr "チャットメニューボタンを表示する"
+
+#: templates/settings.php
+msgid "Display the header more compact"
+msgstr "ヘッダーをよりコンパクトに表示する"
+
+#: templates/settings.php
+msgid "Display Feedback & Support menu button"
+msgstr "フィードバックとサポートメニューボタンを表示する"
+
+#: templates/settings.php
+msgid "Display Help menu button"
+msgstr "ヘルプメニューボタンを表示する"
+
+#: templates/settings.php
+msgid "REVIEW mode for viewing"
+msgstr ""
+
+#: templates/settings.php
+msgid "Markup"
+msgstr "マークアップ"
+
+#: templates/settings.php
+msgid "Final"
+msgstr "最終版"
+
+#: templates/settings.php
+msgid "Original"
+msgstr "オリジナル"
+
+#: templates/settings.php
+msgid "Default editor theme"
+msgstr "エディターのデフォルトテーマ"
+
+#: templates/settings.php
+msgid "Same as system"
+msgstr "システム設定と同じ"
+
+#: templates/settings.php
+msgid "Light"
+msgstr "明るい"
+
+#: templates/settings.php
+msgid "Dark"
+msgstr "ダーク"
+
+#: templates/settings.php
+msgid "Custom fonts"
+msgstr ""
+
+#: templates/settings.php
+msgid ""
+"Upload custom fonts (TTF, OTF, TTC, WOFF, WOFF2) to make them available in "
+"the document editor. Click Regenerate after uploading or deleting fonts to "
+"apply changes."
+msgstr ""
+
+#: templates/settings.php
+msgid "Common templates"
+msgstr "よく使われるテンプレート"
+
+#: templates/settings.php
+msgid "Add a new template"
+msgstr "新しいテンプレートを追加する:"
+
+#: templates/settings.php
+msgid "Security"
+msgstr "セキュリティ"
+
+#: templates/settings.php
+msgid "Enable plugins"
+msgstr "プラグインを有効にする"
+
+#: templates/settings.php
+msgid "Run document macros"
+msgstr "ドキュメントマクロを実行する"
+
+#: templates/settings.php
+msgid "Enable document protection for"
+msgstr "次のユーザーに対して文書の保護機能を有効にする"
+
+#: templates/settings.php
+msgid "All users"
+msgstr "すべてのユーザー"
+
+#: templates/settings.php
+msgid "Owner only"
+msgstr "所有者のみ"
+
+#: templates/settings.php
+msgid "Secure view enables you to secure documents by embedding a watermark"
+msgstr "セキュアビューでドキュメント透かしを埋め込んでドキュメントを保護します"
+
+#: templates/settings.php
+msgid "Enable watermarking"
+msgstr "透かしを有効"
+
+#: templates/settings.php
+msgid "Watermark text"
+msgstr "透かしテキスト"
+
+#: templates/settings.php
+msgid "Supported placeholders"
+msgstr "対応しているプレースフォルダー"
+
+#: templates/settings.php
+msgid "Show watermark on tagged files"
+msgstr "タグがついているファイルに透かしを入れる"
+
+#: templates/settings.php
+msgid "Show watermark for users of groups"
+msgstr "透かしをいれるユーザーのグループ"
+
+#: templates/settings.php
+msgid "Show watermark for all shares"
+msgstr "共有全てに透かしを入れる"
+
+#: templates/settings.php
+msgid "Show watermark for read only shares"
+msgstr "読込専用ファイルには透かしを入れる"
+
+#: templates/settings.php
+msgid "Link shares"
+msgstr "リンク共有"
+
+#: templates/settings.php
+msgid "Show watermark for all link shares"
+msgstr "リンク共有時には全て透かしを入れる"
+
+#: templates/settings.php
+msgid "Show watermark for download hidden shares"
+msgstr "ダウンロード不可共有時には透かしを入れる"
+
+#: templates/settings.php
+msgid "Show watermark for read only link shares"
+msgstr "読込専用共有時にのみ透かしを入れる"
+
+#: templates/settings.php
+msgid "Show watermark on link shares with specific system tags"
+msgstr "特定のシステムタグが付いていてリンク共有されたものに透かしを入れる"
+
+#~ msgid "Loading, please wait."
+#~ msgstr "読み込み中です...。しばらくお待ちください。"
+
+#~ msgid "Server can't read xml"
+#~ msgstr "サーバーでxmlを読み込ませんでした"
+
+#~ msgid "Bad Response. Errors: "
+#~ msgstr "不正なレスポンス エラー: "
+
+#~ msgid "Documentation"
+#~ msgstr "ドキュメンテーション"
+
+#~ msgid "Select tag"
+#~ msgstr "タグを選択"
+
+#~ msgid "Review mode for viewing"
+#~ msgstr "レビューモード時の表示方式"
