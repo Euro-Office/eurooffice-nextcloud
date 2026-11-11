@@ -35,7 +35,7 @@
     "Not supported version" : "Bertsio ez bateragarria",
     "You were mentioned in the document" : "Dokumentuan aipatua izan zara",
     "%1$s mentioned you in the document comment" : "%1$s-k dokumentuaren iruzkinean aipatu zaitu",
-    "This is a mail message to notify that you have been mentioned by <a href=\"%1$s\">%2$s</a> in the comment to the <a href=\"%3$s\">%4$s</a>:<br>\"%5$s\"" : "Det här är ett e-postmeddelande som meddelar att du har blivit omnämnd av <a href=\"%1$s\">%2$s</a> i kommentaren till <a href=\"%3$s\">%4$s</a>:<br>\"%5$s\"",
+    "This is a mail message to notify that you have been mentioned by <a href=\"%1$s\">%2$s</a> in the comment to the <a href=\"%3$s\">%4$s</a>:<br>\"%5$s\"" : "Mezu honen bidez jakinarazten dizugu <a href=\"%1$s\">%2$s</a>-k aipatu zaituela <a href=\"%3$s\">%4$s</a>:<br>\"%5$s\"-ren iruzkinetan",
     "Open file" : "Fitxategia ireki",
     "Nextcloud Office Document Server is unavailable" : "Nextcloud Office dokumentu-zerbitzaria ez dago eskuragarri",
     "This is a mail message to notify that the connection with the Nextcloud Office Document Server has been lost. Please check the connection settings:" : "Mezu elektroniko honen bidez jakinarazten dizugu Nextcloud Office dokumentu-zerbitzariarekiko konexioa galdu dela. Mesedez, berrikusi konexio ezarpenak:",

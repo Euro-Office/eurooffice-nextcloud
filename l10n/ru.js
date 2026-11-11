@@ -128,7 +128,7 @@ OC.L10N.register(
     "Open the file for editing (due to format restrictions, the data might be lost when saving to the formats from the list below)" : "Открыть файл на редактирование (из-за ограничений формата данные могут быть утеряны при сохранении в форматы из списка ниже)",
     "Editor customization settings" : "Настройка редактора",
     "Keep intermediate versions when editing (forcesave)" : "Хранить промежуточные версии при редактировании (принудительное сохранение)",
-    "Enable live-viewing mode when accessing file by public link" : "Включить режим просмотра в режиме реального времени при доступе к файлу по общедоступной ссылке",
+    "Enable live-viewing mode when accessing file by public link" : "Включить режим просмотра в реальном времени при доступе к файлу по публичной ссылке",
     "The customization section allows personalizing the editor interface" : "Раздел настройки позволяет изменить интерфейс редактора",
     "Display Chat menu button" : "Отображать кнопку чата",
     "Display the header more compact" : "Отображать заголовок компактным",

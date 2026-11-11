@@ -32,7 +32,7 @@
     "Nextcloud Office server is not available" : "Nextcloud Officeサーバーは只今利用できません",
     "Error occurred in the document service" : "ドキュメントサービスでエラーが発生しました",
     "Mixed Active Content is not allowed. HTTPS address for Nextcloud Office is required." : "アクティブコンテンツの混在は許可されていません。Nextcloud OfficeにはHTTPSアドレスが必要です",
-    "Not supported version" : "サポートされていなバージョン",
+    "Not supported version" : "サポートされていないバージョン",
     "You were mentioned in the document" : "あなたがドキュメントでメンションされました",
     "%1$s mentioned you in the document comment" : "%1$s さんは文書コメントであなたをメンションしました",
     "This is a mail message to notify that you have been mentioned by <a href=\"%1$s\">%2$s</a> in the comment to the <a href=\"%3$s\">%4$s</a>:<br>\"%5$s\"" : "これは、 <a href=\"%1$s\">%2$s</a> さんが <a href=\"%3$s\">%4$s</a> へのコメントであなたをメンションしたことを通知するメッセージです:<br>\"%5$s\"",
