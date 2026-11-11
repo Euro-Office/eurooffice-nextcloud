@@ -100,18 +100,27 @@ jobs:
         run: |
           git add -A -- translationfiles l10n
           git diff --cached --exit-code --stat || {
+            git diff --cached
             echo "::error::translationfiles/ or l10n/ is out of date."
-            echo "Run translationtool create-pot-files and convert-po-files, then commit."
+            echo "Apply the diff above with git apply, or run the 'Extract source strings', 'Update and normalise translationfiles' and 'Convert po files to l10n' steps of this workflow on ubuntu-24.04 (gettext 0.21), then commit."
             exit 1
           }
 
       - name: Commit if anything changed
         if: github.event_name != 'pull_request'
+        env:
+          HAS_ROBOT_TOKEN: ${{ secrets.EO_ROBOT_GITHUB_TOKEN != '' }}
         run: |
           git config user.name "euro-office-robot"
           git config user.email "noreply@euro-office.org"
           git add translationfiles l10n
           git diff --cached --quiet && echo "nothing to do" && exit 0
+          # github.token is read-only here, and a push with it would not start
+          # the other workflows on the new commit anyway
+          if [ "$HAS_ROBOT_TOKEN" != "true" ]; then
+            echo "::error::EO_ROBOT_GITHUB_TOKEN is required to push the regenerated files."
+            exit 1
+          fi
           git commit -m "chore(l10n): regenerate translation files"
           # Weblate rebases its branch, so this commit can be dropped; the
           # workflow simply runs again and re-adds it.
