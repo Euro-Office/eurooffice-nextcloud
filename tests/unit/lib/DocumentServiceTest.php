@@ -23,12 +23,15 @@ use OCP\IL10N;
 use OCP\IURLGenerator;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
-use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 use ReflectionMethod;
+use Test\TestCase;
 
 #[CoversClass(DocumentService::class)]
 class DocumentServiceTest extends TestCase {
+
+    private const SECRET_TOO_SHORT = "The secret key must be at least 32 characters long. Generate a new one, for example with \"openssl rand -hex 32\", and set the same key in the Euro-Office DocumentServer and in the Nextcloud Office settings.";
+    private const NOT_CONFIGURED = "Nextcloud Office app is not configured. Please contact admin";
 
     private static function convertRequest(): Request {
         return new Request("POST", "https://documentserver.example/converter");
@@ -209,5 +212,38 @@ class DocumentServiceTest extends TestCase {
 
         $this->assertSame(true, $response["endConvert"]);
         $this->assertSame("https://documentserver.example/converted.pdf", $response["fileUrl"]);
+    }
+
+    public static function secretProvider(): array {
+        return [
+            "short secret" => ["secret", self::SECRET_TOO_SHORT],
+            "31 characters" => [str_repeat("a", 31), self::SECRET_TOO_SHORT],
+            "32 characters" => [str_repeat("a", 32), self::NOT_CONFIGURED],
+            "no secret" => ["", self::NOT_CONFIGURED],
+        ];
+    }
+
+    #[DataProvider("secretProvider")]
+    public function testCheckDocServiceUrlValidatesSecretLength(string $secret, string $expectedError): void {
+        $trans = $this->createStub(IL10N::class);
+        $trans->method("t")->willReturnArgument(0);
+
+        $urlGenerator = $this->createStub(IURLGenerator::class);
+        $urlGenerator->method("getAbsoluteURL")->willReturn("https://cloud.example.com/");
+
+        $appConfig = $this->createStub(AppConfig::class);
+        $appConfig->method("getDocumentServerUrl")->willReturn("https://docs.example.com/");
+        $appConfig->method("getDocumentServerSecret")->willReturn($secret);
+        $appConfig->method("getDocumentServerInternalUrl")->willReturn("");
+
+        $documentService = new DocumentService(
+            $trans,
+            $appConfig,
+            $urlGenerator,
+            $this->createStub(Crypt::class),
+            $this->createStub(LoggerInterface::class),
+        );
+
+        $this->assertSame([$expectedError, null], $documentService->checkDocServiceUrl());
     }
 }
