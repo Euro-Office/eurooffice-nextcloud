@@ -27,7 +27,7 @@ jobs:
           token: ${{ secrets.EO_ROBOT_GITHUB_TOKEN || github.token }}
 
       - name: Set up php
-        uses: shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240 # 2.37.2
+        uses: shivammathur/setup-php@eb7c497e18156a6bbabfef1d3a82760b9eda3962 # 2.40.0
         with:
           php-version: "8.3"
           coverage: none
@@ -37,47 +37,57 @@ jobs:
       - name: Install gettext
         run: sudo apt-get install -y --no-install-recommends gettext
 
+      # Pinned so an upstream change cannot silently change the generated files.
       - name: Fetch translationtool
         run: |
           curl -sSfLo /tmp/translationtool.phar \
-            https://raw.githubusercontent.com/nextcloud/docker-ci/master/translations/translationtool/translationtool.phar
+            https://raw.githubusercontent.com/nextcloud/docker-ci/5ed96fa6f9535415f9da1e672f38d7f7c659b2ee/translations/translationtool/translationtool.phar
+          echo "667ca0a3d7ca8858f66f72007792d5bbab867dba6b1bb458d95ec7a74f17385f  /tmp/translationtool.phar" | sha256sum -c -
 
       # Both are no-ops when nothing changed, so there is no need to work out
       # what this push touched.
       - name: Extract source strings
         run: php /tmp/translationtool.phar create-pot-files
 
-      # xgettext stamps the current time into the pot header, which would make
-      # every run differ and fail the verification below on every pull request.
-      # Dropped before msgmerge, which would otherwise copy it into every po.
-      # translationtool only writes the pot; without this the po files never
-      # learn about new source strings and Weblate cannot show them.
-      - name: Update po files from the pot
+      # The output must not depend on the time or the checkout path, or CI and
+      # a developer's machine never agree and every run commits again:
+      # - xgettext stamps the current time into POT-Creation-Date, and msgmerge
+      #   copies it into every po
+      # - source references are absolute paths, and xgettext wraps them by
+      #   length before they are stripped
+      # - translationtool derives .vue hints from the fake file it builds and
+      #   truncates the path by a fixed offset, leaving a fragment that varies
+      #   with the checkout path (real TRANSLATORS comments do not end in a
+      #   .vue line number, so they survive)
+      # References keep the file but drop the line number (one per line), so a
+      # pull request that only moves a string does not touch translationfiles/.
+      # gettext 0.21 on ubuntu-24.04 has no --add-location=file, hence awk.
+      # translationtool only writes the pot; msgmerge makes the po files learn
+      # about new source strings so Weblate can show them.
+      - name: Update and normalise translationfiles
         run: |
+          normalise() {
+            for f in "$@"; do
+              sed -E -e '/^"POT-Creation-Date: /d' -e "s|$(pwd -P)/||g" \
+                -e '/^#\. TRANSLATORS .*\.vue:[0-9]+$/d' "$f" |
+              awk '
+                /^#: / { for (i = 2; i <= NF; i++) { sub(/:[0-9]+$/, "", $i); if (!seen[$i]++) refs[++n] = $i } next }
+                { for (i = 1; i <= n; i++) print "#: " refs[i]; n = 0; split("", seen); print }
+                END { for (i = 1; i <= n; i++) print "#: " refs[i] }
+              ' > "$f.tmp"
+              mv "$f.tmp" "$f"
+            done
+          }
+          normalise translationfiles/templates/eurooffice.pot
           for po in translationfiles/*/*.po; do
             msgmerge --quiet --update --backup=none --no-fuzzy-matching \
               "$po" translationfiles/templates/eurooffice.pot
           done
-
-      # Without this the output depends on where the repository is checked
-      # out, so CI and a developer's machine would never agree.
-      - name: Normalise generated metadata
-        run: |
-          # xgettext stamps the current time into the pot header.
-          sed -i '/^"POT-Creation-Date: /d' translationfiles/templates/*.pot
-          # Source references are absolute paths.
-          sed -i "s|$(pwd -P)/||g" translationfiles/templates/*.pot translationfiles/*/*.po
-          # translationtool derives .vue hints from the fake file it builds and
-          # truncates the path by a fixed offset, leaving an unusable fragment
-          # that still varies with the checkout path. Real TRANSLATORS comments
-          # do not end in a .vue line number, so they survive.
-          sed -i -E '/^#\. TRANSLATORS .*\.vue:[0-9]+$/d' \
-            translationfiles/templates/*.pot translationfiles/*/*.po
+          normalise translationfiles/*/*.po
           ! grep -rq "$(pwd -P)" translationfiles/
 
       - name: Convert po files to l10n
         run: php /tmp/translationtool.phar convert-po-files
-
 
       - name: Verify the committed files are up to date
         if: github.event_name == 'pull_request'
