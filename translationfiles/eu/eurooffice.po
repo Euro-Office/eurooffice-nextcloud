@@ -285,10 +285,7 @@ msgid ""
 "This is a mail message to notify that you have been mentioned by <a "
 "href=\"%1$s\">%2$s</a> in the comment to the <a href=\"%3$s\">%4$s</a>:"
 "<br>\"%5$s\""
-msgstr ""
-"Det här är ett e-postmeddelande som meddelar att du har blivit omnämnd av <a "
-"href=\"%1$s\">%2$s</a> i kommentaren till <a href=\"%3$s\">%4$s</a>:"
-"<br>\"%5$s\""
+msgstr "Mezu honen bidez jakinarazten dizugu <a href=\"%1$s\">%2$s</a>-k aipatu zaituela <a href=\"%3$s\">%4$s</a>:<br>\"%5$s\"-ren iruzkinetan"
 
 #: lib/EmailManager.php:101
 msgid "Open file"
