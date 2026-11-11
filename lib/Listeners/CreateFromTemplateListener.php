@@ -25,28 +25,55 @@
 
 namespace OCA\Eurooffice\Listeners;
 
+use OCP\App\IAppManager;
 use OCP\EventDispatcher\Event;
 use OCP\EventDispatcher\IEventListener;
 use OCP\Files\Template\FileCreatedFromTemplateEvent;
 
+use OCA\Eurooffice\TemplateFields;
 use OCA\Eurooffice\TemplateManager;
+use Psr\Log\LoggerInterface;
 
 /**
  * CreateFromTemplate listener
  */
 class CreateFromTemplateListener implements IEventListener {
 
+    public function __construct(
+        private readonly LoggerInterface $logger,
+        private readonly IAppManager $appManager,
+    ) {}
+
+    /**
+     * Write the empty template for a new blank file, or fill a .docx template
+     * with the values from Nextcloud's template dialog.
+     */
     public function handle(Event $event): void {
         if (!$event instanceof FileCreatedFromTemplateEvent) {
             return;
         }
 
         $template = $event->getTemplate();
+        $targetFile = $event->getTarget();
         if ($template === null) {
-            $targetFile = $event->getTarget();
             $templateEmpty = TemplateManager::GetEmptyTemplate($targetFile->getName());
             if ($templateEmpty) {
                 $targetFile->putContent($templateEmpty);
+            }
+            return;
+        }
+
+        // Values from Nextcloud's template dialog; see BeforeGetTemplatesListener
+        $fields = $event->getTemplateFields();
+        if (!empty($fields) && $template->getMimeType() === TemplateFields::MIMETYPE
+            && !$this->appManager->isEnabledForUser("richdocuments")) {
+            try {
+                $targetFile->putContent(TemplateFields::fill($template->getContent(), $fields));
+            } catch (\Throwable $e) {
+                // Remove the unfilled copy; Nextcloud then reports that the file could not be created
+                $this->logger->error("Could not fill the template fields of " . $targetFile->getName(), ["exception" => $e]);
+                $targetFile->delete();
+                throw new \RuntimeException("Could not fill the template fields", 0, $e);
             }
         }
     }
