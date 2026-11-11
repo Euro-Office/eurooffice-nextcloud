@@ -35,7 +35,13 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Install gettext
-        run: sudo apt-get install -y --no-install-recommends gettext
+        # The Ubuntu mirrors sometimes fail to resolve for a few minutes
+        run: |
+          for attempt in 1 2 3 4 5; do
+            sudo apt-get install -y --no-install-recommends -o Acquire::Retries=3 gettext && exit 0
+            sleep 20
+          done
+          exit 1
 
       # Pinned so an upstream change cannot silently change the generated files.
       - name: Fetch translationtool
