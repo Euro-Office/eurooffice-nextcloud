@@ -383,8 +383,8 @@ class EditorController extends Controller {
      */
     private function searchInUser(IUser $user, string $searchString): bool {
         return empty($searchString)
-            || stripos((string) $user->getUID(), (string) $searchString) !== false
-            || stripos((string) $user->getDisplayName(), (string) $searchString) !== false
+            || stripos($user->getUID(), (string) $searchString) !== false
+            || stripos($user->getDisplayName(), (string) $searchString) !== false
             || !empty($user->getEMailAddress()) && stripos((string) $user->getEMailAddress(), (string) $searchString) !== false;
     }
 

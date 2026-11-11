@@ -94,7 +94,7 @@ class SettingsController extends Controller {
             "templates" => $this->getGlobalTemplates(),
             "unknownAuthor" => $this->appConfig->getUnknownAuthor()
         ];
-        return new TemplateResponse($this->appName, "settings", $data, "blank");
+        return new TemplateResponse($this->appName, "settings", $data, TemplateResponse::RENDER_AS_BLANK);
     }
 
     /**
