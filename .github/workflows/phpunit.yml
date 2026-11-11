@@ -78,6 +78,12 @@ jobs:
           submodules: true
           path: nextcloud/apps/eurooffice
 
+      # Generates lib/Vendor (php-jwt namespaced by mozart, git-ignored), which
+      # the code under test uses to sign editor configs.
+      - name: Install the app's PHP dependencies
+        working-directory: nextcloud/apps/eurooffice
+        run: composer install --no-interaction --no-progress
+
       - name: Install PHPUnit
         working-directory: nextcloud/vendor-bin/phpunit
         run: composer install --no-interaction --no-progress

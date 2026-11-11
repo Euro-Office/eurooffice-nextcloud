@@ -44,7 +44,9 @@ if (!empty($_["directToken"])) {
         data-template="<?php p($_["isTemplate"]) ?>"
         data-anchor="<?php p($_["anchor"]) ?>"
         data-inframe="<?php p($_["inframe"]) ?>"
-        data-inviewer="<?php p($_["inviewer"]) ?>"></div>
+        data-inviewer="<?php p($_["inviewer"]) ?>"
+        data-localsession="<?php p(!empty($_["localSession"]) ? "true" : "") ?>"
+        data-filename="<?php p($_["fileName"] ?? "") ?>"></div>
 </div>
 
 <?php if (!empty($_["directToken"])) { ?>
