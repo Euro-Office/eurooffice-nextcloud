@@ -160,6 +160,11 @@ import { describeRegistry, handleSmartPickerRequest, hasProviderRegistry, listPr
 							const hasUser = !!OCA.Eurooffice.currentUser?.uid && !OCA.Eurooffice.shareToken
 							const assistantAvailable = hasUser
 								&& !!OCP?.InitialState?.loadState?.('eurooffice', 'assistant-enabled', false)
+							// Unlike the Assistant, the Smart Picker has no app or admin
+							// switch to read: reference providers are part of Nextcloud
+							// itself, so a logged-in user is the only condition. The typeof
+							// guards keep older document servers working; the editor side of
+							// these calls came with Euro-Office/web-apps#130.
 							if (typeof OCA.Eurooffice.docEditor.setSmartPickerAvailable === 'function') {
 								OCA.Eurooffice.docEditor.setSmartPickerAvailable(hasUser)
 							}

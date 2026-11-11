@@ -105,6 +105,11 @@ import { describeRegistry, handleSmartPickerRequest, hasProviderRegistry, listPr
 	 *
 	 * The flow itself lives in smartpicker.js, shared with the standalone case in
 	 * editor.js; only the way the editor is reached differs and is supplied here.
+	 *
+	 * @param {string} selectedText the editor's current selection
+	 * @param {string} source what asked for it ('contextmenu' or 'toolbar')
+	 * @param {string} providerId provider to open directly, '' for the list
+	 * @return {Promise<void>}
 	 */
 	OCA.Eurooffice.onSmartPickerRequest = function(selectedText, source, providerId) {
 		const frameWindow = () => document.querySelector(OCA.Eurooffice.frameSelector)?.contentWindow
@@ -127,6 +132,10 @@ import { describeRegistry, handleSmartPickerRequest, hasProviderRegistry, listPr
 					const win = frameWindow()
 					win?.focus()
 					const docEditor = win?.OCA?.Eurooffice?.docEditor
+					// setSmartPickerCancel is the editor side from
+					// Euro-Office/web-apps#130: it drops the pending request and gives
+					// the editor focus back (the typed "/" stays, as in Text). A
+					// document server without it simply skips the call.
 					if (typeof docEditor?.setSmartPickerCancel === 'function') {
 						docEditor.setSmartPickerCancel()
 					}
