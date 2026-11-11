@@ -25,6 +25,7 @@
 
 import moment from '@nextcloud/moment'
 import axios from '@nextcloud/axios'
+import { createUserActivityHandler } from './userActivity.js'
 
 /**
  * @param {object} OCA Nextcloud OCA object
@@ -190,6 +191,14 @@ import axios from '@nextcloud/axios'
 
 						if (OCA.Eurooffice.directEditor || OCA.Eurooffice.inframe) {
 							config.events.onRequestClose = OCA.Eurooffice.onRequestClose
+						}
+
+						// Core skips idle tracking for guests, so there is nothing to report for them
+						if (OCA.Eurooffice.currentUser?.uid) {
+							const onUserActivity = createUserActivityHandler(OCA.Eurooffice.currentWindow)
+							if (onUserActivity) {
+								config.events.onUserActivity = onUserActivity
+							}
 						}
 
 						if (OCA.Eurooffice.inframe
