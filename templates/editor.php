@@ -24,6 +24,10 @@
  */
 
     style("eurooffice", "editor");
+    // The bundle's own stylesheet, which the build generates as @imports of the
+    // hashed CSS chunks. Without it the Vue components this page renders -- the
+    // Smart Picker modal -- have no styles at all and fill the whole frame.
+    style("eurooffice", "eurooffice-editor");
     \OCP\Util::addScript("eurooffice", "eurooffice-desktop", 'core');
 if (!empty($_["directToken"])) {
     \OCP\Util::addScript("eurooffice", "eurooffice-directeditor", 'core');
