@@ -22,7 +22,10 @@
             "\"vendor/bin/mozart\" compose",
             "composer dump-autoload"
         ],
-        "test": "../../vendor-bin/phpunit/vendor/bin/phpunit -c phpunit.xml"
+        "test": "../../vendor-bin/phpunit/vendor/bin/phpunit -c phpunit.xml",
+        "psalm": "psalm --no-cache --threads=$(nproc)",
+        "psalm:dev": "@psalm",
+        "psalm:update-baseline": "psalm --threads=1 --update-baseline --set-baseline=tests/psalm-baseline.xml"
     },
     "require": {
         "bamarni/composer-bin-plugin": "^1.8",
@@ -44,5 +47,8 @@
             ],
             "delete_vendor_directories": true
         }
+    },
+    "require-dev": {
+        "nextcloud/ocp": "dev-stable33"
     }
 }
