@@ -668,6 +668,10 @@ class EditorApiController extends OCSController {
             $params["editorConfig"]["customization"]["plugins"] = false;
         }
 
+        //default is true — only toggles the standard "Plugins" tab visibility,
+        //does not affect the plugin system itself (autostart, custom ribbon menus)
+        $params["editorConfig"]["customization"]["layout"]["toolbar"]["plugins"] = $this->appConfig->getShowPluginsTab();
+
         /* from system config */
 
         $autosave = $this->appConfig->getSystemValue($this->appConfig->_customization_autosave);

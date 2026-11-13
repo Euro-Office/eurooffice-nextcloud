@@ -51,6 +51,7 @@ OC.L10N.register(
     "Display the header more compact" : "Kompakten Header anzeigen",
     "Display Feedback & Support menu button" : "Feedback-& Support-Taste anzeigen",
     "Display Help menu button" : "Hilfetaste anzeigen",
+    "Show Plugins tab" : "Plugins-Menü sichtbar",
     "Save as" : "Speichern als",
     "File saved" : "Datei wurde gespeichert",
     "Insert image" : "Bild einfügen",
