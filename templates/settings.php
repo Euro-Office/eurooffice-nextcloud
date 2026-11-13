@@ -234,6 +234,12 @@
         <label for="euroofficeHelp"><?php p($l->t("Display Help menu button")) ?></label>
     </p>
 
+    <p>
+        <input type="checkbox" class="checkbox" id="euroofficeShowPluginsTab"
+            <?php if ($_["showPluginsTab"]) { ?>checked="checked"<?php } ?> />
+        <label for="euroofficeShowPluginsTab"><?php p($l->t("Show Plugins tab")) ?></label>
+    </p>
+
     <p class="eurooffice-header">
         <?php p($l->t("REVIEW mode for viewing")) ?>
     </p>
