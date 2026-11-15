@@ -26,6 +26,8 @@
                 "@nextcloud/eslint-config": "^8.4.1",
                 "@nextcloud/stylelint-config": "^3.2.2",
                 "@nextcloud/vite-config": "^2.5.2",
+                "@vitejs/plugin-vue": "^6.0.11",
+                "@vue/test-utils": "^2.6.0",
                 "jsdom": "^30.1.3",
                 "stylelint": "^17.9.1",
                 "stylelint-config-standard": "^40.0.0",
@@ -2090,6 +2092,13 @@
                 "node": ">= 8"
             }
         },
+        "node_modules/@one-ini/wasm": {
+            "version": "0.2.1",
+            "resolved": "https://registry.npmjs.org/@one-ini/wasm/-/wasm-0.2.1.tgz",
+            "integrity": "sha512-TUqERXGNTifZ9y2g3wPxQrw3HpHv/02DsW3D90T9x0hhonrL1ZqpSmNrU2XkoIq0fP1N6gZfVQzy2Fw1ZvGBNg==",
+            "dev": true,
+            "license": "MIT"
+        },
         "node_modules/@rolldown/pluginutils": {
             "version": "1.0.1",
             "resolved": "https://registry.npmjs.org/@rolldown/pluginutils/-/pluginutils-1.0.1.tgz",
@@ -3050,9 +3059,9 @@
             "integrity": "sha512-zuVdFrMJiuCDQUMCzQaD6KL28MjnqqN8XnAqiEq9PNm/hCPTSGfrXCOfwj1ow4LFb/tNymJPwsNbVePc1xFqrQ=="
         },
         "node_modules/@vitejs/plugin-vue": {
-            "version": "6.0.8",
-            "resolved": "https://registry.npmjs.org/@vitejs/plugin-vue/-/plugin-vue-6.0.8.tgz",
-            "integrity": "sha512-0ZjgOg7oO6farnNGup7yvoM/YXZV84OZxHAwtflItNa/6zzQyVb5LNxyea3FEKEX2XlagIKzrlH7wwxkKgtiew==",
+            "version": "6.0.11",
+            "resolved": "https://registry.npmjs.org/@vitejs/plugin-vue/-/plugin-vue-6.0.11.tgz",
+            "integrity": "sha512-m48lskIUJGlB6qUiYhDMI8nd2ngeidz2U4nKTjqI13cFMu5rH8JeEILPkDtK9Fk/TjBA2pkj8AlbenqDaKu+ww==",
             "dev": true,
             "license": "MIT",
             "dependencies": {
@@ -3063,7 +3072,7 @@
             },
             "peerDependencies": {
                 "vite": "^5.0.0 || ^6.0.0 || ^7.0.0 || ^8.0.0",
-                "vue": "^3.2.25"
+                "vue": "^3.2.25 || ^3.6.0-rc.15"
             }
         },
         "node_modules/@vitest/expect": {
@@ -3451,6 +3460,27 @@
             "integrity": "sha512-FTW0AFZNaK5/mOqvGBwVfUlNLU38TiQn4+DQgIFUnrBBJQ1crMJ82yeGQLV5jyKFsO8yRukpbuP7x+nRbH6aug==",
             "license": "MIT"
         },
+        "node_modules/@vue/test-utils": {
+            "version": "2.6.0",
+            "resolved": "https://registry.npmjs.org/@vue/test-utils/-/test-utils-2.6.0.tgz",
+            "integrity": "sha512-kTB6s2p34cA/xXSpt17G0enU9A3F3pdm+o5GZgE3WGXXXpXJ5SVBsRhgCJNCc+ekGAzY0T7Hjyo5yEfwencBlg==",
+            "dev": true,
+            "license": "MIT",
+            "dependencies": {
+                "js-beautify": "^2.0.0",
+                "vue-component-type-helpers": "^3.0.0"
+            },
+            "peerDependencies": {
+                "@vue/compiler-dom": "3.x",
+                "@vue/server-renderer": "3.x",
+                "vue": "3.x"
+            },
+            "peerDependenciesMeta": {
+                "@vue/server-renderer": {
+                    "optional": true
+                }
+            }
+        },
         "node_modules/@vuepic/vue-datepicker": {
             "version": "11.0.3",
             "resolved": "https://registry.npmjs.org/@vuepic/vue-datepicker/-/vue-datepicker-11.0.3.tgz",
@@ -3515,6 +3545,16 @@
             },
             "peerDependencies": {
                 "vue": "^3.5.0"
+            }
+        },
+        "node_modules/abbrev": {
+            "version": "5.0.0",
+            "resolved": "https://registry.npmjs.org/abbrev/-/abbrev-5.0.0.tgz",
+            "integrity": "sha512-/XrFJgzQQQHpti1raDJC6m4ws6aNktmjBlhk8Fdlk7LwCEuDoieEJJY9OFHjfiFJFFRM2tK+Ky/IsfbbmlMu1w==",
+            "dev": true,
+            "license": "ISC",
+            "engines": {
+                "node": "^22.22.2 || ^24.15.0 || >=26.0.0"
             }
         },
         "node_modules/acorn": {
@@ -4515,6 +4555,16 @@
                 "url": "https://github.com/sponsors/wooorm"
             }
         },
+        "node_modules/commander": {
+            "version": "14.0.3",
+            "resolved": "https://registry.npmjs.org/commander/-/commander-14.0.3.tgz",
+            "integrity": "sha512-H+y0Jo/T1RZ9qPP4Eh1pkcQcLRglraJaSLoyOtHxu6AapkjWVCy2Sit1QQ4x3Dng8qDlSsZEet7g5Pq06MvTgw==",
+            "dev": true,
+            "license": "MIT",
+            "engines": {
+                "node": ">=20"
+            }
+        },
         "node_modules/comment-parser": {
             "version": "1.4.1",
             "resolved": "https://registry.npmjs.org/comment-parser/-/comment-parser-1.4.1.tgz",
@@ -4551,6 +4601,17 @@
             "resolved": "https://registry.npmjs.org/confbox/-/confbox-0.2.4.tgz",
             "integrity": "sha512-ysOGlgTFbN2/Y6Cg3Iye8YKulHw+R2fNXHrgSmXISQdMnomY6eNDprVdW9R5xBguEqI954+S6709UyiO7B+6OQ==",
             "license": "MIT"
+        },
+        "node_modules/config-chain": {
+            "version": "1.1.13",
+            "resolved": "https://registry.npmjs.org/config-chain/-/config-chain-1.1.13.tgz",
+            "integrity": "sha512-qj+f8APARXHrM0hraqXYb2/bOVSV4PvJQlNZ/DVj0QrmNM2q2euizkeuVckQ57J+W0mRH6Hvi+k50M4Jul2VRQ==",
+            "dev": true,
+            "license": "MIT",
+            "dependencies": {
+                "ini": "^1.3.4",
+                "proto-list": "~1.2.1"
+            }
         },
         "node_modules/console-browserify": {
             "version": "1.2.0",
@@ -5142,6 +5203,77 @@
             },
             "engines": {
                 "node": ">= 0.4"
+            }
+        },
+        "node_modules/editorconfig": {
+            "version": "3.0.2",
+            "resolved": "https://registry.npmjs.org/editorconfig/-/editorconfig-3.0.2.tgz",
+            "integrity": "sha512-T0ix8GhtxyKVfUFEcvdNDt3YGqlwkFHbD4/5bgFUDgFmxhI/cSRAeJ87/Sz//Cq8Eam6JX/e23RkoFO71P7aAA==",
+            "dev": true,
+            "license": "MIT",
+            "dependencies": {
+                "@one-ini/wasm": "0.2.1",
+                "commander": "^14.0.3",
+                "minimatch": "~10.2.4",
+                "semver": "^7.7.4"
+            },
+            "bin": {
+                "editorconfig": "bin/editorconfig"
+            },
+            "engines": {
+                "node": ">=20"
+            }
+        },
+        "node_modules/editorconfig/node_modules/balanced-match": {
+            "version": "4.0.4",
+            "resolved": "https://registry.npmjs.org/balanced-match/-/balanced-match-4.0.4.tgz",
+            "integrity": "sha512-BLrgEcRTwX2o6gGxGOCNyMvGSp35YofuYzw9h1IMTRmKqttAZZVU67bdb9Pr2vUHA8+j3i2tJfjO6C6+4myGTA==",
+            "dev": true,
+            "license": "MIT",
+            "engines": {
+                "node": "18 || 20 || >=22"
+            }
+        },
+        "node_modules/editorconfig/node_modules/brace-expansion": {
+            "version": "5.0.13",
+            "resolved": "https://registry.npmjs.org/brace-expansion/-/brace-expansion-5.0.13.tgz",
+            "integrity": "sha512-Vh3dmFbc4wZeox7M9I/0L9GfFd83Su4+yCck/OF9Gi/P/dAHn0RT7X4K9R7gMNMhDck3DvhR6QXsnQdjjgwNvQ==",
+            "dev": true,
+            "license": "MIT",
+            "dependencies": {
+                "balanced-match": "^4.0.2"
+            },
+            "engines": {
+                "node": "20 || >=22"
+            }
+        },
+        "node_modules/editorconfig/node_modules/minimatch": {
+            "version": "10.2.6",
+            "resolved": "https://registry.npmjs.org/minimatch/-/minimatch-10.2.6.tgz",
+            "integrity": "sha512-vpLQEs+VLCr1nU0BXS07maYoFwlDAH0gngQuuttxIwutDFEMHq2blX+8vpgxDdK3J1PwjCJiep77OitTZ4Ll1A==",
+            "dev": true,
+            "license": "BlueOak-1.0.0",
+            "dependencies": {
+                "brace-expansion": "^5.0.8"
+            },
+            "engines": {
+                "node": "18 || 20 || >=22"
+            },
+            "funding": {
+                "url": "https://github.com/sponsors/isaacs"
+            }
+        },
+        "node_modules/editorconfig/node_modules/semver": {
+            "version": "7.8.6",
+            "resolved": "https://registry.npmjs.org/semver/-/semver-7.8.6.tgz",
+            "integrity": "sha512-9lpSSU4Mly3mrtruwLs1eLK6+gzbzqeBFwRNjIjE+9LuDpWdYctrQlQ3ej1Ilgi7gknpsTRnPoLP8DpCHqHIJw==",
+            "dev": true,
+            "license": "ISC",
+            "bin": {
+                "semver": "bin/semver.js"
+            },
+            "engines": {
+                "node": ">=10"
             }
         },
         "node_modules/electron-to-chromium": {
@@ -7967,6 +8099,92 @@
             "dev": true,
             "license": "MIT"
         },
+        "node_modules/js-beautify": {
+            "version": "2.0.3",
+            "resolved": "https://registry.npmjs.org/js-beautify/-/js-beautify-2.0.3.tgz",
+            "integrity": "sha512-cyFbh3tkPhknnTD/0bLf0T0yy2ZIbqL05mttzbt4y1Zfr7NxqXQZ62dkBLKs3oHH/lpjmDRAnciJiSUyOy8XwQ==",
+            "dev": true,
+            "license": "MIT",
+            "dependencies": {
+                "config-chain": "^1.1.13",
+                "editorconfig": "^3.0.2",
+                "glob": "^13.0.6",
+                "js-cookie": "^3.0.8",
+                "nopt": "^10.0.1"
+            },
+            "bin": {
+                "css-beautify": "js/bin/css-beautify.js",
+                "html-beautify": "js/bin/html-beautify.js",
+                "js-beautify": "js/bin/js-beautify.js"
+            },
+            "engines": {
+                "node": ">=14"
+            }
+        },
+        "node_modules/js-beautify/node_modules/balanced-match": {
+            "version": "4.0.4",
+            "resolved": "https://registry.npmjs.org/balanced-match/-/balanced-match-4.0.4.tgz",
+            "integrity": "sha512-BLrgEcRTwX2o6gGxGOCNyMvGSp35YofuYzw9h1IMTRmKqttAZZVU67bdb9Pr2vUHA8+j3i2tJfjO6C6+4myGTA==",
+            "dev": true,
+            "license": "MIT",
+            "engines": {
+                "node": "18 || 20 || >=22"
+            }
+        },
+        "node_modules/js-beautify/node_modules/brace-expansion": {
+            "version": "5.0.13",
+            "resolved": "https://registry.npmjs.org/brace-expansion/-/brace-expansion-5.0.13.tgz",
+            "integrity": "sha512-Vh3dmFbc4wZeox7M9I/0L9GfFd83Su4+yCck/OF9Gi/P/dAHn0RT7X4K9R7gMNMhDck3DvhR6QXsnQdjjgwNvQ==",
+            "dev": true,
+            "license": "MIT",
+            "dependencies": {
+                "balanced-match": "^4.0.2"
+            },
+            "engines": {
+                "node": "20 || >=22"
+            }
+        },
+        "node_modules/js-beautify/node_modules/glob": {
+            "version": "13.0.7",
+            "resolved": "https://registry.npmjs.org/glob/-/glob-13.0.7.tgz",
+            "integrity": "sha512-wfsFgXQ8A3SEI9XGf7Nl3Y9l7ffSrGh7SUCT7vU/2CzYPep9kjxAn1S40F9OPKxAMGCVl7HtNlJhrCJUeUq83g==",
+            "dev": true,
+            "license": "BlueOak-1.0.0",
+            "dependencies": {
+                "minimatch": "^10.2.2",
+                "minipass": "^7.1.3",
+                "path-scurry": "^2.0.2"
+            },
+            "engines": {
+                "node": "18 || 20 || >=22"
+            },
+            "funding": {
+                "url": "https://github.com/sponsors/isaacs"
+            }
+        },
+        "node_modules/js-beautify/node_modules/minimatch": {
+            "version": "10.2.6",
+            "resolved": "https://registry.npmjs.org/minimatch/-/minimatch-10.2.6.tgz",
+            "integrity": "sha512-vpLQEs+VLCr1nU0BXS07maYoFwlDAH0gngQuuttxIwutDFEMHq2blX+8vpgxDdK3J1PwjCJiep77OitTZ4Ll1A==",
+            "dev": true,
+            "license": "BlueOak-1.0.0",
+            "dependencies": {
+                "brace-expansion": "^5.0.8"
+            },
+            "engines": {
+                "node": "18 || 20 || >=22"
+            },
+            "funding": {
+                "url": "https://github.com/sponsors/isaacs"
+            }
+        },
+        "node_modules/js-cookie": {
+            "version": "3.0.8",
+            "resolved": "https://registry.npmjs.org/js-cookie/-/js-cookie-3.0.8.tgz",
+            "integrity": "sha512-yeJd4aNAdYZQjaon2bpD/Gb0B/omw7HQOsynXXcOiWVCacbBcPlgn8S/d1X6blFSaHao7ozqtW7NZW19xpCtIw==",
+            "dev": true,
+            "license": "MIT"
+        },
         "node_modules/js-tokens": {
             "version": "4.0.0",
             "resolved": "https://registry.npmjs.org/js-tokens/-/js-tokens-4.0.0.tgz",
@@ -9083,6 +9301,16 @@
                 "url": "https://github.com/sponsors/ljharb"
             }
         },
+        "node_modules/minipass": {
+            "version": "7.1.3",
+            "resolved": "https://registry.npmjs.org/minipass/-/minipass-7.1.3.tgz",
+            "integrity": "sha512-tEBHqDnIoM/1rXME1zgka9g6Q2lcoCkxHLuc7ODJ5BxbP5d4c2Z5cGgtXAku59200Cx7diuHTOYfSBD8n6mm8A==",
+            "dev": true,
+            "license": "BlueOak-1.0.0",
+            "engines": {
+                "node": ">=16 || 14 >=14.17"
+            }
+        },
         "node_modules/mitt": {
             "version": "3.0.1",
             "resolved": "https://registry.npmjs.org/mitt/-/mitt-3.0.1.tgz",
@@ -9413,6 +9641,22 @@
             },
             "funding": {
                 "url": "https://github.com/sponsors/sindresorhus"
+            }
+        },
+        "node_modules/nopt": {
+            "version": "10.0.1",
+            "resolved": "https://registry.npmjs.org/nopt/-/nopt-10.0.1.tgz",
+            "integrity": "sha512-df3sBr/6ax9hSGuC3CspvLlbnX8cP5L5nZwXF8cGN8l0zSWR6BvzmQ6jPUKjvo6+/xdpkNvEcucBNUdBeeV13g==",
+            "dev": true,
+            "license": "ISC",
+            "dependencies": {
+                "abbrev": "^5.0.0"
+            },
+            "bin": {
+                "nopt": "bin/nopt.js"
+            },
+            "engines": {
+                "node": "^22.22.2 || ^24.15.0 || >=26.0.0"
             }
         },
         "node_modules/normalize-path": {
@@ -9793,6 +10037,33 @@
             "integrity": "sha512-1gJ0WpNIiYcQydgg3Ed8KzvIqTsDpNwq+cjBCssvBtuTWjEqY1AW+i+OepiEMqDCzyro9B2sLAe4RBPajMYFiA==",
             "license": "ISC"
         },
+        "node_modules/path-scurry": {
+            "version": "2.0.2",
+            "resolved": "https://registry.npmjs.org/path-scurry/-/path-scurry-2.0.2.tgz",
+            "integrity": "sha512-3O/iVVsJAPsOnpwWIeD+d6z/7PmqApyQePUtCndjatj/9I5LylHvt5qluFaBT3I5h3r1ejfR056c+FCv+NnNXg==",
+            "dev": true,
+            "license": "BlueOak-1.0.0",
+            "dependencies": {
+                "lru-cache": "^11.0.0",
+                "minipass": "^7.1.2"
+            },
+            "engines": {
+                "node": "18 || 20 || >=22"
+            },
+            "funding": {
+                "url": "https://github.com/sponsors/isaacs"
+            }
+        },
+        "node_modules/path-scurry/node_modules/lru-cache": {
+            "version": "11.5.3",
+            "resolved": "https://registry.npmjs.org/lru-cache/-/lru-cache-11.5.3.tgz",
+            "integrity": "sha512-U4N8FgzmWxc8k1VH8Kr6lQg18U7Fjvby6wXHVRX/ZZ7IwWbRMgrRbP0Wrb5q5NVinryp4SQampHKdvtecItxUg==",
+            "dev": true,
+            "license": "BlueOak-1.0.0",
+            "engines": {
+                "node": "20 || >=22"
+            }
+        },
         "node_modules/path-type": {
             "version": "4.0.0",
             "resolved": "https://registry.npmjs.org/path-type/-/path-type-4.0.0.tgz",
@@ -10032,6 +10303,13 @@
                 "type": "github",
                 "url": "https://github.com/sponsors/wooorm"
             }
+        },
+        "node_modules/proto-list": {
+            "version": "1.2.4",
+            "resolved": "https://registry.npmjs.org/proto-list/-/proto-list-1.2.4.tgz",
+            "integrity": "sha512-vtK/94akxsTMhe0/cbfpR+syPuszcuwhqVjJq26CuNDgFGj682oRBXOP5MJpv2r7JtE8MsiepGIqvvOTBwn2vA==",
+            "dev": true,
+            "license": "ISC"
         },
         "node_modules/proxy-from-env": {
             "version": "2.1.0",
@@ -13336,6 +13614,13 @@
                     "optional": true
                 }
             }
+        },
+        "node_modules/vue-component-type-helpers": {
+            "version": "3.3.14",
+            "resolved": "https://registry.npmjs.org/vue-component-type-helpers/-/vue-component-type-helpers-3.3.14.tgz",
+            "integrity": "sha512-Pq3+OnbCiPCHk0R7KSZrx+j/XXaUn2kSQ1epxq60w8CPbByLjC1EJgV51n4WY851sTXUVzsNMuitywdkdVyKjA==",
+            "dev": true,
+            "license": "MIT"
         },
         "node_modules/vue-eslint-parser": {
             "version": "9.4.3",
