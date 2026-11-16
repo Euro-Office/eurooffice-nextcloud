@@ -219,6 +219,8 @@ class DocumentServiceTest extends TestCase {
             "short secret" => ["secret", self::SECRET_TOO_SHORT],
             "31 characters" => [str_repeat("a", 31), self::SECRET_TOO_SHORT],
             "32 characters" => [str_repeat("a", 32), self::NOT_CONFIGURED],
+            "16 multibyte characters, 32 bytes" => [str_repeat("é", 16), self::SECRET_TOO_SHORT],
+            "32 multibyte characters" => [str_repeat("é", 32), self::NOT_CONFIGURED],
             "no secret" => ["", self::NOT_CONFIGURED],
         ];
     }
