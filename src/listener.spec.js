@@ -9,12 +9,12 @@ vi.mock('@nextcloud/vue/components/NcRichText', () => ({ getLinkWithPicker: vi.f
 const selector = '#euroofficeViewerFrame'
 const flushObserver = () => new Promise(resolve => setTimeout(resolve))
 
-const addViewerWrapper = () => {
+const addViewerWrapper = (parent = document.body) => {
 	const wrapper = document.createElement('div')
 	const frame = document.createElement('iframe')
 	frame.id = 'euroofficeViewerFrame'
 	wrapper.appendChild(frame)
-	document.body.appendChild(wrapper)
+	parent.appendChild(wrapper)
 	return wrapper
 }
 
@@ -26,8 +26,9 @@ describe('listener frame removal', () => {
 		await import('./listener.js')
 	})
 
-	beforeEach(() => {
+	beforeEach(async () => {
 		document.body.innerHTML = ''
+		await flushObserver()
 		document.title = 'report.docx'
 		document.querySelector('link[rel="icon"]').setAttribute('href', '/word.ico')
 		OCA.Eurooffice.frameSelector = selector
@@ -53,6 +54,20 @@ describe('listener frame removal', () => {
 
 		expect(OCA.Eurooffice.frameSelector).toBeNull()
 		expect(document.title).toBe('Files')
+		expect(document.querySelector('link[rel="icon"]').getAttribute('href')).toBe('/favicon.ico')
+	})
+
+	it('keeps the title of the open viewer file when a hidden previous office frame is removed', async () => {
+		const viewer = document.createElement('div')
+		viewer.id = 'viewer'
+		document.body.appendChild(viewer)
+		const previous = addViewerWrapper(viewer)
+		document.title = 'photo.jpg - Nextcloud'
+
+		previous.remove()
+		await flushObserver()
+
+		expect(document.title).toBe('photo.jpg - Nextcloud')
 		expect(document.querySelector('link[rel="icon"]').getAttribute('href')).toBe('/favicon.ico')
 	})
 })

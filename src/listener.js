@@ -308,7 +308,9 @@ import { getLinkWithPicker } from '@nextcloud/vue/components/NcRichText'
 			.some(node => node.matches?.(selector) || node.querySelector?.(selector)))
 		if (frameRemoved && !document.querySelector(selector)) {
 			OCA.Eurooffice.changeFavicon(OCA.Eurooffice.favIconBase)
-			window.document.title = OCA.Eurooffice.titleBase
+			if (!document.getElementById('viewer')) {
+				window.document.title = OCA.Eurooffice.titleBase
+			}
 			OCA.Eurooffice.frameSelector = null
 		}
 	})
