@@ -325,6 +325,9 @@ class EditorController extends Controller {
             $accessList = $this->shareManager->getAccessList($file);
             foreach ($accessList["users"] as $accessUser) {
                 $user = $this->userManager->get($accessUser);
+                if ($user === null) {
+                    continue;
+                }
                 if ($this->filterUser($user, $currentUserId, $operationType, $search)) {
                     $users[$user->getUID()] = $user;
                 }
@@ -337,6 +340,9 @@ class EditorController extends Controller {
                     $folderUsers = $this->folderManager->searchUsers($folderId, "", -1);
                     foreach ($folderUsers as $folderUser) {
                         $user = $this->userManager->get($folderUser["uid"]);
+                        if ($user === null) {
+                            continue;
+                        }
                         if ($this->filterUser($user, $currentUserId, $operationType, $search)) {
                             $users[$user->getUID()] = $user;
                         }
