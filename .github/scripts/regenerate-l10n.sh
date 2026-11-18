@@ -28,15 +28,26 @@ if [ "$(php -r 'echo hash_file("sha256", $argv[1]);' "$tool")" != "$TOOL_SHA256"
 	exit 1
 fi
 
-# translationtool ignores the exit status of xgettext, so a failing source file
-# would silently leave its strings out of the pot
+# The xgettext wrapper:
+# - passes source files relative to the checkout, so the references in the pot
+#   do not contain the checkout path. --join-existing re-reads the pot after
+#   every file and splits references at spaces, so an absolute path with a
+#   space cannot be stripped afterwards
+# - records failures: translationtool ignores the exit status of xgettext, so a
+#   failing source file would silently leave its strings out of the pot
 mkdir "$work/bin"
 cat > "$work/bin/xgettext" <<'EOF'
 #!/bin/sh
+n=$#
+for arg; do
+	case $arg in "$L10N_ROOT"/*) arg=${arg#"$L10N_ROOT"/} ;; esac
+	set -- "$@" "$arg"
+done
+shift "$n"
 "$L10N_XGETTEXT" "$@" || { echo "$*" >> "$L10N_FAILED"; exit 1; }
 EOF
 chmod +x "$work/bin/xgettext"
-L10N_XGETTEXT=$(command -v xgettext) L10N_FAILED=$work/failed PATH="$work/bin:$PATH" \
+L10N_ROOT=$root L10N_XGETTEXT=$(command -v xgettext) L10N_FAILED=$work/failed PATH="$work/bin:$PATH" \
 	php "$tool" create-pot-files
 if [ -s "$work/failed" ]; then
 	echo "xgettext failed, the pot file is incomplete:" >&2
@@ -48,8 +59,6 @@ fi
 # strings appear in, or CI and a developer's machine never agree:
 # - xgettext stamps the current time into POT-Creation-Date, and msgmerge
 #   copies it into every po
-# - source references are absolute paths, and xgettext wraps them by length
-#   before the path is stripped
 # - translationtool derives .vue hints from the fake file it builds and
 #   truncates the path by a fixed offset, leaving a fragment that varies with
 #   the checkout path (real TRANSLATORS comments do not end in a .vue line
@@ -61,10 +70,8 @@ fi
 normalise() {
 	for f in "$@"; do
 		sed -E -e '/^"POT-Creation-Date: /d' -e '/^#\. TRANSLATORS .*\.vue:[0-9]+$/d' "$f" |
-			ROOT="$root/" awk '
+			awk '
 				/^#: / {
-					while ((p = index($0, ENVIRON["ROOT"])) > 0)
-						$0 = substr($0, 1, p - 1) substr($0, p + length(ENVIRON["ROOT"]))
 					for (i = 2; i <= NF; i++) { sub(/:[0-9]+$/, "", $i); if (!seen[$i]++) refs[++n] = $i }
 					next
 				}

@@ -13,6 +13,11 @@ on:
 permissions:
   contents: read
 
+# Two quick pushes would race to publish to the same branch
+concurrency:
+  group: l10n-${{ github.ref }}
+  cancel-in-progress: false
+
 jobs:
   regenerate:
     runs-on: ubuntu-24.04

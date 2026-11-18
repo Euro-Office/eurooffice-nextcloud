@@ -14,6 +14,9 @@ fail() { echo "FAIL: $*" >&2; exit 1; }
 
 echo '<?xml version="1.0"?><info><id>demo</id><name>Demo</name></info>' > appinfo/info.xml
 printf '<?php\n$l->t("Zeta");\n$l->t("Alpha");\n$l->t("Draft");\n' > lib/A.php
+# A long name, so xgettext wraps its reference and the path with a space cannot be stripped
+long=lib/AReferenceLongEnoughToWrapAtTheSpaceInTheCheckoutPathWhenWrappingIsOn.php
+printf '<?php\n$l->t("Alpha");\n' > "$long"
 cat > translationfiles/de/demo.po <<'EOF'
 msgid ""
 msgstr ""
@@ -49,6 +52,8 @@ echo kept > l10n/en.js
 
 grep -qF "$tmp" translationfiles/templates/demo.pot && fail "checkout path left in the pot"
 grep -qx '#: lib/A.php' translationfiles/templates/demo.pot || fail "reference not normalised"
+grep "^#: " translationfiles/templates/demo.pot | grep -vqx -e "#: lib/A.php" -e "#: $long" -e "#: specialAppInfoFakeDummyForL10nScript.php" &&
+	fail "reference split or not normalised"
 [ "$(grep '^msgid "[A-Z]' translationfiles/templates/demo.pot | tr '\n' ' ')" = 'msgid "Alpha" msgid "Demo" msgid "Draft" msgid "Zeta" ' ] ||
 	fail "pot not sorted"
 grep -q 'Zeta-de' l10n/de.json || fail "translation missing from l10n/de.json"
