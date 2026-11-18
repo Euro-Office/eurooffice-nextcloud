@@ -199,6 +199,7 @@ export default {
 				permissions |= Permissions.ModifyFilter
 			}
 
+			let updated = null
 			this.saving = true
 			try {
 				const response = await axios.put(generateOcsUrl('apps/eurooffice/api/v1/shares'), {
@@ -207,12 +208,19 @@ export default {
 					fileId: this.fileId,
 					permissions,
 				})
-				const updated = response.data.ocs.data
+				updated = response.data.ocs.data
+			} finally {
+				this.saving = false
+				if (!updated) {
+					// The save failed, or the server removed the extra permissions of the share (it lost its
+					// edit right). Load the stored state again, so that the list and the checkboxes show it.
+					this.load()
+				}
+			}
+			if (updated) {
 				extra.id = updated.id
 				extra.permissions = updated.permissions
 				extra.available = updated.available
-			} finally {
-				this.saving = false
 			}
 		},
 	},
