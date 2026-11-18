@@ -27,7 +27,8 @@
 			<NcListItem v-for="extra in collection"
 				:key="extra.share_id"
 				:name="shareName(extra)"
-				:force-display-actions="true">
+				:force-display-actions="true"
+				@click.prevent>
 				<template #icon>
 					<div v-if="extra.type === ShareType.Link" class="eurooffice-share-link-avatar">
 						<img :src="linkIcon">
@@ -94,6 +95,7 @@ export default {
 			collection: [],
 			format: {},
 			fileId: null,
+			request: 0,
 			saving: false,
 			linkIcon: imagePath('core', 'actions/public.svg'),
 		}
@@ -119,16 +121,16 @@ export default {
 			if (!this.active || !this.node || !this.node.id) {
 				return
 			}
+			// Load again each time: the file can be renamed to another format, and a failed load must not stay empty.
+			// Only the response of the latest request is used.
+			const request = ++this.request
 			const fileId = this.node.id
-			if (fileId === this.fileId) {
-				return
-			}
 			this.fileId = fileId
 			this.collection = []
 			this.format = OCA.Eurooffice.setting.formats[OCA.Eurooffice.getFileExtension(this.node.basename)] || {}
 
 			const response = await axios.get(generateOcsUrl('apps/eurooffice/api/v1/shares/{fileId}', { fileId }))
-			if (this.fileId === fileId) {
+			if (request === this.request) {
 				this.collection = response.data.ocs.data
 			}
 		},
