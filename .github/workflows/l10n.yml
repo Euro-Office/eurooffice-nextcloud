@@ -5,10 +5,9 @@ on:
   pull_request:
     branches: [main, 'stable*']
   push:
-    # main: a source change means the pot file needs rebuilding.
+    # main: a source change means the pot file needs rebuilding, which lands
+    # through a pull request.
     # weblate-translations: Weblate wrote po files, so l10n/ needs rebuilding.
-    # Committing here lands the generated files inside Weblate's own pull
-    # request instead of opening a second one.
     branches: [main, weblate-translations]
 
 permissions:
@@ -22,9 +21,8 @@ jobs:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
-          # Pull requests only verify, so they do not need the robot token,
-          # and it is not available to forks anyway.
-          token: ${{ secrets.EO_ROBOT_GITHUB_TOKEN || github.token }}
+          # Only the publishing steps get the robot token
+          persist-credentials: false
 
       - name: Set up php
         uses: shivammathur/setup-php@eb7c497e18156a6bbabfef1d3a82760b9eda3962 # 2.40.0
@@ -43,57 +41,11 @@ jobs:
           done
           exit 1
 
-      # Pinned so an upstream change cannot silently change the generated files.
-      - name: Fetch translationtool
-        run: |
-          curl -sSfLo /tmp/translationtool.phar \
-            https://raw.githubusercontent.com/nextcloud/docker-ci/5ed96fa6f9535415f9da1e672f38d7f7c659b2ee/translations/translationtool/translationtool.phar
-          echo "667ca0a3d7ca8858f66f72007792d5bbab867dba6b1bb458d95ec7a74f17385f  /tmp/translationtool.phar" | sha256sum -c -
+      - name: Test the regeneration script
+        run: .github/scripts/test-regenerate-l10n.sh
 
-      # Both are no-ops when nothing changed, so there is no need to work out
-      # what this push touched.
-      - name: Extract source strings
-        run: php /tmp/translationtool.phar create-pot-files
-
-      # The output must not depend on the time or the checkout path, or CI and
-      # a developer's machine never agree and every run commits again:
-      # - xgettext stamps the current time into POT-Creation-Date, and msgmerge
-      #   copies it into every po
-      # - source references are absolute paths, and xgettext wraps them by
-      #   length before they are stripped
-      # - translationtool derives .vue hints from the fake file it builds and
-      #   truncates the path by a fixed offset, leaving a fragment that varies
-      #   with the checkout path (real TRANSLATORS comments do not end in a
-      #   .vue line number, so they survive)
-      # References keep the file but drop the line number (one per line), so a
-      # pull request that only moves a string does not touch translationfiles/.
-      # gettext 0.21 on ubuntu-24.04 has no --add-location=file, hence awk.
-      # translationtool only writes the pot; msgmerge makes the po files learn
-      # about new source strings so Weblate can show them.
-      - name: Update and normalise translationfiles
-        run: |
-          normalise() {
-            for f in "$@"; do
-              sed -E -e '/^"POT-Creation-Date: /d' -e "s|$(pwd -P)/||g" \
-                -e '/^#\. TRANSLATORS .*\.vue:[0-9]+$/d' "$f" |
-              awk '
-                /^#: / { for (i = 2; i <= NF; i++) { sub(/:[0-9]+$/, "", $i); if (!seen[$i]++) refs[++n] = $i } next }
-                { for (i = 1; i <= n; i++) print "#: " refs[i]; n = 0; split("", seen); print }
-                END { for (i = 1; i <= n; i++) print "#: " refs[i] }
-              ' > "$f.tmp"
-              mv "$f.tmp" "$f"
-            done
-          }
-          normalise translationfiles/templates/eurooffice.pot
-          for po in translationfiles/*/*.po; do
-            msgmerge --quiet --update --backup=none --no-fuzzy-matching \
-              "$po" translationfiles/templates/eurooffice.pot
-          done
-          normalise translationfiles/*/*.po
-          ! grep -rq "$(pwd -P)" translationfiles/
-
-      - name: Convert po files to l10n
-        run: php /tmp/translationtool.phar convert-po-files
+      - name: Regenerate translationfiles and l10n
+        run: .github/scripts/regenerate-l10n.sh
 
       - name: Verify the committed files are up to date
         if: github.event_name == 'pull_request'
@@ -102,26 +54,52 @@ jobs:
           git diff --cached --exit-code --stat || {
             git diff --cached
             echo "::error::translationfiles/ or l10n/ is out of date."
-            echo "Apply the diff above with git apply, or run the 'Extract source strings', 'Update and normalise translationfiles' and 'Convert po files to l10n' steps of this workflow on ubuntu-24.04 (gettext 0.21), then commit."
+            echo "Apply the diff above with git apply, or run .github/scripts/regenerate-l10n.sh on ubuntu-24.04 (gettext 0.21), then commit."
             exit 1
           }
 
-      - name: Commit if anything changed
+      # github.token cannot push to protected branches, and its pushes do not
+      # start the other workflows on the new commit
+      - name: Require the robot token
         if: github.event_name != 'pull_request'
         env:
           HAS_ROBOT_TOKEN: ${{ secrets.EO_ROBOT_GITHUB_TOKEN != '' }}
+        run: |
+          if [ "$HAS_ROBOT_TOKEN" != "true" ]; then
+            echo "::error::EO_ROBOT_GITHUB_TOKEN is required to publish the regenerated files."
+            exit 1
+          fi
+
+      # Lands the generated files inside Weblate's own pull request. Weblate
+      # rebases its branch, so this commit can be dropped; the workflow simply
+      # runs again and re-adds it.
+      - name: Push to the Weblate branch
+        if: github.event_name != 'pull_request' && github.ref_name == 'weblate-translations'
+        env:
+          TOKEN: ${{ secrets.EO_ROBOT_GITHUB_TOKEN }}
         run: |
           git config user.name "euro-office-robot"
           git config user.email "noreply@euro-office.org"
           git add translationfiles l10n
           git diff --cached --quiet && echo "nothing to do" && exit 0
-          # github.token is read-only here, and a push with it would not start
-          # the other workflows on the new commit anyway
-          if [ "$HAS_ROBOT_TOKEN" != "true" ]; then
-            echo "::error::EO_ROBOT_GITHUB_TOKEN is required to push the regenerated files."
-            exit 1
-          fi
-          git commit -m "chore(l10n): regenerate translation files"
-          # Weblate rebases its branch, so this commit can be dropped; the
-          # workflow simply runs again and re-adds it.
-          git push origin "HEAD:${GITHUB_REF_NAME}"
+          git commit -s -m "chore(l10n): regenerate translation files"
+          git push "https://x-access-token:${TOKEN}@github.com/${GITHUB_REPOSITORY}.git" "HEAD:${GITHUB_REF_NAME}"
+
+      # main only takes pull requests, so open one or update the open one
+      - name: Open a pull request
+        if: github.event_name != 'pull_request' && github.ref_name != 'weblate-translations'
+        uses: peter-evans/create-pull-request@3ffccacd46053766916f087ce41d627c0b8cf2d1 # v8.1.3
+        with:
+          token: ${{ secrets.EO_ROBOT_GITHUB_TOKEN }}
+          branch: l10n/update-${{ github.ref_name }}
+          base: ${{ github.ref_name }}
+          add-paths: |
+            translationfiles
+            l10n
+          delete-branch: true
+          signoff: true
+          author: euro-office-robot <noreply@euro-office.org>
+          committer: euro-office-robot <noreply@euro-office.org>
+          commit-message: "chore(l10n): regenerate translation files"
+          title: "chore(l10n): regenerate translation files"
+          body: Generated by the l10n workflow from the source strings on `${{ github.ref_name }}`.
