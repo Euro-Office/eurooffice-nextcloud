@@ -29,40 +29,6 @@
     -webkit-mask-size: 16px 16px;
 }
 
-.eurooffice-share-item {
-    display: flex;
-    list-style-type: none;
-}
-
-.eurooffice-share-item img {
-    width: 32px;
-    height: 32px;
-}
-
-.eurooffice-share-popup {
-    margin-right: 14px;
-    margin-top: 44px;
-}
-
-.eurooffice-share-item span {
-    margin-left: 10px;
-    margin-top: 5px;
-}
-
-#eurooffice-share-menu {
-    margin-left: auto;
-}
-
-.eurooffice-share-action {
-    line-height: 44px;
-}
-
-.eurooffice-share-label {
-    padding-right: 14px !important;
-    padding-left: 14px !important;
-    opacity: .7;
-}
-
 .eurooffice-share-link-avatar {
     height: 32px;
     width: 32px;

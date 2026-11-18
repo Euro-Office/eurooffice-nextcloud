@@ -63,6 +63,7 @@ class FilesListener implements IEventListener {
             if ($this->appConfig->getAdvanced()
                 && Server::get(\OCP\App\IAppManager::class)->isEnabledForAnyone("files_sharing")) {
                 Util::addScript("eurooffice", "eurooffice-share");
+                Util::addStyle("eurooffice", "eurooffice-share");
                 Util::addStyle("eurooffice", "share");
             }
 
