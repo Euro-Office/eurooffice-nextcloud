@@ -31,7 +31,7 @@ msgstr "Non autorisé"
 #: lib/Controller/CallbackController.php
 #: lib/Controller/EditorController.php
 msgid "Download failed"
-msgstr "Echec du téléchargement"
+msgstr "Échec du téléchargement"
 
 #: lib/Controller/CallbackController.php
 #: lib/Controller/EditorApiController.php
@@ -53,12 +53,13 @@ msgstr "FileId est vide"
 #: lib/Controller/EditorController.php
 #: lib/FileUtility.php
 msgid "You do not have enough permissions to view the file"
-msgstr "Vous n'avez pas la permission de voir le fichier"
+msgstr ""
+"Vous ne disposez pas des autorisations nécessaires pour consulter le fichier"
 
 #: lib/Controller/EditorApiController.php
 #: lib/Controller/EditorController.php
 msgid "Format is not supported"
-msgstr "Format non supporté"
+msgstr "Format non pris en charge"
 
 #: lib/Controller/EditorApiController.php
 #: lib/FileCreator.php
@@ -89,7 +90,7 @@ msgstr "Nouveau formulaire PDF"
 #: lib/Controller/EditorApiController.php
 #: lib/Controller/EditorController.php
 msgid "UserId is empty"
-msgstr ""
+msgstr "L’identifiant utilisateur est vide"
 
 #: lib/Controller/EditorApiController.php
 msgid "Anonymous"
@@ -101,7 +102,7 @@ msgstr "Modèle introuvable"
 
 #: lib/Controller/EditorController.php
 msgid "You don't have enough permission to create"
-msgstr "Vous n'avez pas la permission de créer"
+msgstr "Vous ne disposez pas des autorisations nécessaires pour créer"
 
 #: lib/Controller/EditorController.php
 msgid "The required folder was not found"
@@ -125,15 +126,15 @@ msgstr "Conversion non requise"
 
 #: lib/Controller/EditorController.php
 msgid "Failed to download converted file"
-msgstr "Echec du téléchargement du fichier converti"
+msgstr "Échec du téléchargement du fichier converti"
 
 #: lib/Controller/EditorController.php
 #: lib/DirectEditor.php
 #: lib/DocumentService.php
 msgid "Nextcloud Office app is not configured. Please contact admin"
 msgstr ""
-"L'application Nextcloud Office n'est pas configuré. Veuillez contacter votre "
-"administrateur"
+"L’application Nextcloud Office n’est pas configurée. Veuillez contacter "
+"votre administrateur."
 
 #: lib/Controller/EditorController.php
 msgid ""
@@ -148,8 +149,8 @@ msgid ""
 "The 30-day test period is over, you can no longer connect to demo Nextcloud "
 "Office server."
 msgstr ""
-"La période d'essai de 30 jours est expirée, vous n'êtes plus en mesure de "
-"vous connecter à la version démo de Nextcloud Office."
+"La période d’essai de 30 jours est terminée. Vous ne pouvez plus vous "
+"connecter au serveur de démonstration Nextcloud Office."
 
 #: lib/Controller/SettingsController.php
 #: templates/settings.php
@@ -178,28 +179,28 @@ msgstr "Le serveur Nextcloud Office n'est pas disponible"
 
 #: lib/DocumentService.php
 msgid "Bad Response. JSON error: "
-msgstr ""
+msgstr "Réponse non valide. Erreur JSON : "
 
 #: lib/DocumentService.php
 msgid "Error occurred in the document service"
-msgstr "Une erreur s'est produite dans le service de document"
+msgstr "Une erreur s’est produite dans le service de documents"
 
 #: lib/DocumentService.php
 msgid ""
 "Mixed Active Content is not allowed. HTTPS address for Nextcloud Office is "
 "required."
 msgstr ""
-"Le contenu mixte actif n'est pas autorisé. Une adresse HTTPS pour le "
-"Nextcloud Office est requise"
+"Le contenu actif mixte n’est pas autorisé. Une adresse HTTPS est requise "
+"pour Nextcloud Office."
 
 #: lib/DocumentService.php
 msgid "Bad healthcheck status"
-msgstr ""
+msgstr "État du contrôle de fonctionnement non valide"
 
 #: lib/DocumentService.php
 #: src/editor.js
 msgid "Not supported version"
-msgstr "Version non supportée"
+msgstr "Version non prise en charge"
 
 #: lib/EmailManager.php
 msgid "You were mentioned in the document"
@@ -327,7 +328,7 @@ msgstr "Format d'origin"
 
 #: specialVueFakeDummyForL10nScript.js
 msgid "Cancel"
-msgstr ""
+msgstr "Annuler"
 
 #: specialVueFakeDummyForL10nScript.js
 msgid "Download"
@@ -344,7 +345,7 @@ msgstr "Information"
 
 #: specialVueFakeDummyForL10nScript.js
 msgid "Ok"
-msgstr ""
+msgstr "OK"
 
 #: specialVueFakeDummyForL10nScript.js
 msgid ""
@@ -358,84 +359,91 @@ msgstr ""
 
 #: specialVueFakeDummyForL10nScript.js
 msgid "Failed to load fonts: {error}"
-msgstr ""
+msgstr "Impossible de charger les polices : {error}"
 
 #: specialVueFakeDummyForL10nScript.js
 msgid ""
 "Unsupported file type. Please upload TTF, OTF, TTC, WOFF or WOFF2 fonts."
 msgstr ""
+"Type de fichier non pris en charge. Téléversez des polices TTF, OTF, TTC, "
+"WOFF ou WOFF2."
 
 #: specialVueFakeDummyForL10nScript.js
 msgid "\"{name}\" uploaded successfully."
-msgstr ""
+msgstr "\"{name}\" a été téléversé avec succès."
 
 #: specialVueFakeDummyForL10nScript.js
 msgid "Upload failed: {error}"
-msgstr ""
+msgstr "Échec du téléversement : {error}"
 
 #: specialVueFakeDummyForL10nScript.js
 msgid "\"{name}\" deleted."
-msgstr ""
+msgstr "\"{name}\" a été supprimé."
 
 #: specialVueFakeDummyForL10nScript.js
 msgid "Delete failed: {error}"
-msgstr ""
+msgstr "Échec de la suppression : {error}"
 
 #: specialVueFakeDummyForL10nScript.js
 msgid "Font regeneration started. This may take a moment…"
 msgstr ""
+"La régénération des polices a commencé. Cela peut prendre quelques instants…"
 
 #: specialVueFakeDummyForL10nScript.js
 msgid "Regeneration failed: {error}"
-msgstr ""
+msgstr "Échec de la régénération : {error}"
 
 #: specialVueFakeDummyForL10nScript.js
 msgid "Font regeneration completed successfully."
-msgstr ""
+msgstr "Régénération des polices terminée."
 
 #: specialVueFakeDummyForL10nScript.js
 msgid "Regeneration error: {error}"
-msgstr ""
+msgstr "Erreur de régénération : {error}"
 
 #: specialVueFakeDummyForL10nScript.js
 msgid ""
 "Custom font management requires the AdminPanel service to be enabled on the "
 "document server."
 msgstr ""
+"La gestion des polices personnalisées nécessite l’activation du service "
+"AdminPanel sur le serveur de documents."
 
 #: specialVueFakeDummyForL10nScript.js
 msgid "Uploading…"
-msgstr ""
+msgstr "Téléversement en cours…"
 
 #: specialVueFakeDummyForL10nScript.js
 msgid "Add font"
-msgstr ""
+msgstr "Ajouter une police"
 
 #: specialVueFakeDummyForL10nScript.js
 msgid "Regenerate font cache"
-msgstr ""
+msgstr "Régénérer le cache des polices"
 
 #: specialVueFakeDummyForL10nScript.js
 msgid "Regenerating…"
-msgstr ""
+msgstr "Régénération en cours…"
 
 #: specialVueFakeDummyForL10nScript.js
 msgid "Regenerate"
-msgstr ""
+msgstr "Régénérer"
 
 #: specialVueFakeDummyForL10nScript.js
 msgid "Loading fonts…"
-msgstr ""
+msgstr "Chargement des polices…"
 
 #: specialVueFakeDummyForL10nScript.js
 msgid ""
 "No custom fonts installed. Upload TTF, OTF, TTC, WOFF or WOFF2 files to add "
 "them."
 msgstr ""
+"Aucune police personnalisée installée. Téléversez des fichiers TTF, OTF, "
+"TTC, WOFF ou WOFF2 pour en ajouter."
 
 #: specialVueFakeDummyForL10nScript.js
 msgid "Delete {name}"
-msgstr ""
+msgstr "Supprimer {name}"
 
 #: specialVueFakeDummyForL10nScript.js
 msgid "Select template"
@@ -497,7 +505,7 @@ msgstr "Sélectionner le fichier à combiner"
 #: src/editor.js
 #: src/listener.js
 msgid "Select file to compare"
-msgstr "Sélectionner fichier à comparer"
+msgstr "Sélectionner un fichier à comparer"
 
 #: src/editor.js
 #: src/listener.js
@@ -688,11 +696,11 @@ msgstr ""
 
 #: templates/settings.php
 msgid "Nextcloud Office address"
-msgstr "Adresse du Nextcloud Office"
+msgstr "Adresse de Nextcloud Office"
 
 #: templates/settings.php
 msgid "Disable certificate verification (insecure)"
-msgstr "Désactiver la vérification du certificat (non sur)"
+msgstr "Désactiver la vérification du certificat (non sécurisé)"
 
 #: templates/settings.php
 msgid "Secret key (leave blank to disable)"
@@ -709,11 +717,13 @@ msgstr ""
 
 #: templates/settings.php
 msgid "Nextcloud Office address for internal requests from the server"
-msgstr "Adresse du Nextcloud Office pour les demandes internes du serveur"
+msgstr ""
+"Adresse de Nextcloud Office pour les requêtes internes provenant du serveur"
 
 #: templates/settings.php
 msgid "Server address for internal requests from Nextcloud Office"
-msgstr "Adresse du serveur pour les demandes internes du Nextcloud Office"
+msgstr ""
+"Adresse du serveur pour les requêtes internes provenant de Nextcloud Office"
 
 #: templates/settings.php
 msgid "Save"
@@ -728,9 +738,8 @@ msgid ""
 "This is a public test server, please do not use it for private sensitive "
 "data. The server will be available during a 30-day period."
 msgstr ""
-"C'est un serveur public proposé à des fins de tests, veuillez ne pas "
-"l'utiliser pour vos données personnelles sensibles. Le serveur est "
-"disponible pendant 30 jours."
+"Il s’agit d’un serveur de test public. Ne l’utilisez pas pour traiter des "
+"données privées sensibles. Il sera disponible pendant 30 jours."
 
 #: templates/settings.php
 msgid "Common settings"
@@ -820,7 +829,7 @@ msgstr "Afficher le bouton du menu du chat"
 
 #: templates/settings.php
 msgid "Display the header more compact"
-msgstr "Afficher l'en-tête plus compact"
+msgstr "Afficher l’en-tête de manière plus compacte"
 
 #: templates/settings.php
 msgid "Display Feedback & Support menu button"
@@ -832,7 +841,7 @@ msgstr "Afficher le bouton du menu 'Aide'"
 
 #: templates/settings.php
 msgid "REVIEW mode for viewing"
-msgstr ""
+msgstr "Mode révision lors de l'affichage"
 
 #: templates/settings.php
 msgid "Markup"
@@ -864,7 +873,7 @@ msgstr "Sombre"
 
 #: templates/settings.php
 msgid "Custom fonts"
-msgstr ""
+msgstr "Polices personnalisées"
 
 #: templates/settings.php
 msgid ""
@@ -872,6 +881,9 @@ msgid ""
 "the document editor. Click Regenerate after uploading or deleting fonts to "
 "apply changes."
 msgstr ""
+"Téléversez des polices personnalisées (TTF, OTF, TTC, WOFF, WOFF2) pour les "
+"rendre disponibles dans l’éditeur de documents. Cliquez sur Régénérer après "
+"l’ajout ou la suppression de polices pour appliquer les modifications."
 
 #: templates/settings.php
 msgid "Common templates"
@@ -921,7 +933,7 @@ msgstr "Texte du filigrane"
 
 #: templates/settings.php
 msgid "Supported placeholders"
-msgstr "Espaces réservés supportés"
+msgstr "Variables prises en charge"
 
 #: templates/settings.php
 msgid "Show watermark on tagged files"
@@ -933,19 +945,19 @@ msgstr "Afficher un filigrane pour un groupe d'utilisateurs"
 
 #: templates/settings.php
 msgid "Show watermark for all shares"
-msgstr "Afficher un filigrane à tout le monde ayant l'accès"
+msgstr "Afficher un filigrane pour tous les partages"
 
 #: templates/settings.php
 msgid "Show watermark for read only shares"
-msgstr "Afficher un filigrane pour l'accès de lecture seule"
+msgstr "Afficher un filigrane pour les partages en lecture seule"
 
 #: templates/settings.php
 msgid "Link shares"
-msgstr "Accès par le lien"
+msgstr "Partages par lien"
 
 #: templates/settings.php
 msgid "Show watermark for all link shares"
-msgstr "Afficher un filigrane pour l'accès par le lien externe"
+msgstr "Afficher un filigrane pour tous les partages par lien"
 
 #: templates/settings.php
 msgid "Show watermark for download hidden shares"
@@ -953,14 +965,13 @@ msgstr "Afficher un filigrane pour la restriction de téléchargement"
 
 #: templates/settings.php
 msgid "Show watermark for read only link shares"
-msgstr ""
-"Afficher un filigrane pour l'accès de lecture seule par le lien externe"
+msgstr "Afficher un filigrane pour les partages par lien en lecture seule"
 
 #: templates/settings.php
 msgid "Show watermark on link shares with specific system tags"
 msgstr ""
-"Afficher un filigrane pour l'accès par le lien externe avec les marques "
-"spécifiques du système"
+"Afficher un filigrane pour les partages par lien associés à des étiquettes "
+"système spécifiques"
 
 #~ msgid "Loading, please wait."
 #~ msgstr "Chargement, veuillez patienter."
@@ -969,7 +980,7 @@ msgstr ""
 #~ msgstr "Le serveur ne peut pas lire le XML"
 
 #~ msgid "Bad Response. Errors: "
-#~ msgstr "Mauvaise réponse. Erreurs:"
+#~ msgstr "Réponse non valide. Erreurs : "
 
 #~ msgid "Documentation"
 #~ msgstr "Documentation"
