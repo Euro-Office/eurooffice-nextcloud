@@ -23,6 +23,16 @@
 
 /* global _oc_appswebroots */
 
+import {
+	attachLocalSource,
+	decideMode,
+	fetchSourceBytes,
+	isEncrypted,
+	localEditorUrl,
+	localSessionSettings,
+	toArrayBuffer,
+} from './localSession.js'
+
 /**
  * @param {object} OCA Nextcloud OCA object
  */
@@ -39,16 +49,26 @@
 		OCA.Eurooffice.setting = OCP.InitialState.loadState(OCA.Eurooffice.AppName, 'settings')
 	}
 
+	const settings = () => localSessionSettings(OCA.Eurooffice.setting)
+
+	const showError = (error) => {
+		OCP.Toast.error(error?.message || t(OCA.Eurooffice.AppName, 'The document could not be opened'))
+	}
+
 	const EuroofficeViewerVue = {
 		name: 'EuroofficeViewerVue',
 		render(createElement) {
 			const self = this
 
+			if (!this.url) {
+				return createElement('div', { attrs: { id: 'euroofficeViewerFrame' } })
+			}
+
 			return createElement('iframe', {
 				attrs: {
 					id: 'euroofficeViewerFrame',
 					scrolling: 'no',
-					src: self.url + '&inframe=true&inviewer=true',
+					src: self.url,
 				},
 				on: {
 					load() {
@@ -56,9 +76,6 @@
 					},
 				},
 			})
-		},
-		mounted() {
-			OCA.Eurooffice.frameSelector = '#euroofficeViewerFrame'
 		},
 		props: {
 			filename: {
@@ -69,16 +86,132 @@
 				type: Number,
 				default: null,
 			},
+			source: {
+				type: String,
+				default: null,
+			},
+			basename: {
+				type: String,
+				default: null,
+			},
+			mime: {
+				type: String,
+				default: null,
+			},
 		},
 		data() {
 			return {
-				url: OC.generateUrl('/apps/' + OCA.Eurooffice.AppName + '/{fileId}?filePath={filePath}',
+				url: null,
+				mode: 'server',
+				detachSource: null,
+			}
+		},
+		computed: {
+			documentName() {
+				return this.$attrs?.displayname
+					|| this.basename
+					|| (this.filename ? this.filename.split('/').pop() : '')
+			},
+		},
+		created() {
+			this.mode = decideMode({
+				fileid: this.fileid,
+				encrypted: isEncrypted(this.$attrs),
+				mode: this.$attrs?.euroofficeMode || 'auto',
+				settings: settings(),
+			})
+
+			if (this.mode === 'server') {
+				this.url = OC.generateUrl('/apps/' + OCA.Eurooffice.AppName + '/{fileId}?filePath={filePath}&inframe=true&inviewer=true',
 					{
 						fileId: this.fileid,
 						filePath: this.filename,
-					}),
+					})
+				return
+			}
+
+			if (this.mode !== 'local' || !this.source || !this.documentName) {
+				OCP.Toast.error(t(OCA.Eurooffice.AppName, 'This document cannot be opened in the browser only'))
+				this.$nextTick(() => this.doneLoading())
+				return
+			}
+
+			this.url = localEditorUrl(this.documentName, true)
+		},
+		mounted() {
+			OCA.Eurooffice.frameSelector = '#euroofficeViewerFrame'
+
+			if (this.mode !== 'local' || !this.url) {
+				return
+			}
+			const bufferPromise = fetchSourceBytes(this.source, settings().maxSize)
+			this.detachSource = attachLocalSource(this.$el, bufferPromise, this.documentName, this.mime, showError)
+		},
+		beforeDestroy() {
+			if (this.detachSource) {
+				this.detachSource()
 			}
 		},
+	}
+
+	/**
+	 * Open a document from bytes or a URL without a Nextcloud file node.
+	 *
+	 * @param {object} options document and how to open it
+	 * @param {ArrayBuffer|Blob|Uint8Array} [options.data] document content
+	 * @param {string} [options.url] document URL, fetched with credentials
+	 * @param {string} options.name document name, the extension selects the editor
+	 * @param {string} [options.mime] document mime type
+	 * @param {'auto'|'local'|'server'} [options.mode] how to open, defaults to 'auto'
+	 * @param {HTMLElement} [options.container] mount the editor here instead of the Viewer
+	 * @return {{destroy: Function}|null}
+	 */
+	OCA.Eurooffice.openSource = function({ data, url, name, mime, mode = 'auto', container }) {
+		if (!name || (!data && !url)) {
+			throw new Error('openSource needs a name and either data or url')
+		}
+		if (decideMode({ fileid: null, encrypted: false, mode, settings: settings() }) !== 'local') {
+			OCP.Toast.error(t(OCA.Eurooffice.AppName, 'This document cannot be opened in the browser only'))
+			return null
+		}
+
+		if (!container) {
+			if (!OCA.Viewer?.openWith) {
+				OCP.Toast.error(t(OCA.Eurooffice.AppName, 'The Viewer app is required to open this document'))
+				return null
+			}
+			const source = url || URL.createObjectURL(data instanceof Blob ? data : new Blob([data], { type: mime }))
+			OCA.Viewer.openWith(OCA.Eurooffice.AppName, {
+				fileInfo: {
+					source,
+					filename: source,
+					basename: name,
+					mime,
+					hasPreview: false,
+					etag: '',
+					euroofficeMode: 'local',
+				},
+			})
+			return null
+		}
+
+		const frame = document.createElement('iframe')
+		frame.setAttribute('id', 'euroofficeSourceFrame')
+		frame.setAttribute('scrolling', 'no')
+		frame.src = localEditorUrl(name, false)
+		const bufferPromise = data
+			? toArrayBuffer(data)
+			: fetchSourceBytes(url, settings().maxSize)
+		container.appendChild(frame)
+		OCA.Eurooffice.frameSelector = '#euroofficeSourceFrame'
+		const detach = attachLocalSource(frame, bufferPromise, name, mime, showError)
+
+		return {
+			destroy() {
+				detach()
+				frame.remove()
+			},
+		}
 	}
 
 	if (OCA.Viewer) {
@@ -102,6 +235,9 @@
 			group: null,
 			mimes,
 			component: EuroofficeViewerVue,
+			// Documents without a file id (e.g. mail attachments) can be opened
+			// from their `source` URL in a client-only session.
+			supportsSource: settings().enabled,
 		})
 	}
 

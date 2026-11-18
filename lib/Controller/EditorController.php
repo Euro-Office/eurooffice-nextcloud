@@ -1359,6 +1359,84 @@ class EditorController extends Controller {
 
         \OCP\Util::addHeader("meta", ["name" => "apple-touch-fullscreen", "content" => "yes"]);
 
+        return $this->applyEditorCsp($response, $documentServerUrl);
+    }
+
+    /**
+     * Print editor section for a document supplied by the client (local session).
+     * No file node is involved: the embedding page hands the document bytes to the
+     * editor frame, which renders them in the browser without a Document Server session.
+     *
+     * @param string $fileName - document name, the extension selects the editor
+     * @param bool $inframe - open in frame
+     * @param bool $inviewer - open in viewer
+     *
+     * @return TemplateResponse|RedirectResponse
+     */
+    #[NoAdminRequired]
+    #[NoCSRFRequired]
+    public function local(
+        string $fileName,
+        bool $inframe = false,
+        bool $inviewer = false
+    ): TemplateResponse|RedirectResponse {
+        $this->logger->debug("Open local session: $fileName");
+
+        if (!$this->userSession->isLoggedIn()) {
+            $redirectUrl = $this->urlGenerator->linkToRoute("core.login.showLoginForm", [
+                "redirect_url" => $this->request->getRequestUri()
+            ]);
+            return new RedirectResponse($redirectUrl);
+        }
+
+        if (!$this->appConfig->isUserAllowedToUse()) {
+            return $this->renderError($this->trans->t("Not permitted"));
+        }
+
+        if (!$this->appConfig->getLocalSessionEnabled()) {
+            return $this->renderError($this->trans->t("Opening documents in the browser only is disabled"));
+        }
+
+        $documentServerUrl = $this->appConfig->getDocumentServerUrl();
+
+        if (empty($documentServerUrl)) {
+            $this->logger->error("documentServerUrl is empty");
+            return $this->renderError($this->trans->t("Nextcloud Office app is not configured. Please contact admin"));
+        }
+
+        $params = [
+            "fileId" => null,
+            "filePath" => null,
+            "shareToken" => null,
+            "directToken" => null,
+            "isTemplate" => false,
+            "inframe" => $inframe === true,
+            "inviewer" => $inviewer === true,
+            "anchor" => null,
+            "localSession" => true,
+            "fileName" => basename(trim($fileName))
+        ];
+
+        $response = new TemplateResponse($this->appName, "editor", $params, $inframe ? "base" : TemplateResponse::RENDER_AS_USER);
+
+        $this->initialState->provideInitialState(
+            'assistant-enabled',
+            $this->appManager->isEnabledForUser('assistant')
+        );
+
+        \OCP\Util::addHeader("meta", ["name" => "apple-touch-fullscreen", "content" => "yes"]);
+
+        return $this->applyEditorCsp($response, $documentServerUrl, true);
+    }
+
+    /**
+     * Apply the content security policy needed to embed the document server
+     *
+     * @param TemplateResponse $response - editor page response
+     * @param string $documentServerUrl - document server address
+     * @param bool $localSession - the page runs a client-only session
+     */
+    private function applyEditorCsp(TemplateResponse $response, string $documentServerUrl, bool $localSession = false): TemplateResponse {
         $csp = new ContentSecurityPolicy();
 
         if (preg_match("/^https?:\/\//i", $documentServerUrl)) {
@@ -1370,6 +1448,11 @@ class EditorController extends Controller {
         // blob: URLs are needed for the "Save as picture" feature — the editor
         // downloads chart images via URL.createObjectURL() to avoid data: URIs.
         $csp->addAllowedFrameDomain("blob:");
+        // The converter runs as WebAssembly inside the document server frame; this only
+        // matters when the document server is served from the Nextcloud origin.
+        if ($localSession && method_exists($csp, "allowEvalWasm")) {
+            $csp->allowEvalWasm(true);
+        }
         $response->setContentSecurityPolicy($csp);
 
         return $response;

@@ -332,6 +332,10 @@ import axios from '@nextcloud/axios'
 				const theme = document.querySelector("input[type='radio'][name='theme']:checked")?.id.replace('euroofficeTheme_', '') || ''
 				const unknownAuthorInput = document.getElementById('euroofficeUnknownAuthor')
 				const unknownAuthor = unknownAuthorInput ? unknownAuthorInput.value.trim() : ''
+				const localSessionEnabled = document.getElementById('euroofficeLocalSession')?.checked || false
+				const localSessionForceE2ee = document.getElementById('euroofficeLocalSessionForceE2ee')?.checked || false
+				const localSessionMaxSizeMb = parseInt(document.getElementById('euroofficeLocalSessionMaxSize')?.value, 10)
+				const localSessionMaxSize = (Number.isFinite(localSessionMaxSizeMb) && localSessionMaxSizeMb > 0 ? localSessionMaxSizeMb : 50) * 1048576
 
 				axios.put(OC.generateUrl('apps/' + OCA.Eurooffice.AppName + '/ajax/settings/common'), {
 					defFormats,
@@ -353,6 +357,9 @@ import axios from '@nextcloud/axios'
 					reviewDisplay,
 					theme,
 					unknownAuthor,
+					localSessionEnabled,
+					localSessionMaxSize,
+					localSessionForceE2ee,
 				})
 					.then((response) => {
 						const sectionEl = document.querySelector('.section-eurooffice')
@@ -588,6 +595,14 @@ import axios from '@nextcloud/axios'
 				if (sharingCheckbox) {
 					sharingCheckbox.checked = isChecked ? sharingCheckbox.checked : false
 				}
+			})
+		}
+
+		const localSessionCheckbox = document.getElementById('euroofficeLocalSession')
+		const localSessionBlock = document.getElementById('euroofficeLocalSessionBlock')
+		if (localSessionCheckbox && localSessionBlock) {
+			localSessionCheckbox.addEventListener('click', function() {
+				localSessionBlock.style.display = localSessionCheckbox.checked ? 'block' : 'none'
 			})
 		}
 
