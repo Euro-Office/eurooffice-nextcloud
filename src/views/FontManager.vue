@@ -12,17 +12,21 @@
 		<template v-if="available">
 			<!-- Upload area -->
 			<div class="font-manager__upload">
-				<label class="font-manager__upload-label button" :class="{ disabled: uploading }">
-					<span class="icon-upload" aria-hidden="true" />
+				<NcButton :disabled="uploading" @click="$refs.fileInput.click()">
+					<template #icon>
+						<span class="icon-upload" aria-hidden="true" />
+					</template>
 					{{ uploading ? t('eurooffice', 'Uploading…') : t('eurooffice', 'Add font') }}
-					<input
-						ref="fileInput"
-						type="file"
-						accept=".ttf,.otf,.ttc,.woff,.woff2"
-						class="hidden-visually"
-						:disabled="uploading"
-						@change="onFileSelected" />
-				</label>
+				</NcButton>
+				<input
+					id="eurooffice-font-upload"
+					ref="fileInput"
+					type="file"
+					name="font"
+					accept=".ttf,.otf,.ttc,.woff,.woff2"
+					hidden
+					:disabled="uploading"
+					@change="onFileSelected">
 
 				<NcButton
 					:disabled="regenerating"
@@ -262,18 +266,6 @@ export default {
 		align-items: center;
 		gap: 8px;
 		flex-wrap: wrap;
-
-		&-label {
-			display: inline-flex;
-			align-items: center;
-			gap: 6px;
-			cursor: pointer;
-
-			&.disabled {
-				opacity: 0.5;
-				cursor: not-allowed;
-			}
-		}
 	}
 
 	&__status {
