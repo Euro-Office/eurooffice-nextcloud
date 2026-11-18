@@ -83,6 +83,7 @@ class SettingsController extends Controller {
             "forcesave" => $this->appConfig->getCustomizationForcesave(),
             "liveViewOnShare" => $this->appConfig->getLiveViewOnShare(),
             "help" => $this->appConfig->getCustomizationHelp(),
+            "showPluginsTab" => $this->appConfig->getShowPluginsTab(),
             "successful" => $this->appConfig->settingsAreSuccessful(),
             "settingsError" => $this->appConfig->getSettingsError(),
             "watermark" => $this->appConfig->getWatermarkSettings(),
@@ -170,6 +171,7 @@ class SettingsController extends Controller {
      * @param bool $forcesave - forcesave
      * @param bool $liveViewOnShare - live view on share
      * @param bool $help - display help
+     * @param bool $showPluginsTab - show the standard plugins tab
      * @param string $reviewDisplay - review viewing mode
      * @param string $unknownAuthor - display unknown author
      */
@@ -189,6 +191,7 @@ class SettingsController extends Controller {
         bool $forcesave,
         bool $liveViewOnShare,
         bool $help,
+        bool $showPluginsTab,
         string $reviewDisplay,
         string $theme,
         string $unknownAuthor,
@@ -211,6 +214,7 @@ class SettingsController extends Controller {
         $this->appConfig->setCustomizationForcesave($forcesave);
         $this->appConfig->setLiveViewOnShare($liveViewOnShare);
         $this->appConfig->setCustomizationHelp($help);
+        $this->appConfig->setShowPluginsTab($showPluginsTab);
         $this->appConfig->setCustomizationReviewDisplay($reviewDisplay);
         $this->appConfig->setCustomizationTheme($theme);
         $this->appConfig->setUnknownAuthor($unknownAuthor);

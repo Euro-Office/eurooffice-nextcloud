@@ -158,6 +158,11 @@ class AppConfig {
     private string $_customizationTheme = "customizationTheme";
 
     /**
+     * The config key for the plugins tab visibility setting
+     */
+    private string $_showPluginsTab = "showPluginsTab";
+
+    /**
      * Display name of the unknown author
      */
     private string $_unknownAuthor = "unknownAuthor";
@@ -1275,6 +1280,24 @@ class AppConfig {
      */
     public function getCustomizationPlugins(): bool {
         return $this->appConfig->getValueString($this->appName, $this->_customizationPlugins, "true") === "true";
+    }
+
+    /**
+     * Save the plugins tab visibility setting
+     *
+     * @param bool $value - show the standard plugins tab
+     */
+    public function setShowPluginsTab(bool $value): void {
+        $this->logger->info("Set show plugins tab: " . json_encode($value), ["app" => $this->appName]);
+
+        $this->appConfig->setValueString($this->appName, $this->_showPluginsTab, json_encode($value));
+    }
+
+    /**
+     * Get the plugins tab visibility setting
+     */
+    public function getShowPluginsTab(): bool {
+        return $this->appConfig->getValueString($this->appName, $this->_showPluginsTab, "true") === "true";
     }
 
     /**

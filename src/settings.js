@@ -328,6 +328,7 @@ import axios from '@nextcloud/axios'
 				const forcesave = document.getElementById('euroofficeForcesave')?.checked || false
 				const liveViewOnShare = document.getElementById('euroofficeLiveViewOnShare')?.checked || false
 				const help = document.getElementById('euroofficeHelp')?.checked || false
+				const showPluginsTab = document.getElementById('euroofficeShowPluginsTab')?.checked || false
 				const reviewDisplay = document.querySelector("input[type='radio'][name='reviewDisplay']:checked")?.id.replace('euroofficeReviewDisplay_', '') || ''
 				const theme = document.querySelector("input[type='radio'][name='theme']:checked")?.id.replace('euroofficeTheme_', '') || ''
 				const unknownAuthorInput = document.getElementById('euroofficeUnknownAuthor')
@@ -350,6 +351,7 @@ import axios from '@nextcloud/axios'
 					forcesave,
 					liveViewOnShare,
 					help,
+					showPluginsTab,
 					reviewDisplay,
 					theme,
 					unknownAuthor,
