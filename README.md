@@ -192,6 +192,14 @@ The Advanced tab allows you to grant additional access rights only to those user
 * If the **PPTX** file is shared with the Custom permission (Edit enabled, Share disabled) in the Sharing tab, you can set the given rights to only commenting (**Comment only**) in the Advanced tab.
 * If the **PDF** file is shared with the Custom permission (Edit enabled, Share disabled) in the Sharing tab, you can set the given rights to only filling out (**Form Filling**) in the Advanced tab.
 
+## Template fields 🧩
+
+When a user creates a file from a **.docx** template in their template folder (**New → Create templates folder** in Files), Nextcloud asks for the values of the template's content controls and fills them into the new file.
+
+* **Supported:** plain text and rich text content controls, and checkboxes, in the document body, headers and footers. The control's title is shown as the field name.
+* **Left unchanged:** other control types (date, drop-down list, picture and so on), controls bound to custom XML, and controls that contain tables, images, fields, notes, comments, tracked changes or page breaks.
+* **richdocuments:** when the richdocuments app is enabled for the user, it handles template fields itself and this app does not report them, so the dialog shows richdocuments' fields only.
+
 ## How it works ⚙️
 
 * When creating a new file, the user navigates to a document folder within Nextcloud and clicks the **Document**, **Spreadsheet** or **Presentation** item in the _new_ (+) menu.
