@@ -76,6 +76,7 @@ import { createUserActivityHandler } from './userActivity.js'
 				const config = response.data
 				if (config) {
 					OCA.Eurooffice.device = config.type
+					OCA.Eurooffice.folderLink = config._folder_link || OC.generateUrl('/apps/files')
 					if (OCA.Eurooffice.device === 'mobile') {
 						OCA.Eurooffice.resizeEvents()
 					}
@@ -189,9 +190,7 @@ import { createUserActivityHandler } from './userActivity.js'
 							}
 						}
 
-						if (OCA.Eurooffice.directEditor || OCA.Eurooffice.inframe) {
-							config.events.onRequestClose = OCA.Eurooffice.onRequestClose
-						}
+						config.events.onRequestClose = OCA.Eurooffice.onRequestClose
 
 						// Core skips idle tracking for guests, so there is nothing to report for them
 						if (OCA.Eurooffice.currentUser?.uid) {
@@ -477,12 +476,28 @@ import { createUserActivityHandler } from './userActivity.js'
 			return
 		}
 
-		OCA.Eurooffice.docEditor.destroyEditor()
+		if (OCA.Eurooffice.docEditor) {
+			OCA.Eurooffice.docEditor.destroyEditor()
+		}
 
-		window.parent.postMessage({
-			method: 'editorRequestClose',
-		},
-		'*')
+		if (OCA.Eurooffice.inframe) {
+			window.parent.postMessage({
+				method: 'editorRequestClose',
+			},
+			'*')
+			return
+		}
+
+		const returnUrl = OCA.Eurooffice.folderLink || OC.generateUrl('/apps/files')
+		if (window.opener && !window.opener.closed) {
+			window.opener.focus()
+			window.close()
+			if (window.closed) {
+				return
+			}
+		}
+
+		window.location.replace(returnUrl)
 	}
 
 	OCA.Eurooffice.onRequestSharingSettings = function() {
