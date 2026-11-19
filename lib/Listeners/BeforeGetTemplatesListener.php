@@ -54,12 +54,13 @@ class BeforeGetTemplatesListener implements IEventListener {
         $cache = $this->cacheFactory->createLocal("eurooffice_template_fields/");
         foreach ($event->getTemplates() as $template) {
             $fileId = (int)($template->jsonSerialize()["fileid"] ?? 0);
-            $file = $fileId > 0 ? $this->rootFolder->getFirstNodeById($fileId) : null;
-            if (!$file instanceof File || $file->getMimeType() !== TemplateFields::MIMETYPE) {
-                continue;
-            }
-
             try {
+                // Inside the try: a storage that fails here must not break the whole template list
+                $file = $fileId > 0 ? $this->rootFolder->getFirstNodeById($fileId) : null;
+                if (!$file instanceof File || $file->getMimeType() !== TemplateFields::MIMETYPE) {
+                    continue;
+                }
+
                 $cacheKey = $file->getId() . "/" . $file->getEtag();
                 $descriptors = $cache->get($cacheKey);
                 if (!is_array($descriptors)) {
