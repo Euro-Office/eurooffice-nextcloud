@@ -25,6 +25,7 @@
 
 namespace OCA\Eurooffice;
 
+use OCA\DAV\Connector\Sabre\PublicAuth;
 use OCA\Files_Versions\Versions\IVersion;
 use OCP\Constants;
 use OCP\Files\File;
@@ -141,16 +142,26 @@ class FileUtility {
             return [null, $this->trans->t("You do not have enough permissions to view the file")];
         }
 
-        $authenticatedLinks = $this->session->get('public_link_authenticated');
-
-        $isAuthenticated = is_array($authenticatedLinks) && in_array($share->getId(), $authenticatedLinks, true);
-        $isAuthenticated = $isAuthenticated || $authenticatedLinks === (string) $share->getId();
-
-        if ($share->getPassword() && !$isAuthenticated) {
+        if ($share->getPassword() && !$this->isShareAuthenticated($share)) {
             return [null, $this->trans->t("You do not have enough permissions to view the file")];
         }
 
         return [$share, null];
+    }
+
+    /**
+     * Check that the current share password was verified in this session
+     */
+    private function isShareAuthenticated(IShare $share): bool {
+        if (is_callable([PublicAuth::class, 'isShareInSession'])) {
+            return PublicAuth::isShareInSession($this->session, $share);
+        }
+
+        // Older server releases have no public static PublicAuth::isShareInSession
+        $authenticatedLinks = $this->session->get('public_link_authenticated');
+
+        $isAuthenticated = is_array($authenticatedLinks) && in_array($share->getId(), $authenticatedLinks, true);
+        return $isAuthenticated || $authenticatedLinks === (string) $share->getId();
     }
 
     /**
