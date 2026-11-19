@@ -801,7 +801,7 @@ class EditorApiController extends OCSController {
             }
             if ($watermarkSettings["linkTags"]) {
                 $tags = $watermarkSettings["linkTagsList"];
-                $fileTags = Server::get(ISystemTagObjectMapper::class)->getTagIdsForObjects([$fileId], "files")[$fileId];
+                $fileTags = Server::get(ISystemTagObjectMapper::class)->getTagIdsForObjects([(string) $fileId], "files")[(string) $fileId];
                 foreach ($fileTags as $tagId) {
                     if (in_array((string) $tagId, $tags, true)) {
                         return $watermarkText;
@@ -828,7 +828,7 @@ class EditorApiController extends OCSController {
         }
         if ($watermarkSettings["allTags"]) {
             $tags = $watermarkSettings["allTagsList"];
-            $fileTags = Server::get(ISystemTagObjectMapper::class)->getTagIdsForObjects([$fileId], "files")[$fileId];
+            $fileTags = Server::get(ISystemTagObjectMapper::class)->getTagIdsForObjects([(string) $fileId], "files")[(string) $fileId];
             foreach ($fileTags as $tagId) {
                 if (in_array((string) $tagId, $tags, true)) {
                     return $watermarkText;

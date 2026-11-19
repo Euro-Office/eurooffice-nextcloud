@@ -144,6 +144,7 @@ class FileUtility {
         $authenticatedLinks = $this->session->get('public_link_authenticated');
 
         $isAuthenticated = is_array($authenticatedLinks) && in_array($share->getId(), $authenticatedLinks, true);
+        /** @psalm-suppress RedundantCast getId() is typed string only since OCP 34 */
         $isAuthenticated = $isAuthenticated || $authenticatedLinks === (string) $share->getId();
 
         if ($share->getPassword() && !$isAuthenticated) {

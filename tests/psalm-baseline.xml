@@ -1,0 +1,624 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<files psalm-version="6.20.10@7fc81490f861c801061836a9010603d2393bf8da">
+  <file src="lib/AdminSection.php">
+    <MissingOverrideAttribute>
+      <code><![CDATA[public function getID(): string {]]></code>
+      <code><![CDATA[public function getIcon(): string {]]></code>
+      <code><![CDATA[public function getName(): string {]]></code>
+      <code><![CDATA[public function getPriority(): int {]]></code>
+    </MissingOverrideAttribute>
+  </file>
+  <file src="lib/AdminSettings.php">
+    <MissingOverrideAttribute>
+      <code><![CDATA[public function getForm(): TemplateResponse {]]></code>
+      <code><![CDATA[public function getPriority(): int {]]></code>
+      <code><![CDATA[public function getSection(): string {]]></code>
+    </MissingOverrideAttribute>
+  </file>
+  <file src="lib/AppConfig.php">
+    <InvalidOperand>
+      <code><![CDATA[$parsedUrl["port"]]]></code>
+    </InvalidOperand>
+    <NullableReturnStatement>
+      <code><![CDATA[null]]></code>
+    </NullableReturnStatement>
+    <RedundantCast>
+      <code><![CDATA[(int)$interval]]></code>
+      <code><![CDATA[(string) $storageUrl]]></code>
+      <code><![CDATA[(string)$secret]]></code>
+    </RedundantCast>
+    <UndefinedFunction>
+      <code><![CDATA[\OCP\Log\logger('eurooffice')]]></code>
+    </UndefinedFunction>
+  </file>
+  <file src="lib/AppInfo/Application.php">
+    <MissingOverrideAttribute>
+      <code><![CDATA[public function boot(IBootContext $context): void {]]></code>
+      <code><![CDATA[public function register(IRegistrationContext $context): void {]]></code>
+    </MissingOverrideAttribute>
+    <UndefinedClass>
+      <code><![CDATA[BeforeTemplateRenderedEvent]]></code>
+      <code><![CDATA[LoadAdditionalScriptsEvent]]></code>
+      <code><![CDATA[LoadViewer]]></code>
+      <code><![CDATA[VersionRestoredEvent]]></code>
+    </UndefinedClass>
+  </file>
+  <file src="lib/Command/DocumentServer.php">
+    <MissingOverrideAttribute>
+      <code><![CDATA[protected function configure(): void {]]></code>
+      <code><![CDATA[protected function execute(InputInterface $input, OutputInterface $output): int {]]></code>
+    </MissingOverrideAttribute>
+  </file>
+  <file src="lib/Controller/CallbackController.php">
+    <MissingDependency>
+      <code><![CDATA[$this->root]]></code>
+      <code><![CDATA[private]]></code>
+    </MissingDependency>
+    <RedundantCast>
+      <code><![CDATA[(string) $header]]></code>
+      <code><![CDATA[(string) $header]]></code>
+      <code><![CDATA[(string) $header]]></code>
+    </RedundantCast>
+    <TypeDoesNotContainType>
+      <code><![CDATA[$share === false]]></code>
+      <code><![CDATA[$share === null || $share === false]]></code>
+    </TypeDoesNotContainType>
+    <UndefinedClass>
+      <code><![CDATA[$this->setupManager]]></code>
+      <code><![CDATA[$this->setupManager]]></code>
+      <code><![CDATA[IVersionManager]]></code>
+      <code><![CDATA[IVersionManager]]></code>
+      <code><![CDATA[\OC_User]]></code>
+      <code><![CDATA[\OC_User]]></code>
+      <code><![CDATA[private]]></code>
+      <code><![CDATA[private]]></code>
+    </UndefinedClass>
+  </file>
+  <file src="lib/Controller/EditorApiController.php">
+    <MissingDependency>
+      <code><![CDATA[$this->root]]></code>
+      <code><![CDATA[$this->root]]></code>
+      <code><![CDATA[private]]></code>
+    </MissingDependency>
+    <RedundantCondition>
+      <code><![CDATA[isset($theme)]]></code>
+      <code><![CDATA[method_exists($this->userSession, 'setVolatileActiveUser')]]></code>
+    </RedundantCondition>
+    <UndefinedClass>
+      <code><![CDATA[$this->timezoneService]]></code>
+      <code><![CDATA[$this->timezoneService]]></code>
+      <code><![CDATA[$this->timezoneService]]></code>
+      <code><![CDATA[\OCA\Files_Sharing\SharedStorage]]></code>
+      <code><![CDATA[\OCA\Theming\ThemingDefaults]]></code>
+      <code><![CDATA[private]]></code>
+    </UndefinedClass>
+    <UndefinedInterfaceMethod>
+      <code><![CDATA[getShareId]]></code>
+    </UndefinedInterfaceMethod>
+  </file>
+  <file src="lib/Controller/EditorController.php">
+    <InvalidReturnStatement>
+      <code><![CDATA[$this->index($fileId, null, $shareToken, $inframe)]]></code>
+    </InvalidReturnStatement>
+    <InvalidReturnType>
+      <code><![CDATA[TemplateResponse]]></code>
+    </InvalidReturnType>
+    <InvalidScalarArgument>
+      <code><![CDATA[$file->getId()]]></code>
+    </InvalidScalarArgument>
+    <MissingDependency>
+      <code><![CDATA[$this->root]]></code>
+      <code><![CDATA[$this->root]]></code>
+      <code><![CDATA[$this->root]]></code>
+      <code><![CDATA[$this->root]]></code>
+      <code><![CDATA[$this->root]]></code>
+      <code><![CDATA[$this->root]]></code>
+      <code><![CDATA[$this->root]]></code>
+      <code><![CDATA[private]]></code>
+    </MissingDependency>
+    <RedundantCast>
+      <code><![CDATA[(string) $documentServerUrl]]></code>
+      <code><![CDATA[(string) $searchString]]></code>
+      <code><![CDATA[(string) $searchString]]></code>
+      <code><![CDATA[(string) $searchString]]></code>
+      <code><![CDATA[(string) $storageUrl]]></code>
+      <code><![CDATA[(string) Server::get(\OCP\IAppConfig::class)->getValueString("core", "shareapi_exclude_groups_list", "")]]></code>
+    </RedundantCast>
+    <RedundantCondition>
+      <code><![CDATA[!empty($shareToken)]]></code>
+      <code><![CDATA[!empty($shareToken)]]></code>
+    </RedundantCondition>
+    <UndefinedClass>
+      <code><![CDATA[$fileStorage]]></code>
+      <code><![CDATA[$fileVersion]]></code>
+      <code><![CDATA[$this->folderManager]]></code>
+      <code><![CDATA[$this->folderManager]]></code>
+      <code><![CDATA[$this->versionManager]]></code>
+      <code><![CDATA[$this->versionManager]]></code>
+      <code><![CDATA[$this->versionManager]]></code>
+      <code><![CDATA[$this->versionManager]]></code>
+      <code><![CDATA[$version]]></code>
+      <code><![CDATA[$version]]></code>
+      <code><![CDATA[GroupFolderStorage]]></code>
+      <code><![CDATA[GroupFolderStorage]]></code>
+      <code><![CDATA[GroupFolderStorage]]></code>
+      <code><![CDATA[Helper]]></code>
+      <code><![CDATA[Helper]]></code>
+      <code><![CDATA[Helper]]></code>
+      <code><![CDATA[SharedStorage]]></code>
+      <code><![CDATA[SharedStorage]]></code>
+      <code><![CDATA[\OCA\Files_External\Config\ExternalMountPoint]]></code>
+      <code><![CDATA[private]]></code>
+      <code><![CDATA[private]]></code>
+    </UndefinedClass>
+    <UndefinedDocblockClass>
+      <code><![CDATA[$fileStorage]]></code>
+      <code><![CDATA[$fileStorage]]></code>
+      <code><![CDATA[$folder]]></code>
+      <code><![CDATA[$folder]]></code>
+      <code><![CDATA[$folder]]></code>
+      <code><![CDATA[$folder]]></code>
+      <code><![CDATA[$folder]]></code>
+    </UndefinedDocblockClass>
+    <UndefinedInterfaceMethod>
+      <code><![CDATA[getFileInfo]]></code>
+      <code><![CDATA[getFileInfo]]></code>
+      <code><![CDATA[getFileInfo]]></code>
+      <code><![CDATA[getFileInfo]]></code>
+      <code><![CDATA[getFileInfo]]></code>
+      <code><![CDATA[getFileInfo]]></code>
+      <code><![CDATA[getFileInfo]]></code>
+      <code><![CDATA[getFileInfo]]></code>
+      <code><![CDATA[getShare]]></code>
+      <code><![CDATA[getShare]]></code>
+    </UndefinedInterfaceMethod>
+  </file>
+  <file src="lib/Controller/FederationController.php">
+    <InvalidArgument>
+      <code><![CDATA[$fs]]></code>
+    </InvalidArgument>
+  </file>
+  <file src="lib/Controller/FontController.php">
+    <RedundantCondition>
+      <code><![CDATA[is_resource($stream)]]></code>
+    </RedundantCondition>
+  </file>
+  <file src="lib/Controller/JobListController.php">
+    <UndefinedFunction>
+      <code><![CDATA[\OCP\Log\logger('eurooffice')]]></code>
+      <code><![CDATA[\OCP\Log\logger('eurooffice')]]></code>
+    </UndefinedFunction>
+  </file>
+  <file src="lib/Controller/SharingApiController.php">
+    <InvalidArgument>
+      <code><![CDATA[$shareId]]></code>
+    </InvalidArgument>
+    <MissingDependency>
+      <code><![CDATA[$this->root]]></code>
+      <code><![CDATA[private]]></code>
+    </MissingDependency>
+    <UndefinedClass>
+      <code><![CDATA[SharedStorage]]></code>
+      <code><![CDATA[SharedStorage]]></code>
+    </UndefinedClass>
+  </file>
+  <file src="lib/Cron/EditorsCheck.php">
+    <MissingOverrideAttribute>
+      <code><![CDATA[protected function run($argument): void {]]></code>
+    </MissingOverrideAttribute>
+  </file>
+  <file src="lib/DirectEditor.php">
+    <LessSpecificImplementedReturnType>
+      <code><![CDATA[array]]></code>
+    </LessSpecificImplementedReturnType>
+    <MissingOverrideAttribute>
+      <code><![CDATA[public function getCreators(): array {]]></code>
+      <code><![CDATA[public function getId(): string {]]></code>
+      <code><![CDATA[public function getMimetypes(): array {]]></code>
+      <code><![CDATA[public function getMimetypesOptional(): array {]]></code>
+      <code><![CDATA[public function getName(): string {]]></code>
+      <code><![CDATA[public function isSecure(): bool {]]></code>
+      <code><![CDATA[public function open(IToken $token): Response {]]></code>
+    </MissingOverrideAttribute>
+  </file>
+  <file src="lib/DocumentService.php">
+    <InvalidArgument>
+      <code><![CDATA[(int)$data["error"]]]></code>
+    </InvalidArgument>
+    <InvalidReturnStatement>
+      <code><![CDATA[$response->getBody()]]></code>
+    </InvalidReturnStatement>
+    <InvalidReturnType>
+      <code><![CDATA[string]]></code>
+    </InvalidReturnType>
+    <MismatchingDocblockParamType>
+      <code><![CDATA[string]]></code>
+    </MismatchingDocblockParamType>
+    <NullableReturnStatement>
+      <code><![CDATA[$response->getBody()]]></code>
+    </NullableReturnStatement>
+    <RedundantCast>
+      <code><![CDATA[(string) $fileUrl]]></code>
+      <code><![CDATA[(string) $this->urlGenerator->getAbsoluteURL("/")]]></code>
+    </RedundantCast>
+    <UndefinedClass>
+      <code><![CDATA[ConnectException]]></code>
+    </UndefinedClass>
+  </file>
+  <file src="lib/ExtraPermissions.php">
+    <InvalidArgument>
+      <code><![CDATA[$permissions]]></code>
+    </InvalidArgument>
+    <InvalidScalarArgument>
+      <code><![CDATA[$shareId]]></code>
+    </InvalidScalarArgument>
+    <MismatchingDocblockParamType>
+      <code><![CDATA[bool]]></code>
+      <code><![CDATA[integer]]></code>
+    </MismatchingDocblockParamType>
+    <RedundantCondition>
+      <code><![CDATA[is_array($values)]]></code>
+    </RedundantCondition>
+    <UndefinedClass>
+      <code><![CDATA[$this->talkManager]]></code>
+      <code><![CDATA[private]]></code>
+    </UndefinedClass>
+  </file>
+  <file src="lib/FileCreator.php">
+    <ImplementedReturnTypeMismatch>
+      <code><![CDATA[array]]></code>
+    </ImplementedReturnTypeMismatch>
+    <MismatchingDocblockReturnType>
+      <code><![CDATA[array]]></code>
+    </MismatchingDocblockReturnType>
+    <MissingOverrideAttribute>
+      <code><![CDATA[public function create(File $file, ?string $creatorId = null, ?string $templateId = null): void {]]></code>
+      <code><![CDATA[public function getExtension(): string {]]></code>
+      <code><![CDATA[public function getId(): string {]]></code>
+      <code><![CDATA[public function getMimetype(): string]]></code>
+      <code><![CDATA[public function getName(): string]]></code>
+    </MissingOverrideAttribute>
+  </file>
+  <file src="lib/FileUtility.php">
+    <InvalidReturnStatement>
+      <code><![CDATA[isset($attributes) ? $attributes->getAttribute("permissions", $attribute) : null]]></code>
+    </InvalidReturnStatement>
+    <InvalidReturnType>
+      <code><![CDATA[bool|null]]></code>
+    </InvalidReturnType>
+    <TypeDoesNotContainType>
+      <code><![CDATA[$share === false]]></code>
+      <code><![CDATA[$share === null || $share === false]]></code>
+    </TypeDoesNotContainType>
+    <UndefinedClass>
+      <code><![CDATA[\OCA\Files_Versions\Versions\IVersion]]></code>
+    </UndefinedClass>
+  </file>
+  <file src="lib/FileVersions.php">
+    <TypeDoesNotContainNull>
+      <code><![CDATA[$fileInfo === null]]></code>
+      <code><![CDATA[$ownerId === null || $fileInfo === null]]></code>
+    </TypeDoesNotContainNull>
+    <UndefinedClass>
+      <code><![CDATA[?File]]></code>
+      <code><![CDATA[Database]]></code>
+      <code><![CDATA[GroupFolderStorage]]></code>
+      <code><![CDATA[SharingExternalStorage]]></code>
+      <code><![CDATA[SharingExternalStorage]]></code>
+      <code><![CDATA[View]]></code>
+      <code><![CDATA[View]]></code>
+      <code><![CDATA[View]]></code>
+      <code><![CDATA[View]]></code>
+      <code><![CDATA[View]]></code>
+      <code><![CDATA[View]]></code>
+    </UndefinedClass>
+    <UndefinedFunction>
+      <code><![CDATA[\OCP\Log\logger('eurooffice')]]></code>
+      <code><![CDATA[\OCP\Log\logger('eurooffice')]]></code>
+      <code><![CDATA[\OCP\Log\logger('eurooffice')]]></code>
+      <code><![CDATA[\OCP\Log\logger('eurooffice')]]></code>
+      <code><![CDATA[\OCP\Log\logger('eurooffice')]]></code>
+      <code><![CDATA[\OCP\Log\logger('eurooffice')]]></code>
+      <code><![CDATA[\OCP\Log\logger('eurooffice')]]></code>
+      <code><![CDATA[\OCP\Log\logger('eurooffice')]]></code>
+    </UndefinedFunction>
+  </file>
+  <file src="lib/Hooks.php">
+    <UndefinedClass>
+      <code><![CDATA[Filesystem]]></code>
+    </UndefinedClass>
+  </file>
+  <file src="lib/Listeners/ContentSecurityPolicyListener.php">
+    <MissingOverrideAttribute>
+      <code><![CDATA[public function handle(Event $event): void {]]></code>
+    </MissingOverrideAttribute>
+    <MissingTemplateParam>
+      <code><![CDATA[IEventListener]]></code>
+    </MissingTemplateParam>
+    <RedundantCast>
+      <code><![CDATA[(string) $this->request->getScriptName()]]></code>
+    </RedundantCast>
+  </file>
+  <file src="lib/Listeners/CreateFromTemplateListener.php">
+    <MissingOverrideAttribute>
+      <code><![CDATA[public function handle(Event $event): void {]]></code>
+    </MissingOverrideAttribute>
+    <MissingTemplateParam>
+      <code><![CDATA[IEventListener]]></code>
+    </MissingTemplateParam>
+  </file>
+  <file src="lib/Listeners/DirectEditorListener.php">
+    <MissingOverrideAttribute>
+      <code><![CDATA[public function handle(Event $event): void {]]></code>
+    </MissingOverrideAttribute>
+    <MissingTemplateParam>
+      <code><![CDATA[IEventListener]]></code>
+    </MissingTemplateParam>
+  </file>
+  <file src="lib/Listeners/DocumentUnsavedListener.php">
+    <InvalidScalarArgument>
+      <code><![CDATA[$fileId]]></code>
+    </InvalidScalarArgument>
+    <MissingOverrideAttribute>
+      <code><![CDATA[public function handle(Event $event): void {]]></code>
+    </MissingOverrideAttribute>
+    <MissingTemplateParam>
+      <code><![CDATA[IEventListener]]></code>
+    </MissingTemplateParam>
+  </file>
+  <file src="lib/Listeners/FileListener.php">
+    <InvalidArgument>
+      <code><![CDATA[$event->getNode()]]></code>
+      <code><![CDATA[$event->getNode()]]></code>
+    </InvalidArgument>
+    <MissingOverrideAttribute>
+      <code><![CDATA[public function handle(Event $event): void {]]></code>
+    </MissingOverrideAttribute>
+    <MissingTemplateParam>
+      <code><![CDATA[IEventListener]]></code>
+    </MissingTemplateParam>
+    <UndefinedClass>
+      <code><![CDATA[Node]]></code>
+      <code><![CDATA[Node]]></code>
+    </UndefinedClass>
+  </file>
+  <file src="lib/Listeners/FileSharingListener.php">
+    <MissingOverrideAttribute>
+      <code><![CDATA[public function handle(Event $event): void {]]></code>
+    </MissingOverrideAttribute>
+    <MissingTemplateParam>
+      <code><![CDATA[IEventListener]]></code>
+    </MissingTemplateParam>
+    <UndefinedClass>
+      <code><![CDATA[BeforeTemplateRenderedEvent]]></code>
+    </UndefinedClass>
+  </file>
+  <file src="lib/Listeners/FileVersionsListener.php">
+    <MissingOverrideAttribute>
+      <code><![CDATA[public function handle(Event $event): void {]]></code>
+    </MissingOverrideAttribute>
+    <MissingTemplateParam>
+      <code><![CDATA[IEventListener]]></code>
+    </MissingTemplateParam>
+    <UndefinedClass>
+      <code><![CDATA[IVersion]]></code>
+      <code><![CDATA[IVersion]]></code>
+      <code><![CDATA[VersionRestoredEvent]]></code>
+    </UndefinedClass>
+  </file>
+  <file src="lib/Listeners/FilesListener.php">
+    <MissingOverrideAttribute>
+      <code><![CDATA[public function handle(Event $event): void {]]></code>
+    </MissingOverrideAttribute>
+    <MissingTemplateParam>
+      <code><![CDATA[IEventListener]]></code>
+    </MissingTemplateParam>
+    <UndefinedClass>
+      <code><![CDATA[LoadAdditionalScriptsEvent]]></code>
+    </UndefinedClass>
+  </file>
+  <file src="lib/Listeners/RegisterTemplateCreatorListener.php">
+    <InvalidOperand>
+      <code><![CDATA[21 / 29.7]]></code>
+      <code><![CDATA[21 / 29.7]]></code>
+    </InvalidOperand>
+    <MissingOverrideAttribute>
+      <code><![CDATA[public function handle(Event $event): void {]]></code>
+    </MissingOverrideAttribute>
+  </file>
+  <file src="lib/Listeners/ShareListener.php">
+    <MissingOverrideAttribute>
+      <code><![CDATA[public function handle(Event $event): void {]]></code>
+    </MissingOverrideAttribute>
+    <MissingTemplateParam>
+      <code><![CDATA[IEventListener]]></code>
+    </MissingTemplateParam>
+  </file>
+  <file src="lib/Listeners/UserListener.php">
+    <MissingOverrideAttribute>
+      <code><![CDATA[public function handle(Event $event): void {]]></code>
+    </MissingOverrideAttribute>
+    <MissingTemplateParam>
+      <code><![CDATA[IEventListener]]></code>
+    </MissingTemplateParam>
+  </file>
+  <file src="lib/Listeners/ViewerListener.php">
+    <MissingOverrideAttribute>
+      <code><![CDATA[public function handle(Event $event): void {]]></code>
+    </MissingOverrideAttribute>
+    <MissingTemplateParam>
+      <code><![CDATA[IEventListener]]></code>
+    </MissingTemplateParam>
+    <UndefinedClass>
+      <code><![CDATA[LoadViewer]]></code>
+    </UndefinedClass>
+  </file>
+  <file src="lib/Listeners/WidgetListener.php">
+    <MissingOverrideAttribute>
+      <code><![CDATA[public function handle(Event $event): void {]]></code>
+    </MissingOverrideAttribute>
+    <MissingTemplateParam>
+      <code><![CDATA[IEventListener]]></code>
+    </MissingTemplateParam>
+  </file>
+  <file src="lib/Migration/Version070000Date20210417111111.php">
+    <MissingOverrideAttribute>
+      <code><![CDATA[public function changeSchema(IOutput $output, Closure $schemaClosure, array $options): ?ISchemaWrapper {]]></code>
+      <code><![CDATA[public function postSchemaChange(IOutput $output, Closure $schemaClosure, array $options): void {]]></code>
+      <code><![CDATA[public function preSchemaChange(IOutput $output, Closure $schemaClosure, array $options): void {]]></code>
+    </MissingOverrideAttribute>
+    <UndefinedDocblockClass>
+      <code><![CDATA[$schema->createTable('eurooffice_filekey')]]></code>
+      <code><![CDATA[$table]]></code>
+      <code><![CDATA[$table]]></code>
+      <code><![CDATA[$table]]></code>
+      <code><![CDATA[$table]]></code>
+      <code><![CDATA[$table]]></code>
+      <code><![CDATA[$table]]></code>
+      <code><![CDATA[$table]]></code>
+    </UndefinedDocblockClass>
+  </file>
+  <file src="lib/Migration/Version070400Date20220607111111.php">
+    <MissingOverrideAttribute>
+      <code><![CDATA[public function changeSchema(IOutput $output, Closure $schemaClosure, array $options): ?ISchemaWrapper {]]></code>
+      <code><![CDATA[public function postSchemaChange(IOutput $output, Closure $schemaClosure, array $options): void {]]></code>
+      <code><![CDATA[public function preSchemaChange(IOutput $output, Closure $schemaClosure, array $options): void {]]></code>
+    </MissingOverrideAttribute>
+    <UndefinedDocblockClass>
+      <code><![CDATA[$table]]></code>
+      <code><![CDATA[$table]]></code>
+      <code><![CDATA[$table]]></code>
+      <code><![CDATA[$table]]></code>
+      <code><![CDATA[$table]]></code>
+      <code><![CDATA[$table]]></code>
+      <code><![CDATA[$table]]></code>
+      <code><![CDATA[$table]]></code>
+      <code><![CDATA[$table]]></code>
+      <code><![CDATA[$table]]></code>
+      <code><![CDATA[$table]]></code>
+      <code><![CDATA[$table]]></code>
+    </UndefinedDocblockClass>
+  </file>
+  <file src="lib/Migration/Version070400Date20220929111111.php">
+    <MissingOverrideAttribute>
+      <code><![CDATA[public function changeSchema(IOutput $output, Closure $schemaClosure, array $options): ?ISchemaWrapper {]]></code>
+      <code><![CDATA[public function postSchemaChange(IOutput $output, Closure $schemaClosure, array $options): void {]]></code>
+      <code><![CDATA[public function preSchemaChange(IOutput $output, Closure $schemaClosure, array $options): void {]]></code>
+    </MissingOverrideAttribute>
+    <UndefinedDocblockClass>
+      <code><![CDATA[$table]]></code>
+      <code><![CDATA[$table]]></code>
+      <code><![CDATA[$table]]></code>
+      <code><![CDATA[$table]]></code>
+      <code><![CDATA[$table]]></code>
+      <code><![CDATA[$table]]></code>
+      <code><![CDATA[$table]]></code>
+      <code><![CDATA[$table]]></code>
+      <code><![CDATA[$table]]></code>
+      <code><![CDATA[$table]]></code>
+      <code><![CDATA[$table]]></code>
+      <code><![CDATA[$table]]></code>
+      <code><![CDATA[$table]]></code>
+      <code><![CDATA[$table]]></code>
+      <code><![CDATA[$table]]></code>
+      <code><![CDATA[$table]]></code>
+      <code><![CDATA[$table]]></code>
+      <code><![CDATA[$table]]></code>
+    </UndefinedDocblockClass>
+  </file>
+  <file src="lib/Migration/Version110004Date20260915111111.php">
+    <MissingOverrideAttribute>
+      <code><![CDATA[public function changeSchema(IOutput $output, Closure $schemaClosure, array $options): ?ISchemaWrapper {]]></code>
+      <code><![CDATA[public function postSchemaChange(IOutput $output, Closure $schemaClosure, array $options): void {]]></code>
+      <code><![CDATA[public function preSchemaChange(IOutput $output, Closure $schemaClosure, array $options): void {]]></code>
+    </MissingOverrideAttribute>
+  </file>
+  <file src="lib/Notifier.php">
+    <MissingOverrideAttribute>
+      <code><![CDATA[public function getID(): string {]]></code>
+      <code><![CDATA[public function getName(): string {]]></code>
+      <code><![CDATA[public function prepare(INotification $notification, string $languageCode): INotification {]]></code>
+    </MissingOverrideAttribute>
+  </file>
+  <file src="lib/Preview.php">
+    <MissingDependency>
+      <code><![CDATA[$this->root]]></code>
+      <code><![CDATA[Image]]></code>
+      <code><![CDATA[private]]></code>
+    </MissingDependency>
+    <MissingOverrideAttribute>
+      <code><![CDATA[public function getMimeType(): string {]]></code>
+      <code><![CDATA[public function getThumbnail(File $file, int $maxX, int $maxY): ?IImage {]]></code>
+      <code><![CDATA[public function isAvailable(FileInfo $file): bool {]]></code>
+    </MissingOverrideAttribute>
+    <TypeDoesNotContainType>
+      <code><![CDATA[!$file]]></code>
+      <code><![CDATA[!$file]]></code>
+    </TypeDoesNotContainType>
+    <UndefinedClass>
+      <code><![CDATA[$this->versionManager]]></code>
+      <code><![CDATA[SharingExternalStorage]]></code>
+      <code><![CDATA[View]]></code>
+      <code><![CDATA[private]]></code>
+    </UndefinedClass>
+  </file>
+  <file src="lib/RemoteInstance.php">
+    <InvalidArgument>
+      <code><![CDATA[$fs]]></code>
+    </InvalidArgument>
+    <InvalidOperand>
+      <code><![CDATA[$status]]></code>
+    </InvalidOperand>
+    <UndefinedClass>
+      <code><![CDATA[$storage]]></code>
+      <code><![CDATA[SharingExternalStorage]]></code>
+    </UndefinedClass>
+    <UndefinedDocblockClass>
+      <code><![CDATA[$storage]]></code>
+      <code><![CDATA[$storage]]></code>
+    </UndefinedDocblockClass>
+    <UndefinedFunction>
+      <code><![CDATA[\OCP\Log\logger('eurooffice')]]></code>
+      <code><![CDATA[\OCP\Log\logger('eurooffice')]]></code>
+      <code><![CDATA[\OCP\Log\logger('eurooffice')]]></code>
+    </UndefinedFunction>
+    <UndefinedInterfaceMethod>
+      <code><![CDATA[getRemote]]></code>
+      <code><![CDATA[getRemote]]></code>
+      <code><![CDATA[getRemote]]></code>
+      <code><![CDATA[getToken]]></code>
+      <code><![CDATA[getToken]]></code>
+    </UndefinedInterfaceMethod>
+    <UndefinedMethod>
+      <code><![CDATA[getResponse]]></code>
+    </UndefinedMethod>
+  </file>
+  <file src="lib/SettingsData.php">
+    <MissingOverrideAttribute>
+      <code><![CDATA[public function jsonSerialize(): array {]]></code>
+    </MissingOverrideAttribute>
+  </file>
+  <file src="lib/TemplateManager.php">
+    <MissingDependency>
+      <code><![CDATA[IRootFolder]]></code>
+    </MissingDependency>
+    <UndefinedFunction>
+      <code><![CDATA[\OCP\Log\logger('eurooffice')]]></code>
+    </UndefinedFunction>
+  </file>
+  <file src="lib/TemplateProvider.php">
+    <InvalidNullableReturnType>
+      <code><![CDATA[File]]></code>
+    </InvalidNullableReturnType>
+    <MissingOverrideAttribute>
+      <code><![CDATA[public function getCustomTemplate(string $templateId): File {]]></code>
+      <code><![CDATA[public function getCustomTemplates(string $mimetype) : array {]]></code>
+    </MissingOverrideAttribute>
+    <NullableReturnStatement>
+      <code><![CDATA[TemplateManager::getTemplate((int)$templateId)]]></code>
+    </NullableReturnStatement>
+    <ParamNameMismatch>
+      <code><![CDATA[$templateId]]></code>
+    </ParamNameMismatch>
+  </file>
+</files>

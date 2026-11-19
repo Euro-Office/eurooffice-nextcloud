@@ -92,7 +92,7 @@ class TemplateManager {
 
         $templatesList = $templateDir->getDirectoryListing();
         if (!empty($mimetype)
-            && is_array($templatesList) && count($templatesList) > 0) {
+            && count($templatesList) > 0) {
             $templatesList = $templateDir->searchByMime($mimetype);
         }
 
