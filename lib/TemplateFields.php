@@ -306,8 +306,10 @@ class TemplateFields {
      * Replace the control's text and clear its placeholder state.
      *
      * The new text takes the first run's formatting, minus the placeholder style.
-     * In a block control each line is a paragraph with the first paragraph's
-     * properties; in an inline control lines are joined with line breaks.
+     * In a block rich text control each line is a paragraph with the first
+     * paragraph's properties. A plain text control (w:text) may hold only one
+     * paragraph, so there, as in an inline control, lines are joined with line
+     * breaks, and w:multiLine is turned on when the value has several lines.
      * Bookmarks inside the control are kept around the new text.
      */
     private static function setText(DOMElement $sdt, DOMXPath $xpath, string $value): void {
@@ -336,6 +338,10 @@ class TemplateFields {
         }
 
         $lines = preg_split("/\r\n|\r|\n/", self::xmlSafe($value));
+        $plainText = $xpath->query("w:sdtPr/w:text", $sdt)->item(0);
+        if ($plainText instanceof DOMElement && count($lines) > 1) {
+            $plainText->setAttributeNS(self::NS_W, "w:multiLine", "1");
+        }
         $run = static function (array $lines) use ($dom, $runPr): DOMElement {
             $run = $dom->createElementNS(self::NS_W, "w:r");
             if ($runPr instanceof DOMElement) {
@@ -370,12 +376,13 @@ class TemplateFields {
 
         if ($firstParagraph instanceof DOMElement) {
             $paragraphs = [];
-            foreach ($lines as $line) {
+            $groups = $plainText instanceof DOMElement ? [$lines] : array_map(static fn (string $line): array => [$line], $lines);
+            foreach ($groups as $group) {
                 $p = $dom->createElementNS(self::NS_W, "w:p");
                 if ($paraPr instanceof DOMElement) {
                     $p->appendChild($paraPr->cloneNode(true));
                 }
-                $p->appendChild($run([$line]));
+                $p->appendChild($run($group));
                 $content->appendChild($p);
                 $paragraphs[] = $p;
             }

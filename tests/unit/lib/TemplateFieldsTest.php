@@ -178,6 +178,25 @@ class TemplateFieldsTest extends TestCase {
         $this->assertSame(["plain", "case"], array_column(TemplateFields::extract(self::docx($body)), "tag"));
     }
 
+    public function testPlainTextControlKeepsOneParagraphWithLineBreaks(): void {
+        $body = "<w:sdt>" . self::sdtPr("Adresse", "address", 61, "<w:text/>") . "<w:sdtContent>"
+            . "<w:p><w:pPr><w:jc w:val=\"center\"/></w:pPr><w:r><w:t>Gammel</w:t></w:r></w:p>"
+            . "</w:sdtContent></w:sdt>"
+            . "<w:p><w:sdt>" . self::sdtPr("Kort", "short", 62, "<w:text/>")
+            . "<w:sdtContent><w:r><w:t>Gammel</w:t></w:r></w:sdtContent></w:sdt></w:p>";
+
+        $filled = TemplateFields::fill(self::docx($body), [
+            "ContentControls.ByIndex.0" => ["content" => "Storegade 1\n2635 Ishøj"],
+            "ContentControls.ByIndex.1" => ["content" => "Én linje"],
+        ]);
+        $document = self::part($filled, "word/document.xml");
+
+        $this->assertSame("Storegade 1\n2635 Ishøj", TemplateFields::extract($filled)[0]["content"]);
+        $this->assertSame(1, substr_count($document, "<w:jc w:val=\"center\"/>"), "a plain text control keeps one paragraph");
+        $this->assertSame(1, substr_count($document, "<w:br/>"));
+        $this->assertSame(1, substr_count($document, "w:multiLine=\"1\""), "only the control with several lines allows line breaks");
+    }
+
     public function testBlockLinesBecomeParagraphsAndBookmarksAreKept(): void {
         $body = "<w:sdt>" . self::sdtPr("Brødtekst", "body", 51) . "<w:sdtContent>"
             . "<w:p><w:pPr><w:jc w:val=\"center\"/></w:pPr><w:bookmarkStart w:id=\"7\" w:name=\"Bodytext\"/><w:r><w:t>Gammel</w:t></w:r><w:bookmarkEnd w:id=\"7\"/></w:p>"
