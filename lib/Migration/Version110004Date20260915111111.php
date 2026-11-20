@@ -18,10 +18,10 @@ use OCP\Migration\SimpleMigrationStep;
 /**
  * Remove pdf from the stored defFormats app-config value.
  *
- * PDF is now a "view" format (opens in NC Viewer by default). Leaving
+ * Without a stored value, PDF opens in files_pdfviewer when that app is
+ * enabled and in Euro-Office otherwise (AppConfig::formatsSetting). Leaving
  * pdf: true in defFormats on instances whose admin saved settings before
- * this change would silently override the new default. This migration
- * clears it so the product-level decision is authoritative.
+ * this change would silently override that default.
  */
 class Version110004Date20260915111111 extends SimpleMigrationStep {
 
