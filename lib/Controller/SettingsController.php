@@ -25,13 +25,17 @@
 
 namespace OCA\Eurooffice\Controller;
 
+use OCA\Eurooffice\AdminSettingsSecurity;
 use OCA\Eurooffice\AppConfig;
 use OCA\Eurooffice\DocumentService;
 use OCA\Eurooffice\FileVersions;
 use OCA\Eurooffice\TemplateManager;
 use OCP\AppFramework\Controller;
+use OCP\AppFramework\Http\Attribute\AuthorizedAdminSetting;
 use OCP\AppFramework\Http\DataResponse;
 use OCP\AppFramework\Http\TemplateResponse;
+use OCP\IGroup;
+use OCP\IGroupManager;
 use OCP\IL10N;
 use OCP\IRequest;
 use OCP\IURLGenerator;
@@ -49,7 +53,8 @@ class SettingsController extends Controller {
         private readonly IL10N $trans,
         private readonly AppConfig $appConfig,
         private readonly IMimeIconProvider $mimeIconProvider,
-        private readonly DocumentService $documentService
+        private readonly DocumentService $documentService,
+        private readonly IGroupManager $groupManager
     ) {
         parent::__construct($appName, $request);
     }
@@ -58,15 +63,75 @@ class SettingsController extends Controller {
      * Print config section
      */
     public function index(): TemplateResponse {
-        $data = [
+        $data = array_merge(
+            $this->getConnectionStateData(),
+            $this->getAddressData(),
+            $this->getCommonData()
+        );
+        return new TemplateResponse($this->appName, "settings", $data, "blank");
+    }
+
+    /**
+     * Print the "Common templates" config section
+     *
+     * Rendered as a separate admin settings form so that it can be delegated
+     * independently of the server and common settings.
+     */
+    public function indexTemplates(): TemplateResponse {
+        $data = array_merge(
+            $this->getConnectionStateData(),
+            $this->getTemplatesData()
+        );
+        return new TemplateResponse($this->appName, "settings-templates", $data, "blank");
+    }
+
+    /**
+     * Print the "Security" config section
+     *
+     * Rendered as a separate admin settings form so that it can be delegated
+     * independently of the server and common settings.
+     */
+    public function indexSecurity(): TemplateResponse {
+        $data = array_merge(
+            $this->getConnectionStateData(),
+            $this->getSecurityData()
+        );
+        return new TemplateResponse($this->appName, "settings-security", $data, "blank");
+    }
+
+    /**
+     * Document server connection state shared by every settings form.
+     *
+     * Each form uses these to decide whether it renders visible or hidden,
+     * so they have to be present in every template fragment.
+     */
+    private function getConnectionStateData(): array {
+        return [
             "documentserver" => $this->appConfig->getDocumentServerUrl(true),
+            "demo" => $this->appConfig->getDemoData(),
+            "successful" => $this->appConfig->settingsAreSuccessful()
+        ];
+    }
+
+    /**
+     * Data of the "Server settings" form
+     */
+    private function getAddressData(): array {
+        return [
             "documentserverInternal" => $this->appConfig->getDocumentServerInternalUrl(true),
             "storageUrl" => $this->appConfig->getStorageUrl(),
             "verifyPeerOff" => $this->appConfig->getVerifyPeerOff(),
             "secret" => $this->appConfig->getDocumentServerSecret(true),
             "jwtHeader" => $this->appConfig->jwtHeader(true),
-            "demo" => $this->appConfig->getDemoData(),
-            "currentServer" => $this->urlGenerator->getAbsoluteURL("/"),
+            "currentServer" => $this->urlGenerator->getAbsoluteURL("/")
+        ];
+    }
+
+    /**
+     * Data of the "Common settings" form, including editor customization and custom fonts
+     */
+    private function getCommonData(): array {
+        return [
             "formats" => $this->appConfig->formatsSetting(),
             "sameTab" => $this->appConfig->getSameTab(),
             "enableSharing" => $this->appConfig->getEnableSharing(),
@@ -75,7 +140,6 @@ class SettingsController extends Controller {
             "cronChecker" => $this->appConfig->getCronChecker(),
             "emailNotifications" => $this->appConfig->getEmailNotifications(),
             "versionHistory" => $this->appConfig->getVersionHistory(),
-            "protection" => $this->appConfig->getProtection(),
             "limitGroups" => $this->appConfig->getLimitGroups(),
             "chat" => $this->appConfig->getCustomizationChat(),
             "compactHeader" => $this->appConfig->getCustomizationCompactHeader(),
@@ -83,18 +147,33 @@ class SettingsController extends Controller {
             "forcesave" => $this->appConfig->getCustomizationForcesave(),
             "liveViewOnShare" => $this->appConfig->getLiveViewOnShare(),
             "help" => $this->appConfig->getCustomizationHelp(),
-            "successful" => $this->appConfig->settingsAreSuccessful(),
+            "reviewDisplay" => $this->appConfig->getCustomizationReviewDisplay(),
+            "theme" => $this->appConfig->getCustomizationTheme(true),
+            "unknownAuthor" => $this->appConfig->getUnknownAuthor()
+        ];
+    }
+
+    /**
+     * Data of the "Common templates" form
+     */
+    private function getTemplatesData(): array {
+        return [
+            "templates" => $this->getGlobalTemplates()
+        ];
+    }
+
+    /**
+     * Data of the "Security" form
+     */
+    private function getSecurityData(): array {
+        return [
+            "protection" => $this->appConfig->getProtection(),
             "settingsError" => $this->appConfig->getSettingsError(),
             "watermark" => $this->appConfig->getWatermarkSettings(),
             "plugins" => $this->appConfig->getCustomizationPlugins(),
             "macros" => $this->appConfig->getCustomizationMacros(),
-            "tagsEnabled" => \OCP\Server::get(\OCP\App\IAppManager::class)->isEnabledForUser("systemtags"),
-            "reviewDisplay" => $this->appConfig->getCustomizationReviewDisplay(),
-            "theme" => $this->appConfig->getCustomizationTheme(true),
-            "templates" => $this->getGlobalTemplates(),
-            "unknownAuthor" => $this->appConfig->getUnknownAuthor()
+            "tagsEnabled" => \OCP\Server::get(\OCP\App\IAppManager::class)->isEnabledForUser("systemtags")
         ];
-        return new TemplateResponse($this->appName, "settings", $data, "blank");
     }
 
     /**
@@ -226,6 +305,7 @@ class SettingsController extends Controller {
      * @param bool $macros - run document macros
      * @param string $protection - protection
      */
+    #[AuthorizedAdminSetting(settings: AdminSettingsSecurity::class)]
     public function saveSecurity(
         array $watermarks,
         bool $plugins,
@@ -246,6 +326,28 @@ class SettingsController extends Controller {
         $this->appConfig->setProtection($protection);
 
         return new DataResponse();
+    }
+
+    /**
+     * Search groups for the watermark group picker
+     *
+     * The core group details endpoint is restricted to delegates of the
+     * Sharing or Users settings, so a delegate of the security form needs
+     * its own lookup.
+     *
+     * @param string $search - text to search for
+     */
+    #[AuthorizedAdminSetting(settings: AdminSettingsSecurity::class)]
+    public function searchGroups(string $search = ""): DataResponse {
+        $groups = array_map(
+            static fn (IGroup $group): array => [
+                "id" => $group->getGID(),
+                "displayname" => $group->getDisplayName()
+            ],
+            $this->groupManager->search($search, 10)
+        );
+
+        return new DataResponse(array_values($groups));
     }
 
     /**

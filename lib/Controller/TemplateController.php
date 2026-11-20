@@ -25,11 +25,13 @@
 
 namespace OCA\Eurooffice\Controller;
 
+use OCA\Eurooffice\AdminSettingsTemplates;
 use OCA\Eurooffice\TemplateManager;
 use OCP\AppFramework\Controller;
 use OCP\AppFramework\Http;
 use OCP\AppFramework\Http\DataResponse;
 use OCP\AppFramework\Http\FileDisplayResponse;
+use OCP\AppFramework\Http\Attribute\AuthorizedAdminSetting;
 use OCP\AppFramework\Http\Attribute\NoAdminRequired;
 use OCP\AppFramework\Http\Attribute\NoCSRFRequired;
 use OCP\AppFramework\Http\Attribute\PublicPage;
@@ -89,6 +91,7 @@ class TemplateController extends Controller {
      *
      * @return DataResponse
      */
+    #[AuthorizedAdminSetting(settings: AdminSettingsTemplates::class)]
     public function addTemplate(): DataResponse {
 
         $file = $this->request->getUploadedFile("file");
@@ -130,6 +133,7 @@ class TemplateController extends Controller {
      *
      * @return DataResponse
      */
+    #[AuthorizedAdminSetting(settings: AdminSettingsTemplates::class)]
     public function deleteTemplate(int $templateId): DataResponse {
         $templateDir = TemplateManager::getGlobalTemplateDir();
 
