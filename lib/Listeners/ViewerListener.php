@@ -26,11 +26,13 @@
 namespace OCA\Eurooffice\Listeners;
 
 use OCA\Eurooffice\AppConfig;
+use OCA\Eurooffice\FileUtility;
 use OCA\Eurooffice\SettingsData;
 use OCA\Viewer\Event\LoadViewer;
 use OCP\AppFramework\Services\IInitialState;
 use OCP\EventDispatcher\Event;
 use OCP\EventDispatcher\IEventListener;
+use OCP\IRequest;
 use OCP\Server;
 use OCP\Util;
 
@@ -41,7 +43,9 @@ class ViewerListener implements IEventListener {
 
     public function __construct(
         private readonly AppConfig $appConfig,
-        private readonly IInitialState $initialState
+        private readonly IInitialState $initialState,
+        private readonly IRequest $request,
+        private readonly FileUtility $fileUtility
     ) {}
 
     public function handle(Event $event): void {
@@ -51,7 +55,7 @@ class ViewerListener implements IEventListener {
 
         if (!empty($this->appConfig->getDocumentServerUrl())
             && $this->appConfig->settingsAreSuccessful()
-            && $this->appConfig->isUserAllowedToUse()) {
+            && $this->isAllowedToUse()) {
             Util::addScript("eurooffice", "eurooffice-viewer", "viewer");
             Util::addScript("eurooffice", "eurooffice-listener", "viewer");
 
@@ -60,5 +64,22 @@ class ViewerListener implements IEventListener {
 
             $this->initialState->provideLazyInitialState("settings", fn() => Server::get(SettingsData::class));
         }
+    }
+
+    /**
+     * Whether the current user, or the sharer of a public link, may use the app
+     */
+    private function isAllowedToUse(): bool {
+        if ($this->appConfig->isUserAllowedToUse()) {
+            return true;
+        }
+
+        $shareToken = $this->request->getParam("token");
+        if (!is_string($shareToken) || $shareToken === "") {
+            return false;
+        }
+
+        [$share] = $this->fileUtility->getShare($shareToken);
+        return $share !== null && $this->appConfig->isUserAllowedToUse($share->getSharedBy());
     }
 }

@@ -21,6 +21,8 @@
  *
  */
 
+import { getSharingToken, isPublicShare } from '@nextcloud/sharing/public'
+
 /**
  * @param {object} OCA Nextcloud OCA object
  */
@@ -46,7 +48,7 @@
 				attrs: {
 					id: 'euroofficeViewerFrame',
 					scrolling: 'no',
-					src: self.url + '&inframe=true&inviewer=true',
+					src: self.url,
 				},
 				on: {
 					load() {
@@ -70,11 +72,14 @@
 		},
 		data() {
 			return {
-				url: OC.generateUrl('/apps/' + OCA.Eurooffice.AppName + '/{fileId}?filePath={filePath}',
-					{
-						fileId: this.fileid,
-						filePath: this.filename,
-					}),
+				url: isPublicShare()
+					? OC.generateUrl('/apps/' + OCA.Eurooffice.AppName + '/s/{shareToken}?inframe=true&inviewer=true',
+						{ shareToken: getSharingToken() })
+					: OC.generateUrl('/apps/' + OCA.Eurooffice.AppName + '/{fileId}?filePath={filePath}&inframe=true&inviewer=true',
+						{
+							fileId: this.fileid,
+							filePath: this.filename,
+						}),
 			}
 		},
 	}
@@ -82,7 +87,7 @@
 	if (OCA.Viewer) {
 
 		const mimes = Object.values(OCA.Eurooffice.setting.formats)
-			.filter(format => format.def)
+			.filter(format => format.def && (format.defViewer || !isPublicShare()))
 			.map(format => format.mime)
 			.flat()
 		OCA.Viewer.registerHandler({

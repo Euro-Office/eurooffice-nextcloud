@@ -16,3 +16,5 @@
 /assets/document-templates/sample/
 /tests/
 /phpunit.xml
+/playwright/
+/playwright.config.mjs

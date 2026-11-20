@@ -627,6 +627,10 @@ import { loadState } from '@nextcloud/initial-state'
 					const required = config.defViewer ? Permission.UPDATE : Permission.READ
 					if (required !== (files[0].permissions & required)) { return false }
 
+					if (files[0].attributes['mount-type'] === 'shared') {
+						if (required !== (files[0].attributes['share-permissions'] & required)) { return false }
+					}
+
 					return true
 				},
 				exec({ nodes, view }) {
@@ -855,7 +859,7 @@ import { loadState } from '@nextcloud/initial-state'
 
 			if (config.def
 				&& !_oc_appswebroots.richdocuments
-				&& !(_oc_appswebroots.files_pdfviewer && extension === 'pdf')
+				&& !(config.defViewer && OCA.Viewer)
 				&& !(_oc_appswebroots.text && extension === 'txt')) {
 				const editorUrl = generateUrl('apps/' + OCA.Eurooffice.AppName + '/s/' + encodeURIComponent(getSharingToken()))
 

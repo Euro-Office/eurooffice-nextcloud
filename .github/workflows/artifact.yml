@@ -39,6 +39,8 @@ jobs:
           rm -rf ./node_modules/
           rm -rf ./src/
           rm -rf ./tests/
+          rm -rf ./playwright/
+          rm ./playwright.config.mjs
           rm ./phpunit.xml
           rm ./.eslintrc.js
           rm ./.gitignore
@@ -60,8 +62,8 @@ jobs:
             echo "::error::document-templates/sample/ leaked into the artifact"
             exit 1
           fi
-          if tar tzf eurooffice.tar.gz | grep -qE '/(tests/|phpunit\.xml)'; then
-            echo "::error::tests/ or phpunit.xml leaked into the artifact"
+          if tar tzf eurooffice.tar.gz | grep -qE '/(tests/|playwright|phpunit\.xml)'; then
+            echo "::error::tests/, playwright or phpunit.xml leaked into the artifact"
             exit 1
           fi
           locales=$(tar tzf eurooffice.tar.gz | grep -c 'document-templates/new/.*/new\.docx' || true)
@@ -104,8 +106,8 @@ jobs:
             echo "::error::document-templates/sample/ leaked into the appstore tarball; check .nextcloudignore"
             exit 1
           fi
-          if tar tzf "$tarball" | grep -qE '/(tests/|phpunit\.xml)'; then
-            echo "::error::tests/ or phpunit.xml leaked into the appstore tarball; check .nextcloudignore"
+          if tar tzf "$tarball" | grep -qE '/(tests/|playwright|phpunit\.xml)'; then
+            echo "::error::tests/, playwright or phpunit.xml leaked into the appstore tarball; check .nextcloudignore"
             exit 1
           fi
           locales=$(tar tzf "$tarball" | grep -c 'document-templates/new/.*/new\.docx' || true)
