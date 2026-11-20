@@ -592,7 +592,7 @@ import { loadState } from '@nextcloud/initial-state'
 					// defViewer formats open via OCA.Viewer (registered in viewer.js).
 					// This action is the direct-open fallback when the Viewer app is absent.
 					// Non-defViewer formats use this as their primary default action.
-					const isDefault = (config.def && !config.defViewer) || (config.defViewer && !OCA.Viewer)
+					const isDefault = config.def && (!config.defViewer || !OCA.Viewer)
 					if (!isDefault) return false
 
 					if (Permission.READ !== (files[0].permissions & Permission.READ)) { return false }
@@ -853,7 +853,7 @@ import { loadState } from '@nextcloud/initial-state'
 				},
 			})
 
-			if ((config.def || config.defViewer)
+			if (config.def
 				&& !_oc_appswebroots.richdocuments
 				&& !(_oc_appswebroots.files_pdfviewer && extension === 'pdf')
 				&& !(_oc_appswebroots.text && extension === 'txt')) {

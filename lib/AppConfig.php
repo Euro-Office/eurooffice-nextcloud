@@ -28,6 +28,7 @@ namespace OCA\Eurooffice;
 use \DateInterval;
 use \DateTime;
 use Exception;
+use OCP\App\IAppManager;
 use OCP\AppFramework\Http\Attribute\NoAdminRequired;
 use OCP\ICache;
 use OCP\ICacheFactory;
@@ -1231,6 +1232,10 @@ class AppConfig {
             }
         }
 
+        if (isset($result["pdf"]) && !array_key_exists("pdf", $defFormats)) {
+            $result["pdf"]["def"] = !\OCP\Server::get(IAppManager::class)->isEnabledForUser("files_pdfviewer");
+        }
+
         $editFormats = $this->getEditableFormats();
         foreach ($editFormats as $format => $setting) {
             if (array_key_exists($format, $result)) {
@@ -1405,7 +1410,7 @@ class AppConfig {
                 "createForm" => true,
             ],
             "pdf" => [
-                "def" => true,
+                "def" => false,
                 "defViewer" => true,
             ],
             "pptx" => [
