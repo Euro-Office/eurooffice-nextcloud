@@ -796,6 +796,13 @@ msgstr "文件 URL 中的域与文档服务器的域不匹配"
 msgid "The required folder was not found"
 msgstr "未找到所需文件夹"
 
+#: lib/DocumentService.php
+msgid ""
+"The secret key must be at least 32 characters long. Generate a new one, for "
+"example with \"openssl rand -hex 32\", and set the same key in the Euro-"
+"Office DocumentServer and in the Nextcloud Office settings."
+msgstr ""
+
 #: lib/EmailManager.php
 msgid ""
 "This is a mail message to notify that the connection with the Nextcloud "
