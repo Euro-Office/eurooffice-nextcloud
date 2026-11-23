@@ -812,6 +812,13 @@ msgstr ""
 msgid "The required folder was not found"
 msgstr "De vereiste map is niet gevonden"
 
+#: lib/DocumentService.php
+msgid ""
+"The secret key must be at least 32 characters long. Generate a new one, for "
+"example with \"openssl rand -hex 32\", and set the same key in the Euro-"
+"Office DocumentServer and in the Nextcloud Office settings."
+msgstr ""
+
 #: lib/EmailManager.php
 msgid ""
 "This is a mail message to notify that the connection with the Nextcloud "
