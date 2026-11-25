@@ -189,7 +189,13 @@ import { loadState } from '@nextcloud/initial-state'
 			&& !OCA.Eurooffice.setting.sameTab && OCA.Eurooffice.setting.enableSharing)
 			|| (!OCA.Eurooffice.setting.sameTab && !isDefault)) {
 			OCA.Eurooffice.SetDefaultUrl()
-			winEditor = window.open(url, '_blank')
+			// Files opens /f/<fileId> links by itself (openfile=true). Without a user
+			// gesture the browser blocks the new tab, so open the editor in this tab.
+			const blocked = navigator.userActivation?.isActive === false && !OCA.Eurooffice.Desktop
+			winEditor = blocked ? null : window.open(url, '_blank')
+			if (!winEditor && !OCA.Eurooffice.Desktop) {
+				window.location.replace(url)
+			}
 		} else {
 			if (OCA.Eurooffice.setting.enableSharing
 				&& !isPublicShare()
