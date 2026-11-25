@@ -39,6 +39,7 @@ use OCA\Files_Sharing\Event\BeforeTemplateRenderedEvent;
 use OCA\Files_Versions\Events\VersionRestoredEvent;
 use OCA\Viewer\Event\LoadViewer;
 use OCA\Eurooffice\AppConfig;
+use OCA\Eurooffice\Capabilities;
 use OCA\Eurooffice\Controller\JobListController;
 use OCA\Eurooffice\Listeners\CreateFromTemplateListener;
 use OCA\Eurooffice\Listeners\FilesListener;
@@ -99,6 +100,7 @@ class Application extends App implements IBootstrap {
             $context->registerTemplateProvider(TemplateProvider::class);
         }
 
+        $context->registerCapability(Capabilities::class);
         $context->registerPreviewProvider(Preview::class, Preview::getMimeTypeRegex());
         $context->registerNotifierService(Notifier::class);
 
