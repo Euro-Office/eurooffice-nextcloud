@@ -31,6 +31,7 @@ use OCP\AppFramework\Bootstrap\IBootstrap;
 use OCP\AppFramework\Bootstrap\IRegistrationContext;
 use OCP\AppFramework\Http\Events\BeforeTemplateRenderedEvent as HttpBeforeTemplateRenderedEvent;
 use OCP\DirectEditing\RegisterDirectEditorEvent;
+use OCP\Files\Template\BeforeGetTemplatesEvent;
 use OCP\Files\Template\FileCreatedFromTemplateEvent;
 use OCP\Files\Template\RegisterTemplateCreatorEvent;
 use OCP\Security\CSP\AddContentSecurityPolicyEvent;
@@ -40,6 +41,7 @@ use OCA\Files_Versions\Events\VersionRestoredEvent;
 use OCA\Viewer\Event\LoadViewer;
 use OCA\Eurooffice\AppConfig;
 use OCA\Eurooffice\Controller\JobListController;
+use OCA\Eurooffice\Listeners\BeforeGetTemplatesListener;
 use OCA\Eurooffice\Listeners\CreateFromTemplateListener;
 use OCA\Eurooffice\Listeners\FilesListener;
 use OCA\Eurooffice\Listeners\FileSharingListener;
@@ -80,6 +82,7 @@ class Application extends App implements IBootstrap {
         // Set the leeway for the JWT library in case the system clock is a second off
         JWT::$leeway = $this->appConfig->getJwtLeeway();
 
+        $context->registerEventListener(BeforeGetTemplatesEvent::class, BeforeGetTemplatesListener::class);
         $context->registerEventListener(FileCreatedFromTemplateEvent::class, CreateFromTemplateListener::class);
         $context->registerEventListener(LoadAdditionalScriptsEvent::class, FilesListener::class);
         $context->registerEventListener(RegisterDirectEditorEvent::class, DirectEditorListener::class);
