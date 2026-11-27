@@ -768,7 +768,9 @@ import { createUserActivityHandler } from './userActivity.js'
 		}
 
 		const header = document.getElementById('header')
-		const headerHeight = header ? header.offsetHeight : 50
+		// Direct editing (mobile apps) and public layout-base pages have no #header,
+		// so there is nothing to subtract; falling back to 50px left a gap at the bottom.
+		const headerHeight = header ? header.offsetHeight : 0
 		const wrapEl = document.querySelector('#app>iframe')
 		if (wrapEl) {
 			wrapEl.style.height = (screen.availHeight - headerHeight) + 'px'
